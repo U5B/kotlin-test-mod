@@ -1,7 +1,7 @@
 import gg.essential.gradle.*
 plugins {
     // If you're using Kotlin, it needs to be applied before the multi-version plugin
-    // kotlin("jvm") version "1.6.10"
+    kotlin("jvm")
     // Apply the multi-version plugin, this does all the configuration necessary for the preprocessor to
     // work. In particular it also applies `com.replaymod.preprocess`.
     // In addition it primarily also provides a `platform` extension which you can use in this build script
@@ -17,7 +17,7 @@ plugins {
 dependencies {
     // If you are depending on a multi-version library following the same scheme as the Essential libraries (that is
     // e.g. `elementa-1.8.9-forge`), you can `toString` `platform` directly to get the respective artifact id.
-    modImplementation("gg.essential:elementa-$platform:428")
+    modImplementation("gg.essential:elementa-$platform:580")
 }
 
 tasks.processResources {

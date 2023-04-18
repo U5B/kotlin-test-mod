@@ -10,12 +10,12 @@ pluginManagement {
     // We also recommend specifying your desired version here if you're using more than one of the plugins,
     // so you do not have to change the version in multilpe places when updating.
     plugins {
+        id("maven-publish")
+        id("org.jetbrains.kotlin.jvm") version "1.8.20"
+
         val egtVersion = "0.1.18" // should be whatever is displayed in above badge
         id("gg.essential.multi-version.root") version egtVersion
         id("gg.essential.multi-version.api-validation") version egtVersion
-
-        id("maven-publish")
-        id("org.jetbrains.kotlin.jvm") version "1.8.20"
     }
 }
 
