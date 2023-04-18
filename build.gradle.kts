@@ -1,36 +1,48 @@
+import gg.essential.gradle.*
 plugins {
-    id("fabric-loom")
-    kotlin("jvm").version(System.getProperty("kotlin_version"))
+    // If you're using Kotlin, it needs to be applied before the multi-version plugin
+    // kotlin("jvm") version "1.6.10"
+    // Apply the multi-version plugin, this does all the configuration necessary for the preprocessor to
+    // work. In particular it also applies `com.replaymod.preprocess`.
+    // In addition it primarily also provides a `platform` extension which you can use in this build script
+    // to get the version and mod loader of the current project.
+    id("gg.essential.multi-version")
+    // If you do not care too much about the details, you can just apply essential-gradle-toolkits' defaults for
+    // Minecraft, fabric-loader, forge, mappings, etc. versions.
+    // You can also overwrite some of these if need be. See the `gg.essential.defaults.loom` README section.
+    // Otherwise you'll need to configure those as usual for (architectury) loom.
+    id("gg.essential.defaults")
 }
-base { archivesName.set(project.extra["archives_base_name"] as String) }
-version = project.extra["mod_version"] as String
-group = project.extra["maven_group"] as String
-repositories {}
+
 dependencies {
-    minecraft("com.mojang", "minecraft", project.extra["minecraft_version"] as String)
-    mappings("net.fabricmc", "yarn", project.extra["yarn_mappings"] as String, null, "v2")
-    modImplementation("net.fabricmc", "fabric-loader", project.extra["loader_version"] as String)
-    modImplementation("net.fabricmc.fabric-api", "fabric-api", project.extra["fabric_version"] as String)
-    modImplementation("net.fabricmc", "fabric-language-kotlin", project.extra["fabric_language_kotlin_version"] as String)
+    // If you are depending on a multi-version library following the same scheme as the Essential libraries (that is
+    // e.g. `elementa-1.8.9-forge`), you can `toString` `platform` directly to get the respective artifact id.
+    modImplementation("gg.essential:elementa-$platform:428")
 }
-tasks {
-    val javaVersion = JavaVersion.toVersion((project.extra["java_version"] as String).toInt())
-    withType<JavaCompile> {
-        options.encoding = "UTF-8"
-        sourceCompatibility = javaVersion.toString()
-        targetCompatibility = javaVersion.toString()
-        options.release.set(javaVersion.toString().toInt())
+
+tasks.processResources {
+    // Expansions are already set up for `version` (or `file.jarVersion`) and `mcVersionStr`.
+    // You do not need to set those up manually.
+}
+
+loom {
+    /*
+    // If you need to use a tweaker on legacy (1.12.2 and below) forge:
+    if (platform.isLegacyForge) {
+        launchConfigs.named("client") {
+            arg("--tweakClass", "gg.essential.loader.stage0.EssentialSetupTweaker")
+            // And maybe a core mod?
+            property("fml.coreMods.load", "com.example.asm.CoreMod")
+        }
     }
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> { kotlinOptions { jvmTarget = javaVersion.toString() } }
-    jar { from("LICENSE") { rename { "${it}_${base.archivesName.get()}" } } }
-    processResources {
-        filesMatching("fabric.mod.json") { expand(mutableMapOf("version" to project.extra["mod_version"] as String, "fabricloader" to project.extra["loader_version"] as String, "fabric_api" to project.extra["fabric_version"] as String, "fabric_language_kotlin" to project.extra["fabric_language_kotlin_version"] as String, "minecraft" to project.extra["minecraft_version"] as String, "java" to project.extra["java_version"] as String)) }
-        filesMatching("*.mixins.json") { expand(mutableMapOf("java" to project.extra["java_version"] as String)) }
+    // Mixin on forge? (for legacy forge you will still need to register a tweaker to set up mixin)
+    if (platform.isForge) {
+        forge {
+            mixinConfig("example.mixins.json")
+            // And maybe an access transformer?
+            // Though try to avoid these, cause they are not automatically translated to Fabric's access widener
+            accessTransformer(project.parent.file("src/main/resources/example_at.cfg"))
+        }
     }
-    java {
-        toolchain { languageVersion.set(JavaLanguageVersion.of(javaVersion.toString())) }
-        sourceCompatibility = javaVersion
-        targetCompatibility = javaVersion
-        withSourcesJar()
-    }
+    */
 }
