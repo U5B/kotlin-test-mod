@@ -2,9 +2,7 @@
 // https://github.com/EssentialGG/essential-gradle-toolkit
 
 plugins {
-	println("c!")
-	// id("fabric-loom") version "1.1-SNAPSHOT"
-	id("org.jetbrains.kotlin.jvm") version "1.8.20"
+	kotlin("jvm") version "1.8.20"
 	id("gg.essential.defaults.loom") version "0.1.18"
 	id("gg.essential.defaults") version "0.1.18"
 }
@@ -40,7 +38,7 @@ dependencies {
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 
 	// essential dependencies
-	compileOnly("gg.essential:essential-1.18.1-fabric:4246+g8be73312c")
+	compileOnly("gg.essential:essential-1.19.1-fabric:4804+g97db1f45b")
 	embed("gg.essential:loader-launchwrapper:1.1.3")
 }
 tasks.compileKotlin {
