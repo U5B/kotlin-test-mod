@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "test",
-	"version": "${version}",
-	"name": "test",
+	"id": "${base_name}",
+	"version": "${mod_version}",
+	"name": "ExampleMod",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
 		"Me!"
@@ -26,13 +26,10 @@
 		"test.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.14.19",
-		"minecraft": "~1.18.1",
+		"fabricloader": ">=${loader_version}",
+		"minecraft": "~${minecraft_version}",
 		"java": ">=17",
-		"fabric-api": "*",
 		"fabric-language-kotlin": ">=1.8.20"
 	},
-	"suggests": {
-		"another-mod": "*"
-	}
+	"suggests": {}
 }
