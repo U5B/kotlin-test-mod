@@ -1,12 +1,12 @@
 package net.usbwire
 
-import net.fabricmc.api.ModInitializer
+import net.fabricmc.api.ClientModInitializer
 import org.slf4j.LoggerFactory
 
-object ExampleMod : ModInitializer {
+class TestMod : ClientModInitializer  {
 	private val logger = LoggerFactory.getLogger("test")
 
-	override fun onInitialize() {
+	override fun onInitializeClient() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.

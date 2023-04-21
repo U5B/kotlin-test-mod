@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "${base_name}",
 	"version": "${mod_version}",
-	"name": "ExampleMod",
+	"name": "TestMod",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
 		"Me!"
@@ -13,11 +13,18 @@
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/test/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
-		"main": [
+		"client": [
 			{
-				"value": "net.usbwire.ExampleMod",
+				"value": "net.usbwire.TestMod",
+				"adapter": "kotlin"
+			}
+		],
+		"main": [],
+		"modmenu": [
+			{
+				"value": "net.usbwire.config.ModMenuConfig",
 				"adapter": "kotlin"
 			}
 		]

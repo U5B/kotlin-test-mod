@@ -1,6 +1,4 @@
-// Thanks to: https://github.com/myoun/fabric-example-mod-kotlin-with-kotlin-dsl/blob/master/build.gradle.kts
-// https://github.com/EssentialGG/essential-gradle-toolkit
-
+import gg.essential.gradle.util.noServerRunConfigs
 plugins {
 	kotlin("jvm") version "1.8.20"
 	id("gg.essential.defaults.loom") version "0.1.18"
@@ -23,23 +21,24 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	maven("https://repo.essential.gg/repository/maven-public/")
+	maven("https://maven.terraformersmc.com/releases/")
 }
-
-val embed by configurations.creating
-configurations.implementation.get().extendsFrom(embed)
 
 dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	// modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
 	modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
-	// Uncomment the following line to enable the deprecated Fabric API modules. 
+	// Uncomment the following line to enable the deprecated Fabric API modules.
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 
 	// essential dependencies
-	compileOnly("gg.essential:essential-1.19.1-fabric:4804+g97db1f45b")
-	embed("gg.essential:loader-launchwrapper:1.1.3")
+	"include"("modRuntimeOnly"("gg.essential:loader-fabric:1.0.0")!!)
+	compileOnly("gg.essential:essential-1.18.2-fabric:12328+g551779957")
+
+	// mod menu
+	modApi("com.terraformersmc:modmenu:3.2.5")
 }
 tasks.compileKotlin {
 	kotlinOptions {
@@ -92,8 +91,14 @@ tasks {
 }
 
 loom {
-
+	noServerRunConfigs()
+	launchConfigs {
+			getByName("client") {
+					arg("--tweakClass", "gg.essential.loader.stage0.EssentialSetupTweaker")
+			}
+	}
 }
+
 
 /*
 java {

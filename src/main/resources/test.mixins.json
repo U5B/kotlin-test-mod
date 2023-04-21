@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "net.usbwire.mixin",
+	"package": "net.usbwire.mixins",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin"
+		"MinecraftClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
