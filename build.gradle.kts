@@ -10,9 +10,9 @@ val mod_version: String by project
 val maven_group: String by project
 
 val minecraft_version: String by project
-val fabric_version: String by project
+val fabric_api_version: String by project
 val fabric_kotlin_version: String by project
-val loader_version: String by project
+val fabric_loader_version: String by project
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
@@ -25,13 +25,18 @@ repositories {
 }
 
 dependencies {
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	// modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
+	// kotlin dependency (may not need this if I have essential)
 	modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
-	// Uncomment the following line to enable the deprecated Fabric API modules.
-	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
-	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+	// fabric api
+	setOf(
+    "fabric-api-base",
+		"fabric-networking-api-v1",
+    "fabric-lifecycle-events-v1",
+	).forEach {
+    // Add each module as a dependency
+    modImplementation(fabricApi.module(it, "$fabric_api_version"))
+}
 
 	// essential dependencies
 	"include"("modRuntimeOnly"("gg.essential:loader-fabric:1.0.0")!!)
@@ -40,23 +45,18 @@ dependencies {
 	// mod menu
 	modApi("com.terraformersmc:modmenu:3.2.5")
 }
-tasks.compileKotlin {
-	kotlinOptions {
-		freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xno-param-assertions", "-Xjvm-default=all-compatibility")
-		jvmTarget = "17"
-}
-}
 tasks {
 	processResources {
 		val expansions = mapOf(
 			"mod_version" to mod_version,
 			"base_name" to base_name,
-			"loader_version" to loader_version,
+			"fabric_loader_version" to fabric_loader_version,
+			"fabric_api_version" to fabric_api_version,
 			"minecraft_version" to minecraft_version,
 		)
 
 		// inputs.property("mod_version_expansions", expansions)
-		filesMatching(listOf("mcmod.info", "META-INF/mods.toml", "fabric.mod.json")) {
+		filesMatching(listOf("fabric.mod.json")) {
 			expand(expansions)
 		}
 	}
@@ -66,6 +66,7 @@ tasks {
 	}
 
 	compileKotlin {
+		kotlinOptions.freeCompilerArgs += listOf("-opt-in=kotlin.RequiresOptIn", "-Xno-param-assertions", "-Xjvm-default=all-compatibility")
 		kotlinOptions.jvmTarget = "17"
 	}
 	/*
@@ -92,13 +93,7 @@ tasks {
 
 loom {
 	noServerRunConfigs()
-	launchConfigs {
-			getByName("client") {
-					arg("--tweakClass", "gg.essential.loader.stage0.EssentialSetupTweaker")
-			}
-	}
 }
-
 
 /*
 java {

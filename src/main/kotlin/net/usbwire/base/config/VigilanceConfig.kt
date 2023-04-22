@@ -1,13 +1,11 @@
-package net.usbwire.config
+package net.usbwire.base.config
 
 import java.io.File
 import gg.essential.vigilance.Vigilant
 
-import net.usbwire.Settings
+import net.usbwire.base.BaseMod
 
-val base_name = Settings().base_name
-
-object VigilanceConfig : Vigilant(File("${base_name}.toml", "${base_name}.toml")) {
+object VigilanceConfig : Vigilant(File("${BaseMod.configPath}/config.toml"), "${BaseMod.name}") {
   var testValue = false
 
   init {
