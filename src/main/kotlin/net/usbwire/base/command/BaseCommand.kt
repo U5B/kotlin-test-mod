@@ -7,7 +7,7 @@ import gg.essential.api.utils.GuiUtil
 import net.usbwire.base.BaseMod
 import net.usbwire.base.config.VigilanceConfig
 
-object BaseCommand : Command(BaseMod.modid, true) {
+object BaseCommand : Command(BaseMod.modid) {
   @DefaultHandler
   fun handle() {
       val gui = VigilanceConfig.gui() ?: return

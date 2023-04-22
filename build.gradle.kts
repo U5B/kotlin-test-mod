@@ -1,6 +1,7 @@
 import gg.essential.gradle.util.noServerRunConfigs
 plugins {
 	kotlin("jvm") version "1.8.20"
+	kotlin("plugin.serialization") version "1.8.20"
 	id("gg.essential.defaults.loom") version "0.1.18"
 	id("gg.essential.defaults") version "0.1.18"
 }
@@ -26,7 +27,7 @@ repositories {
 
 dependencies {
 	// kotlin dependency (may not need this if I have essential)
-	modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
+	// modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
 
 	// fabric api
 	setOf(
