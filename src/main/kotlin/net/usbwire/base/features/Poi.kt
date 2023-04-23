@@ -10,7 +10,9 @@ import gg.essential.api.EssentialAPI
 import net.usbwire.base.BaseMod
 import net.usbwire.base.util.Util
 import net.usbwire.base.config.VigilanceConfig
-import net.usbwire.base.command.PoiCommand
+import net.usbwire.base.commands.PoiCommand
+import net.usbwire.base.commands.parsers.PoiParser
+import net.usbwire.base.commands.parsers.PoiName
 
 class Poi {
   @Serializable
@@ -32,6 +34,7 @@ class Poi {
   val poiPath = Path.of("${BaseMod.configPath}/pois.json")
   var poiMap: Map<String, JsonPoi> = emptyMap()
   var poiSuggestions: Array<String> = emptyArray()
+  var firstRun: Boolean = true
 
   @kotlinx.serialization.ExperimentalSerializationApi
   fun fetchPoiData () {
@@ -68,6 +71,10 @@ class Poi {
     poiSuggestions = suggestions.toTypedArray()
   }
 
+  fun getCommandSuggestions (): Array<String> {
+    return poiSuggestions
+  }
+
   fun searchPoi (input: String): ArrayList<JsonPoi>? {
     // acutal logic
     val response = ArrayList<JsonPoi>()
@@ -99,6 +106,10 @@ class Poi {
   }
 
   fun changeState (value: Boolean) {
+    if (value == true && firstRun == true) {
+      EssentialAPI.getCommandRegistry().registerParser(PoiName::class.java, PoiParser())
+      firstRun = false
+    }
     if (value == true) {
       loadPoiData()
       PoiCommand.register()

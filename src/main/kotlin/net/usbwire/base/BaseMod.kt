@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import org.slf4j.LoggerFactory
 
 
-import net.usbwire.base.command.BaseCommand
+import net.usbwire.base.commands.BaseCommand
 import net.usbwire.base.config.VigilanceConfig
 import net.usbwire.base.features.Poi
 object BaseMod : ClientModInitializer  {

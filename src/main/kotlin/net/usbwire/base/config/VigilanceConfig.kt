@@ -12,7 +12,7 @@ import net.usbwire.base.util.Util
 
 val configFile = "${BaseMod.configPath}/config.toml"
 object VigilanceConfig : Vigilant(File(configFile)) {
-  @Property(type = PropertyType.CHECKBOX, name = "poiEnabled", category = "Test")
+  @Property(type = PropertyType.CHECKBOX, name = "enabled", category = "POI")
   var poiEnabled = false
 
   init {
