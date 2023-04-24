@@ -8,14 +8,17 @@ import net.usbwire.base.BaseMod
 
 class PoiParser : ArgumentParser<PoiName> {
     override fun parse(arguments: ArgumentQueue, param: Parameter): PoiName {
-        val name = arguments.poll()
+        var name = ""
+        while (arguments.isEmpty() == false) {
+            name += arguments.poll()
+            if (arguments.peek() != null) name += " "
+        }
         return PoiName(name)
     }
 
     override fun complete(arguments: ArgumentQueue, param: Parameter): List<String> {
-        val nameStart = arguments.poll()
-        val suggestions = getPoiSuggestions()
-        return suggestions.map { it }.filter { it.startsWith(nameStart) }
+        val suggestions = getPoiSuggestions().map { it } // convert it to List
+        return suggestions
     }
 
     private fun getPoiSuggestions() = BaseMod.poi.getCommandSuggestions()

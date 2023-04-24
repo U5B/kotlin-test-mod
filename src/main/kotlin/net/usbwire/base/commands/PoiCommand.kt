@@ -11,12 +11,12 @@ import net.usbwire.base.features.Poi
 import net.usbwire.base.commands.parsers.PoiName
 import net.usbwire.base.config.VigilanceConfig
 
-object PoiCommand : Command("poi") {
+object PoiCommand : Command("poi", false) {
   @DefaultHandler
-  fun handle(@Greedy input: PoiName?) {
+  fun handle(@Greedy poi_name: PoiName?) {
     if (VigilanceConfig.poiEnabled == false) return
-    if (input == null) return
-    val poiString = input.name
+    if (poi_name == null) return
+    val poiString = poi_name.name
     var string = Util.trimString(poiString)
     if (string.length <= 3) {
       Util.chat("'$poiString': Too short!")
