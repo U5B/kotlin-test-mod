@@ -1,43 +1,43 @@
 package net.usbwire.base.features
 
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
+import gg.essential.api.EssentialAPI
+import gg.essential.universal.UMinecraft
+import gg.essential.universal.wrappers.message.UMessage
+import gg.essential.universal.wrappers.message.UTextComponent
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
-import gg.essential.api.EssentialAPI
-
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
+import net.minecraft.text.ClickEvent
 import net.usbwire.base.BaseMod
-import net.usbwire.base.util.Util
-import net.usbwire.base.config.VigilanceConfig
+import net.usbwire.base.Util.XaeroPoi
 import net.usbwire.base.commands.PoiCommand
-import net.usbwire.base.commands.parsers.PoiParser
 import net.usbwire.base.commands.parsers.PoiName
+import net.usbwire.base.commands.parsers.PoiParser
+import net.usbwire.base.util.Util
+import net.usbwire.base.util.McUtil
+import net.usbwire.base.config.VigilanceConfig
 
-class Poi {
+object Poi {
   @Serializable
-  data class JsonPoi (
-    val name: String,
-    val shard: String,
-    val region: String?,
-    val subregion: String?,
-    val coordinates: JsonPoiCoordinates?
+  data class JsonPoi(
+      val name: String,
+      val shard: String,
+      val region: String?,
+      val subregion: String?,
+      val coordinates: JsonPoiCoordinates?
   )
 
-  @Serializable
-  data class JsonPoiCoordinates (
-    val x: Int,
-    val y: Int,
-    val z: Int
-  )
+  @Serializable data class JsonPoiCoordinates(val x: Int, val y: Int, val z: Int)
 
   val poiPath = Path.of("${BaseMod.configPath}/pois.json")
   var poiMap: Map<String, JsonPoi> = emptyMap()
-  var poiSuggestions: Array<String> = emptyArray()
+  var poiSuggestions: List<String> = emptyList()
   var firstRun: Boolean = true
 
   @kotlinx.serialization.ExperimentalSerializationApi
-  fun fetchPoiData () {
+  fun fetchPoiData() {
     URL("https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json").openStream().use {
       val project = Json.decodeFromStream<Map<String, JsonPoi>>(it) // read JSON from a URL
       poiMap = project
@@ -46,7 +46,7 @@ class Poi {
   }
 
   @kotlinx.serialization.ExperimentalSerializationApi
-   fun loadPoiData () {
+  fun loadPoiData() {
     if (Files.notExists(poiPath)) return fetchPoiData() // don't use file if it doesn't exist
     Files.newInputStream(poiPath).use {
       val project = Json.decodeFromStream<Map<String, JsonPoi>>(it) // read JSON from a URL
@@ -55,27 +55,25 @@ class Poi {
   }
 
   @kotlinx.serialization.ExperimentalSerializationApi
-  private fun savePoiData () {
+  private fun savePoiData() {
     if (poiMap.isEmpty()) return
     Util.createPath(poiPath)
-    Files.newOutputStream(poiPath).use {
-      Json.encodeToStream(poiMap, it)
-    }
+    Files.newOutputStream(poiPath).use { Json.encodeToStream(poiMap, it) }
   }
 
-  fun makeCommandSuggestions () {
+  fun makeCommandSuggestions(): List<String> {
     val suggestions = ArrayList<String>()
-    poiMap.values.forEach { poi ->
-      suggestions.add(poi.name)
-    }
-    poiSuggestions = suggestions.toTypedArray()
-  }
-
-  fun getCommandSuggestions (): Array<String> {
+    poiMap.values.forEach { poi -> suggestions.add(poi.name) }
+    poiSuggestions = suggestions.toList()
     return poiSuggestions
   }
 
-  fun searchPoi (input: String): ArrayList<JsonPoi>? {
+  fun getCommandSuggestions(): List<String> {
+    if (poiSuggestions.isEmpty()) return makeCommandSuggestions()
+    return poiSuggestions
+  }
+
+  fun searchPoi(input: String): ArrayList<JsonPoi>? {
     // acutal logic
     val response = ArrayList<JsonPoi>()
     poiMap.forEach { poi ->
@@ -90,22 +88,47 @@ class Poi {
     }
     if (response.size == 0) {
       poiMap.forEach { poi ->
-        if (Util.cleanString(poi.value.name).contains(Util.cleanString(input))) response.add(poi.value)
+        if (Util.cleanString(poi.value.name).contains(Util.cleanString(input)))
+            response.add(poi.value)
       }
     }
     if (response.size > 0) return response
     return null
   }
 
-  fun responsePoi (input: String, poi: JsonPoi) {
-    if (poi.coordinates != null) {
-      Util.chat("'${poi.name}': §a(${poi.coordinates.x}, ${poi.coordinates.y}, ${poi.coordinates.z})§r")
-    } else {
+  fun responsePoi(input: String, poi: JsonPoi) {
+    if (poi.coordinates == null) {
       Util.chat("'${input}': No POI found.")
+      return
     }
+    val coordinates = "${poi.coordinates.x}, ${poi.coordinates.y}, ${poi.coordinates.z}"
+
+    val message = UMessage().mutable()
+    // prefix
+    val baseCompoment = UTextComponent("'${poi.name}':")
+    message.addTextComponent(baseCompoment)
+    // copy
+    val copyCompoment = UTextComponent(" [COPY]")
+    copyCompoment.clickAction = ClickEvent.Action.COPY_TO_CLIPBOARD
+    copyCompoment.clickValue = coordinates
+    message.addTextComponent(copyCompoment)
+    // xaero minimap support
+    try {
+      Class.forName("xaero.common.XaeroMinimapSession")
+      val xaeroCompoment = UTextComponent(" [XAERO]")
+      val currentWorld = McUtil.mc().getDimensionName()
+       // technically dimension but who cares
+      val xaeroColor = XaeroPoi.xaeroColorMap.get("dark_red")
+      val waypoint =
+          "xaero_waypoint_add:${poi.name}:${poi.name.uppercase()}:${poi.coordinates.x}:${poi.coordinates.y}:${poi.coordinates.z}:${xaeroColor}:false:0:Internal_dim%${currentWorld}_waypoints"
+      xaeroCompoment.clickAction = ClickEvent.Action.RUN_COMMAND
+      xaeroCompoment.clickValue = waypoint
+      message.addTextComponent(xaeroCompoment)
+    } catch (e: Exception) {}
+    message.chat()
   }
 
-  fun changeState (value: Boolean) {
+  fun changeState(value: Boolean = VigilanceConfig.poiEnabled) {
     if (value == true && firstRun == true) {
       EssentialAPI.getCommandRegistry().registerParser(PoiName::class.java, PoiParser())
       firstRun = false

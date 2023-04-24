@@ -1,43 +1,43 @@
 {
-	"schemaVersion": 1,
-	"id": "${base_name}",
-	"version": "${mod_version}",
-	"name": "BaseMod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": [
-		"Me!"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/test/icon.png",
-	"environment": "client",
-	"entrypoints": {
-		"client": [
-			{
-				"value": "net.usbwire.base.BaseMod",
-				"adapter": "kotlin"
-			}
-		],
-		"main": [],
-		"modmenu": [
-			{
-				"value": "net.usbwire.base.config.ModMenuConfig",
-				"adapter": "kotlin"
-			}
-		]
-	},
-	"mixins": [
-		"test.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=${fabric_loader_version}",
-		"minecraft": "~${minecraft_version}",
-		"java": ">=17",
-		"fabric": ">=${fabric_api_version}",
-		"fabric-language-kotlin": ">=1.8.20"
-	},
-	"suggests": {}
+  "schemaVersion": 1,
+  "id": "${base_name}",
+  "version": "${mod_version}",
+  "name": "BaseMod",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/test/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      {
+        "value": "net.usbwire.base.BaseMod",
+        "adapter": "kotlin"
+      }
+    ],
+    "main": [],
+    "modmenu": [
+      {
+        "value": "net.usbwire.base.config.ModMenuConfig",
+        "adapter": "kotlin"
+      }
+    ]
+  },
+  "mixins": [
+    "test.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=17",
+    "fabric": ">=${fabric_api_version}",
+    "fabric-language-kotlin": ">=1.8.20"
+  },
+  "suggests": {}
 }

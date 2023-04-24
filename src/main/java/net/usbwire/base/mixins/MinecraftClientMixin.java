@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
-	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
-	void disconnect(Screen screen, CallbackInfo ci) {
-		System.out.println("I disconnected!");
-	}
+  @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
+  void disconnect(Screen screen, CallbackInfo ci) {
+    System.out.println("I disconnected!");
+  }
 }
