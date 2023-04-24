@@ -1,4 +1,4 @@
-package net.usbwire.base.Util
+package net.usbwire.base.util
 
 object XaeroPoi {
   public val xaeroColorMap = mapOf<String, String>(

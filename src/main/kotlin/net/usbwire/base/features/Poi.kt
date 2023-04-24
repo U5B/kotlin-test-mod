@@ -11,12 +11,11 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import net.minecraft.text.ClickEvent
 import net.usbwire.base.BaseMod
-import net.usbwire.base.Util.XaeroPoi
+import net.usbwire.base.util.XaeroPoi
 import net.usbwire.base.commands.PoiCommand
 import net.usbwire.base.commands.parsers.PoiName
 import net.usbwire.base.commands.parsers.PoiParser
 import net.usbwire.base.util.Util
-import net.usbwire.base.util.McUtil
 import net.usbwire.base.config.VigilanceConfig
 
 object Poi {
@@ -102,7 +101,6 @@ object Poi {
       return
     }
     val coordinates = "${poi.coordinates.x}, ${poi.coordinates.y}, ${poi.coordinates.z}"
-
     val message = UMessage().mutable()
     // prefix
     val baseCompoment = UTextComponent("'${poi.name}':")
@@ -110,14 +108,17 @@ object Poi {
     // copy
     val copyCompoment = UTextComponent(" [COPY]")
     copyCompoment.clickAction = ClickEvent.Action.COPY_TO_CLIPBOARD
-    copyCompoment.clickValue = coordinates
+    copyCompoment.clickValue = "($coordinates)"
     message.addTextComponent(copyCompoment)
     // xaero minimap support
     try {
       Class.forName("xaero.common.XaeroMinimapSession")
       val xaeroCompoment = UTextComponent(" [XAERO]")
-      val currentWorld = McUtil.mc().getDimensionName()
-       // technically dimension but who cares
+      val world = UMinecraft.getMinecraft().world
+      if (world == null) throw Throwable("World not loaded!")
+      // technically dimension but who cares
+      // TODO: map poi.region to dimension and set waypoint in correct dimension
+      val currentWorld = world.registryKey.value.toString().replace(":", "$")
       val xaeroColor = XaeroPoi.xaeroColorMap.get("dark_red")
       val waypoint =
           "xaero_waypoint_add:${poi.name}:${poi.name.uppercase()}:${poi.coordinates.x}:${poi.coordinates.y}:${poi.coordinates.z}:${xaeroColor}:false:0:Internal_dim%${currentWorld}_waypoints"
