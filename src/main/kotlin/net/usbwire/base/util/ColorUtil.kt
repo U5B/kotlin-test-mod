@@ -1,7 +1,7 @@
 package net.usbwire.base.util
 
 object ColorUtil {
-  public val xaeroColorMap =
+  val xaeroColorMap =
       mapOf(
           "black" to "0",
           "dark_blue" to "1",
@@ -20,7 +20,7 @@ object ColorUtil {
           "yellow" to "14",
           "white" to "15"
       )
-  public val minecraftColorMap =
+  val minecraftColorMap =
       mapOf(
           "black" to "§0",
           "dark_blue" to "§1",

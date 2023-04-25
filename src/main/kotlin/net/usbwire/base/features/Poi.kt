@@ -44,7 +44,7 @@ object Poi {
   fun loadPoiData() {
     if (Files.notExists(poiPath)) return fetchPoiData() // don't use file if it doesn't exist
     Files.newInputStream(poiPath).use {
-      val project = Json.decodeFromStream<Map<String, JsonPoi>>(it) // read JSON from a URL
+      val project = Json.decodeFromStream<Map<String, JsonPoi>>(it) // read JSON from file
       poiMap = project
     }
   }

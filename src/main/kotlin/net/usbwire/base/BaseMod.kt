@@ -13,10 +13,11 @@ import org.slf4j.LoggerFactory
 
 object BaseMod : ClientModInitializer {
   // get this from gradle.properties
-  public val modid: String = "usb_base" // base_name
-  public val name: String = "BaseMod"
-  public val configPath: String = "./config/${modid}"
-  public val logger = LoggerFactory.getLogger(modid)
+  val modid: String = "usb_base" // base_name
+  val name: String = "BaseMod"
+  val configPath: String = "./config/${modid}"
+  val logger = LoggerFactory.getLogger(modid)
+  // https://github.com/Skytils/SkytilsMod/blob/268e8e473a00e55cddc89c47653c3a00db263aac/src/main/kotlin/gg/skytils/skytilsmod/Skytils.kt#L122
   @JvmStatic val mc: MinecraftClient by lazy { MinecraftClient.getInstance() }
 
   override fun onInitializeClient() {

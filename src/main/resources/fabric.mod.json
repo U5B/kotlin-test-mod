@@ -30,7 +30,7 @@
     ]
   },
   "mixins": [
-    "test.mixins.json"
+    "base.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",

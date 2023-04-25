@@ -1,3 +1,4 @@
+// https://github.com/Sk1erLLC/Patcher/blob/e70db7cdc9d0dbc116f276783b2b68937a0ce883/src/main/kotlin/club/sk1er/patcher/commands/PatcherPlayerArgumentParser.kt#L9
 package net.usbwire.base.commands.parsers
 
 import gg.essential.api.commands.ArgumentParser

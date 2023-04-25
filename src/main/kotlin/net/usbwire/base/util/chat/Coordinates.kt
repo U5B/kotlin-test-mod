@@ -9,8 +9,8 @@ import net.usbwire.base.BaseMod
 import net.usbwire.base.util.ColorUtil
 
 object Coordinates {
-  public var supportsXaero = true
-  public var supportsJourneymap = true
+  var supportsXaero = true
+  var supportsJourneymap = true
   fun coordinateBuilder(name: String, x: Int, y: Int, z: Int, dimension: String): UMessage {
     val message = UMessage().mutable()
     val coordinates = "${x}, ${y}, ${z}"
