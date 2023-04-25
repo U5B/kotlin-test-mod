@@ -106,26 +106,33 @@ object Poi {
     val baseCompoment = UTextComponent("'${poi.name}':")
     message.addTextComponent(baseCompoment)
     // copy
-    val copyCompoment = UTextComponent(" [COPY]")
+    val copyCompoment = UTextComponent(" §a(${coordinates})§r")
     copyCompoment.clickAction = ClickEvent.Action.COPY_TO_CLIPBOARD
-    copyCompoment.clickValue = "($coordinates)"
+    copyCompoment.clickValue = coordinates
     message.addTextComponent(copyCompoment)
     // xaero minimap support
-    try {
+    try { // https://github.com/U5B/jsmacros/blob/eb9e5aafa2ac56fef6cd74c432b3b8ac07840d25/scripts/lib/xaero.ts#L69
       Class.forName("xaero.common.XaeroMinimapSession")
-      val xaeroCompoment = UTextComponent(" [XAERO]")
-      val world = UMinecraft.getMinecraft().world
-      if (world == null) throw Throwable("World not loaded!")
       // technically dimension but who cares
       // TODO: map poi.region to dimension and set waypoint in correct dimension
-      val currentWorld = world.registryKey.value.toString().replace(":", "$")
-      val xaeroColor = XaeroPoi.xaeroColorMap.get("dark_red")
+      val currentWorld = BaseMod.mc.world!!.registryKey.value.toString().replace(":", "$")
+      val xaeroColor = XaeroPoi.xaeroColorMap["dark_red"]
+      val minecraftColor = XaeroPoi.minecraftColorMap["dark_red"]
+      val xaeroCompoment = UTextComponent(" ${minecraftColor}[XAERO]§r")
       val waypoint =
-          "xaero_waypoint_add:${poi.name}:${poi.name.uppercase()}:${poi.coordinates.x}:${poi.coordinates.y}:${poi.coordinates.z}:${xaeroColor}:false:0:Internal_dim%${currentWorld}_waypoints"
+          "xaero_waypoint_add:${poi.name}:${poi.name[0].uppercase()}:${poi.coordinates.x}:${poi.coordinates.y}:${poi.coordinates.z}:${xaeroColor}:false:0:Internal_dim%${currentWorld}_waypoints"
+      BaseMod.logger.info("Xaero: " + waypoint)
+      // val shareableWaypoint = "xaero-waypoint:${poi.name}:${poi.name[0].uppercase()}:${poi.coordinates.x}:${poi.coordinates.y}:${poi.coordinates.z}:${xaeroColor}:false:0:Internal-dim%${currentWorld}-waypoints"
       xaeroCompoment.clickAction = ClickEvent.Action.RUN_COMMAND
       xaeroCompoment.clickValue = waypoint
       message.addTextComponent(xaeroCompoment)
     } catch (e: Exception) {}
+
+    // TODO do journeymap support
+    // journeymap command format is much easier
+    // /jm wpedit [name:"Test Waypoint", x:-774, y:96, z:1320, dim:monumenta:isles]
+    try {
+    }catch (e: Exception) {}
     message.chat()
   }
 

@@ -3,7 +3,8 @@
   "package": "net.usbwire.base.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "MinecraftClientMixin"
+    "ChatHudMixin",
+    "InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

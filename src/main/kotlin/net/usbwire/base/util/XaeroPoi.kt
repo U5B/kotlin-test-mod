@@ -1,22 +1,40 @@
 package net.usbwire.base.util
 
 object XaeroPoi {
-  public val xaeroColorMap = mapOf<String, String>(
-    Pair("black", "0"),
-    Pair("dark blue", "1"),
-    Pair("dark green", "2"),
-    Pair("dark aqua", "3"),
-    Pair("dark red", "4"),
-    Pair("dark purple", "5"),
-    Pair("gold", "6"),
-    Pair("gray", "7"),
-    Pair("dark gray", "8"),
-    Pair("blue", "9"),
-    Pair("green", "10"),
-    Pair("aqua", "11"),
-    Pair("red", "12"),
-    Pair("light purple", "13"),
-    Pair("yellow", "14"),
-    Pair("white", "15")
+  public val xaeroColorMap = mapOf(
+    "black" to "0",
+    "dark_blue" to "1",
+    "dark_green" to "2",
+    "dark_aqua" to "3",
+    "dark_red" to "4",
+    "dark_purple" to "5",
+    "gold" to "6",
+    "gray" to "7",
+    "dark_gray" to "8",
+    "blue" to "9",
+    "green" to "10",
+    "aqua" to "11",
+    "red" to "12",
+    "light_purple" to "13",
+    "yellow" to "14",
+    "white" to "15"
+  )
+  public val minecraftColorMap = mapOf(
+    "black" to "§0",
+    "dark_blue" to "§1",
+    "dark_green" to "§2",
+    "dark_aqua" to "§3",
+    "dark_red" to "§4",
+    "dark_purple" to "§5",
+    "gold" to "§6",
+    "gray" to "§7",
+    "dark_gray" to "§8",
+    "blue" to "§9",
+    "green" to "§a",
+    "aqua" to "§b",
+    "red" to "§c",
+    "light_purple" to "§d",
+    "yellow" to "§e",
+    "white" to "§f"
   )
 }
