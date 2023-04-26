@@ -20,8 +20,10 @@ import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.gui.DrawableHelper;
 import java.awt.*;
-import net.usbwire.base.util.Hitbox;
+import net.usbwire.base.util.MixinHelper;
 import net.usbwire.base.config.VigilanceConfig;
+
+import net.minecraft.client.render.WorldRenderer;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class HitboxMixin {
@@ -30,7 +32,7 @@ public abstract class HitboxMixin {
 
   @Inject(method = "renderHitbox", at = @At("HEAD"), cancellable = true)
   private static void renderHitbox(MatrixStack matrices, VertexConsumer vertices, Entity entity, float tickDelta, CallbackInfo ci) {
-    Boolean cancel = Hitbox.INSTANCE.renderHitbox(matrices, vertices, entity);
+    Boolean cancel = MixinHelper.INSTANCE.renderHitbox(matrices, vertices, entity);
     if (cancel == true) ci.cancel();
   }
 

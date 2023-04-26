@@ -72,6 +72,7 @@ tasks {
     kotlinOptions.freeCompilerArgs +=
         listOf(
             "-opt-in=kotlin.RequiresOptIn",
+            "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
             "-Xno-param-assertions",
             "-Xjvm-default=all-compatibility"
         )

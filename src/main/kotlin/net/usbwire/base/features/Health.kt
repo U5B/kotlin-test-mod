@@ -1,4 +1,4 @@
-package net.usbwire.base.util
+package net.usbwire.base.features
 
 import java.awt.*
 import net.minecraft.client.render.*
@@ -11,11 +11,12 @@ import com.mojang.blaze3d.systems.RenderSystem
 import net.usbwire.base.config.VigilanceConfig
 import net.usbwire.base.BaseMod
 import gg.essential.universal.UMatrixStack
+import gg.essential.universal.vertex.UVertexConsumer
 
-object Hitbox {
+object Health {
   fun renderHitbox(
-      matrices: MatrixStack,
-      vertices: VertexConsumer,
+      matrix: MatrixStack,
+      vertex: VertexConsumer,
       entity: Entity
   ) : Boolean {
     if (VigilanceConfig.healthEnabled == false) return false
@@ -27,7 +28,8 @@ object Hitbox {
     val green = color.green / 255.0F
     val blue = color.blue / 255.0F
     val alpha = color.alpha / 255.0F
-    WorldRenderer.drawBox(matrices, vertices, box, red, green, blue, alpha)
+    val test = UMatrixStack()
+    WorldRenderer.drawBox(matrix, vertex, box, red, green, blue, alpha)
     return true
   }
 

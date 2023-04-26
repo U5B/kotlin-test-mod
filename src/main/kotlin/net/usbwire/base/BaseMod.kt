@@ -9,7 +9,6 @@ import net.minecraft.network.MessageType
 import net.minecraft.text.Text
 import net.usbwire.base.access.InGameHudAccess
 import net.usbwire.base.commands.BaseCommand
-import net.usbwire.base.util.Hitbox
 import net.usbwire.base.features.Poi
 import org.slf4j.LoggerFactory
 import gg.essential.universal.UMatrixStack

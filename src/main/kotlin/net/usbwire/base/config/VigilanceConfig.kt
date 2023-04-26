@@ -16,9 +16,10 @@ import kotlin.math.PI
 val configFile = "${BaseMod.configPath}/config.toml"
 
 object VigilanceConfig : Vigilant(File(configFile)) {
-  @Property(type = PropertyType.CHECKBOX, name = "enabled", description = "Toggles POI Module", category = "POI")
+  @Property(type = PropertyType.CHECKBOX, name = "Toggle POI Module", description = "", category = "POI")
   var poiEnabled = false
-
+  @Property(type = PropertyType.BUTTON, name = "Update to latest pois.json", description = "Fetches from https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json for the latest data.", category = "POI")
+  fun poiButton() = Poi.fetchPoiData()
   @Property(type = PropertyType.CHECKBOX, name = "Toggle GlowHealth Module", description = "", category = "GlowHealth")
   var healthEnabled = false
   @Property(type = PropertyType.CHECKBOX, name = "Force Hitboxes On", description = "This will cause F3+B to be forced on.", category = "GlowHealth")

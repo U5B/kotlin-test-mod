@@ -6,13 +6,12 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import net.minecraft.text.ClickEvent
 import net.usbwire.base.BaseMod
-import net.usbwire.base.util.ColorUtil
+import net.usbwire.base.util.Util
 
 object Coordinates {
   var supportsXaero = true
   var supportsJourneymap = true
-  fun coordinateBuilder(name: String, x: Int, y: Int, z: Int, dimension: String): UMessage {
-    val message = UMessage().mutable()
+  fun coordinateBuilder(name: String, x: Int, y: Int, z: Int, dimension: String, message: UMessage = UMessage()): UMessage {
     val coordinates = "${x}, ${y}, ${z}"
 
     // prefix
@@ -59,8 +58,8 @@ object Coordinates {
       // technically dimension but who cares
       // TODO: map poi.region to dimension and set waypoint in correct dimension
       val currentDimension = dimension.replace(":", "$")
-      val xaeroColor = ColorUtil.xaeroColorMap["dark_red"]
-      val minecraftColor = ColorUtil.minecraftColorMap["dark_red"]
+      val xaeroColor = Util.Color.xaero["dark_red"]
+      val minecraftColor = Util.Color.minecraft["dark_red"]
       val xaeroCompoment = UTextComponent(" ${minecraftColor}[XAERO]§r")
       val waypoint =
           "xaero_waypoint_add:${name}:${name[0].uppercase()}:${x}:${y}:${z}:${xaeroColor}:false:0:Internal_dim%${currentDimension}_waypoints"
@@ -84,7 +83,7 @@ object Coordinates {
   ): UTextComponent? {
     try {
       Class.forName("journeymap.client.JourneymapClient")
-      val minecraftColor = ColorUtil.minecraftColorMap["aqua"]
+      val minecraftColor = Util.Color.minecraft["aqua"]
       val journeymapCompoment = UTextComponent(" ${minecraftColor}[JM]§r")
       val waypoint = "/jm wpedit [name:\"${name}\", x:${x}, y:${y}, z:${z}, dim:${dimension}]"
       journeymapCompoment.clickAction = ClickEvent.Action.RUN_COMMAND
@@ -94,4 +93,5 @@ object Coordinates {
       return null
     }
   }
+  @Serializable data class Coordinates(val x: Int, val y: Int, val z: Int)
 }

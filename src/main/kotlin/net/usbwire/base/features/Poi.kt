@@ -21,35 +21,35 @@ object Poi {
       val shard: String,
       val region: String?,
       val subregion: String?,
-      val coordinates: JsonPoiCoordinates?
+      val coordinates: Coordinates.Coordinates?
   )
-
-  @Serializable data class JsonPoiCoordinates(val x: Int, val y: Int, val z: Int)
 
   val poiPath = Path.of("${BaseMod.configPath}/pois.json")
   var poiMap: Map<String, JsonPoi> = emptyMap()
   var poiSuggestions: List<String> = emptyList()
-  var firstRun: Boolean = true
+  var firstRun = true
 
-  @kotlinx.serialization.ExperimentalSerializationApi
   fun fetchPoiData() {
     URL("https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json").openStream().use {
       val project = Json.decodeFromStream<Map<String, JsonPoi>>(it) // read JSON from a URL
-      poiMap = project
+      updatePoiData(project)
       savePoiData()
     }
   }
 
-  @kotlinx.serialization.ExperimentalSerializationApi
   fun loadPoiData() {
     if (Files.notExists(poiPath)) return fetchPoiData() // don't use file if it doesn't exist
     Files.newInputStream(poiPath).use {
       val project = Json.decodeFromStream<Map<String, JsonPoi>>(it) // read JSON from file
-      poiMap = project
+      updatePoiData(project)
     }
   }
 
-  @kotlinx.serialization.ExperimentalSerializationApi
+  private fun updatePoiData (project: Map<String, JsonPoi>) {
+    poiMap = project
+    makeCommandSuggestions()
+  }
+
   private fun savePoiData() {
     if (poiMap.isEmpty()) return
     Util.createPath(poiPath)
