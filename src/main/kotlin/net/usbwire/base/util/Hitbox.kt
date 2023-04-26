@@ -26,7 +26,7 @@ object Hitbox {
     val red = color.red / 255.0F
     val green = color.green / 255.0F
     val blue = color.blue / 255.0F
-    val alpha = 1.toFloat()
+    val alpha = color.alpha / 255.0F
     WorldRenderer.drawBox(matrices, vertices, box, red, green, blue, alpha)
     return true
   }
@@ -36,7 +36,7 @@ object Hitbox {
     val maxHealth = entity.maxHealth
     val percentHealth = health / maxHealth
     if (percentHealth >= VigilanceConfig.healthGoodPercent) {
-      return Color.WHITE
+      return VigilanceConfig.healthBaseColor
     } else if (percentHealth >= VigilanceConfig.healthLowPercent && percentHealth <= VigilanceConfig.healthGoodPercent) {
       return VigilanceConfig.healthGoodColor
     } else if (percentHealth >= VigilanceConfig.healthCriticalPercent && percentHealth <= VigilanceConfig.healthLowPercent) {
@@ -44,6 +44,6 @@ object Hitbox {
     } else if (percentHealth <= VigilanceConfig.healthCriticalPercent) { // assuming its red
       return VigilanceConfig.healthCriticalColor
     }
-    return Color.WHITE
+    return VigilanceConfig.healthBaseColor // fallback if something went wrong!
   }
 }

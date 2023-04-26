@@ -25,6 +25,9 @@ object VigilanceConfig : Vigilant(File(configFile)) {
   var healthForcedHitbox = false
 
 
+  @Property(type = PropertyType.COLOR, name = "Base Health Color", description = "By default, white does not show hitbox. Change the color here to make hitboxes show.", category = "GlowHealth")
+  var healthBaseColor = Color.WHITE
+
   @Property(type = PropertyType.COLOR, name = "Good Health Color", description = "", category = "GlowHealth")
   var healthGoodColor = Color.GREEN
   @Property(type = PropertyType.PERCENT_SLIDER, name = "Good Health Percentage", description = "", category = "GlowHealth")
