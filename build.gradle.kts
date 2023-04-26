@@ -36,6 +36,7 @@ dependencies {
           "fabric-api-base",
           "fabric-networking-api-v1",
           "fabric-lifecycle-events-v1",
+          "fabric-rendering-v1"
       )
       .forEach {
         // Add each module as a dependency
