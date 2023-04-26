@@ -7,9 +7,11 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.network.MessageType
 import net.minecraft.text.Text
+import net.minecraft.client.world.ClientWorld
 import net.usbwire.base.access.InGameHudAccess
 import net.usbwire.base.commands.BaseCommand
 import net.usbwire.base.features.Poi
+import net.usbwire.base.features.Compass
 import org.slf4j.LoggerFactory
 import gg.essential.universal.UMatrixStack
 
@@ -27,6 +29,11 @@ object BaseMod : ClientModInitializer {
     BaseCommand.register()
     Poi.changeState()
     // ClientLifecycleEvents.CLIENT_STARTED.register { client -> run { initChat(client) } }
+    ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) }}
+  }
+
+  fun worldTick (clientWorld: ClientWorld) {
+    Compass.onTick()
   }
 
   fun initChat(client: MinecraftClient) {

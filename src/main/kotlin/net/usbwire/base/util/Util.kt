@@ -47,7 +47,7 @@ object Util {
     val prefix = UTextComponent(UChat.addColor("§7[§a${BaseMod.name}§7]§r "))
     message.addTextComponent(0, prefix).chat()
   }
-  
+
   object Color {
     val xaero =
     mapOf(
