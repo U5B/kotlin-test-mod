@@ -28,7 +28,6 @@ object Health {
     val green = color.green / 255.0F
     val blue = color.blue / 255.0F
     val alpha = color.alpha / 255.0F
-    val test = UMatrixStack()
     WorldRenderer.drawBox(matrix, vertex, box, red, green, blue, alpha)
     return true
   }
