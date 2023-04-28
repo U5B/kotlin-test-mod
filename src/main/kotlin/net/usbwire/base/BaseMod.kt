@@ -4,6 +4,7 @@ import java.util.UUID
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient
 import net.minecraft.network.MessageType
 import net.minecraft.text.Text
@@ -56,4 +57,16 @@ object BaseMod : ClientModInitializer {
     logger.info(String.format("%s:: %s", sender.toString(), message.toString()))
     if (message.style?.clickEvent != null) logger.info(message.style.clickEvent.toString())
   }
+}
+
+open class BaseFeature {
+  fun onTick () {}
+
+  fun onWorldTick () {}
+
+  fun onRenderTick () {}
+
+  fun init () {}
+
+  fun onChat () {}
 }

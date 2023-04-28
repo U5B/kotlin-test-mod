@@ -4,7 +4,6 @@ import gg.essential.universal.UMouse
 import gg.essential.universal.wrappers.UPlayer
 import net.minecraft.util.registry.Registry
 
-
 import net.usbwire.base.util.chat.Coordinates
 import net.usbwire.base.BaseMod
 import net.usbwire.base.util.Util
