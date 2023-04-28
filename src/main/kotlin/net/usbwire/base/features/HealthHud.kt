@@ -6,9 +6,10 @@ import gg.essential.universal.UMatrixStack
 
 class HealthHud {
   val hud = Window(ElementaVersion.V2)
+  val matrix = UMatrixStack()
 
   val healthText = UIText("a")
-  fun draw (matrix: UMatrixStack) {
+  fun draw () {
     hud.draw(matrix)
   }
 }

@@ -24,7 +24,7 @@ object Compass {
     Util.chat(message)
   }
 
-  var clicked = false;
+  var clicked = false
 
   fun onTick () {
     val click = BaseMod.mc.mouse.wasLeftButtonClicked()

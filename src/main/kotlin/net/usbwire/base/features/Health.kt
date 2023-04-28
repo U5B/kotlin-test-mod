@@ -1,6 +1,6 @@
 package net.usbwire.base.features
 
-import java.awt.*
+import java.awt.Color
 import net.minecraft.client.render.*
 import net.minecraft.client.render.entity.EntityRenderDispatcher
 import net.minecraft.client.util.math.MatrixStack
@@ -12,6 +12,7 @@ import net.usbwire.base.config.VigilanceConfig
 import net.usbwire.base.BaseMod
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.vertex.UVertexConsumer
+import gg.essential.universal.UGraphics
 
 object Health {
   fun renderHitbox(
@@ -23,7 +24,7 @@ object Health {
     if (entity !is PlayerEntity) return true
     val color = checkHealth(entity)
     if (color == Color.WHITE) return true
-    val box = entity.getBoundingBox().offset(-entity.getX(), -entity.getY(), -entity.getZ());
+    val box = entity.getBoundingBox().offset(-entity.getX(), -entity.getY(), -entity.getZ())
     val red = color.red / 255.0F
     val green = color.green / 255.0F
     val blue = color.blue / 255.0F
