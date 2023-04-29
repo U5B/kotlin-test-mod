@@ -10,6 +10,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 
 import net.usbwire.base.config.VigilanceConfig
 import net.usbwire.base.BaseMod
+import net.usbwire.base.util.RenderUtil
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.vertex.UVertexConsumer
 import gg.essential.universal.UGraphics
@@ -31,6 +32,14 @@ object Health {
     val alpha = color.alpha / 255.0F
     WorldRenderer.drawBox(matrix, vertex, box, red, green, blue, alpha)
     return true
+  }
+
+  fun testHitbox (entity: Entity, ticks: Float) {
+    if (entity !is PlayerEntity) return
+    val color = checkHealth(entity)
+    if (color == Color.WHITE) return
+    val box = entity.getBoundingBox().offset(-entity.getX(), -entity.getY(), -entity.getZ())
+    RenderUtil.drawBox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, color, ticks)
   }
 
   fun checkHealth (entity: PlayerEntity) : Color {

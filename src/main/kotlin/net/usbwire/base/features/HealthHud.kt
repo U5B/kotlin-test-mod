@@ -4,12 +4,11 @@ import gg.essential.elementa.*
 import gg.essential.elementa.components.*
 import gg.essential.universal.UMatrixStack
 
-class HealthHud {
+object HealthHud {
   val hud = Window(ElementaVersion.V2)
-  val matrix = UMatrixStack()
 
   val healthText = UIText("a")
-  fun draw () {
+  fun draw (matrix: UMatrixStack) {
     hud.draw(matrix)
   }
 }

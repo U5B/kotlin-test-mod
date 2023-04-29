@@ -4,15 +4,18 @@ import java.util.UUID
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+import net.fabricmc.fabric.api.client.rendering.v1.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.network.MessageType
 import net.minecraft.text.Text
 import net.minecraft.client.world.ClientWorld
+import net.minecraft.client.util.math.MatrixStack
 import net.usbwire.base.access.InGameHudAccess
 import net.usbwire.base.commands.BaseCommand
 import net.usbwire.base.features.Poi
 import net.usbwire.base.features.Compass
+import net.usbwire.base.features.Health
+import net.usbwire.base.features.HealthHud
 import org.slf4j.LoggerFactory
 import gg.essential.universal.UMatrixStack
 
@@ -31,10 +34,24 @@ object BaseMod : ClientModInitializer {
     Poi.changeState()
     // ClientLifecycleEvents.CLIENT_STARTED.register { client -> run { initChat(client) } }
     ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) }}
+    WorldRenderEvents.BEFORE_DEBUG_RENDER .register { test -> run  { renderTick(test) }}
+    HudRenderCallback.EVENT.register { matrix, ticks -> run  { hudRender(matrix, ticks) }}
   }
 
   fun worldTick (clientWorld: ClientWorld) {
     Compass.onTick()
+  }
+
+  fun renderTick (test : WorldRenderContext) {
+    if (mc.world == null) return
+    for (entity in mc.world!!.players) {
+      Health.testHitbox(entity, test.tickDelta())
+    }
+  }
+
+  fun hudRender (matrixStack: MatrixStack, ticks: Float) {
+    val matrix = UMatrixStack(matrixStack)
+    HealthHud.draw(matrix)
   }
 
   fun initChat(client: MinecraftClient) {
