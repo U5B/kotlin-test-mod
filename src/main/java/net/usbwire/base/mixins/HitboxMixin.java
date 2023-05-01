@@ -21,28 +21,14 @@ import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.gui.DrawableHelper;
 import java.awt.*;
 import net.usbwire.base.util.MixinHelper;
-import net.usbwire.base.config.VigilanceConfig;
 
 import net.minecraft.client.render.WorldRenderer;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class HitboxMixin {
-  @Shadow
-  private boolean renderHitboxes;
-
   @Inject(method = "renderHitbox", at = @At("HEAD"), cancellable = true)
   private static void renderHitbox(MatrixStack matrices, VertexConsumer vertices, Entity entity, float tickDelta, CallbackInfo ci) {
     Boolean cancel = MixinHelper.INSTANCE.renderHitbox(matrices, vertices, entity);
     if (cancel == true) ci.cancel();
-  }
-
-  @Shadow
-  public abstract void setRenderHitboxes(boolean value);
-
-  @Inject(method = "render", at = @At("HEAD"))
-  private void forceHitboxes(Entity entity, double x, double y, double z, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
-      if (!renderHitboxes && VigilanceConfig.INSTANCE.healthForcedHitbox()) {
-          setRenderHitboxes(true);
-      }
   }
 }

@@ -2,7 +2,7 @@ package net.usbwire.base.util
 
 import gg.essential.universal.UGraphics
 import gg.essential.universal.UMatrixStack
-import gg.essential.universal.vertex.UVertexConsumer'
+import gg.essential.universal.vertex.UVertexConsumer
 
 import net.minecraft.util.math.Box
 
@@ -21,44 +21,51 @@ object RenderUtil {
   fun drawBox (x1: Double, y1: Double, z1: Double, x2: Double, y2: Double, z2: Double, color: Color, ticks: Float) {
     try {
       val matrix = UMatrixStack()
-      val vertexConsumer = UGraphics.getFromTessellator()
       val camera = getViewerPos(ticks)
       matrix.push()
+      UGraphics.enableBlend()
+      UGraphics.disableLighting()
+      UGraphics.disableAlpha()
+      UGraphics.tryBlendFuncSeparate(770, 771, 1, 0)
       matrix.translate(-camera.first, -camera.second, -camera.third)
-      vertexConsumer.beginWithDefaultShader(UGraphics.DrawMode.QUADS, UGraphics.CommonVertexFormats.POSITION_COLOR)
+      val wr = UGraphics.getFromTessellator()
+      wr.beginWithDefaultShader(UGraphics.DrawMode.QUADS, UGraphics.CommonVertexFormats.POSITION_COLOR)
   
-      vertexConsumer.pos(matrix, x1, y1, z1).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x2, y1, z1).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x1, y1, z1).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x1, y2, z1).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
+      wr.pos(matrix, x1, y1, z1).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
+      wr.pos(matrix, x2, y1, z1).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
+      wr.pos(matrix, x1, y1, z1).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
+      wr.pos(matrix, x1, y2, z1).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
   
-      vertexConsumer.pos(matrix, x1, y1, z1).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
-      vertexConsumer.pos(matrix, x1, y1, z2).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
-      vertexConsumer.pos(matrix, x2, y1, z1).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x2, y2, z1).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
+      wr.pos(matrix, x1, y1, z1).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
+      wr.pos(matrix, x1, y1, z2).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
+      wr.pos(matrix, x2, y1, z1).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
+      wr.pos(matrix, x2, y2, z1).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
   
-      vertexConsumer.pos(matrix, x2, y2, z1).color(color).norm(matrix, -1.0F, 0.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x1, y2, z1).color(color).norm(matrix, -1.0F, 0.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x1, y2, z1).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
-      vertexConsumer.pos(matrix, x1, y2, z2).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
+      wr.pos(matrix, x2, y2, z1).color(color).norm(matrix, -1.0F, 0.0F, 0.0F).endVertex()
+      wr.pos(matrix, x1, y2, z1).color(color).norm(matrix, -1.0F, 0.0F, 0.0F).endVertex()
+      wr.pos(matrix, x1, y2, z1).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
+      wr.pos(matrix, x1, y2, z2).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
   
-      vertexConsumer.pos(matrix, x1, y2, z2).color(color).norm(matrix, 0.0F, -1.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x1, y1, z2).color(color).norm(matrix, 0.0F, -1.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x1, y1, z2).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x2, y1, z2).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
+      wr.pos(matrix, x1, y2, z2).color(color).norm(matrix, 0.0F, -1.0F, 0.0F).endVertex()
+      wr.pos(matrix, x1, y1, z2).color(color).norm(matrix, 0.0F, -1.0F, 0.0F).endVertex()
+      wr.pos(matrix, x1, y1, z2).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
+      wr.pos(matrix, x2, y1, z2).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
   
-      vertexConsumer.pos(matrix, x2, y1, z2).color(color).norm(matrix, 0.0F, 0.0F, -1.0F).endVertex()
-      vertexConsumer.pos(matrix, x2, y1, z1).color(color).norm(matrix, 0.0F, 0.0F, -1.0F).endVertex()
-      vertexConsumer.pos(matrix, x1, y2, z2).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x2, y2, z2).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
+      wr.pos(matrix, x2, y1, z2).color(color).norm(matrix, 0.0F, 0.0F, -1.0F).endVertex()
+      wr.pos(matrix, x2, y1, z1).color(color).norm(matrix, 0.0F, 0.0F, -1.0F).endVertex()
+      wr.pos(matrix, x1, y2, z2).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
+      wr.pos(matrix, x2, y2, z2).color(color).norm(matrix, 1.0F, 0.0F, 0.0F).endVertex()
   
-      vertexConsumer.pos(matrix, x2, y1, z2).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x2, y2, z2).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
-      vertexConsumer.pos(matrix, x2, y2, z1).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
-      vertexConsumer.pos(matrix, x2, y2, z2).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
+      wr.pos(matrix, x2, y1, z2).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
+      wr.pos(matrix, x2, y2, z2).color(color).norm(matrix, 0.0F, 1.0F, 0.0F).endVertex()
+      wr.pos(matrix, x2, y2, z1).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
+      wr.pos(matrix, x2, y2, z2).color(color).norm(matrix, 0.0F, 0.0F, 1.0F).endVertex()
   
+      UGraphics.disableBlend()
+      UGraphics.enableAlpha()
+      wr.drawDirect()
       matrix.pop()
-      matrix.applyToGlobalState()
+      matrix.applyToGlobalState()    
     } catch (e: Exception) {
       BaseMod.logger.error(e.stackTraceToString())
     }

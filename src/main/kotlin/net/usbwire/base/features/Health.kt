@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import com.mojang.blaze3d.systems.RenderSystem
 
-import net.usbwire.base.config.VigilanceConfig
+import net.usbwire.base.config.Config
 import net.usbwire.base.BaseMod
 import net.usbwire.base.util.RenderUtil
 import gg.essential.universal.UMatrixStack
@@ -21,7 +21,7 @@ object Health {
       vertex: VertexConsumer,
       entity: Entity
   ) : Boolean {
-    if (VigilanceConfig.healthEnabled == false) return false
+    if (Config.healthEnabled == false) return false
     if (entity !is PlayerEntity) return true
     val color = checkHealth(entity)
     if (color == Color.WHITE) return true
@@ -46,15 +46,15 @@ object Health {
     val health = entity.health
     val maxHealth = entity.maxHealth
     val percentHealth = health / maxHealth
-    if (percentHealth >= VigilanceConfig.healthGoodPercent) {
-      return VigilanceConfig.healthBaseColor
-    } else if (percentHealth >= VigilanceConfig.healthLowPercent && percentHealth <= VigilanceConfig.healthGoodPercent) {
-      return VigilanceConfig.healthGoodColor
-    } else if (percentHealth >= VigilanceConfig.healthCriticalPercent && percentHealth <= VigilanceConfig.healthLowPercent) {
-      return VigilanceConfig.healthLowColor
-    } else if (percentHealth <= VigilanceConfig.healthCriticalPercent) { // assuming its red
-      return VigilanceConfig.healthCriticalColor
+    if (percentHealth >= Config.healthGoodPercent) {
+      return Config.healthBaseColor
+    } else if (percentHealth >= Config.healthLowPercent && percentHealth <= Config.healthGoodPercent) {
+      return Config.healthGoodColor
+    } else if (percentHealth >= Config.healthCriticalPercent && percentHealth <= Config.healthLowPercent) {
+      return Config.healthLowColor
+    } else if (percentHealth <= Config.healthCriticalPercent) { // assuming its red
+      return Config.healthCriticalColor
     }
-    return VigilanceConfig.healthBaseColor // fallback if something went wrong!
+    return Config.healthBaseColor // fallback if something went wrong!
   }
 }

@@ -5,5 +5,5 @@ import com.terraformersmc.modmenu.api.ModMenuApi
 import net.minecraft.client.gui.screen.Screen
 
 class ModMenuConfig : ModMenuApi {
-  override fun getModConfigScreenFactory() = ConfigScreenFactory<Screen> { VigilanceConfig.gui() }
+  override fun getModConfigScreenFactory() = ConfigScreenFactory<Screen> { Config.gui() }
 }

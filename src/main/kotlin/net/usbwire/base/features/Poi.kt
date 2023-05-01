@@ -10,7 +10,7 @@ import net.usbwire.base.BaseMod
 import net.usbwire.base.commands.PoiCommand
 import net.usbwire.base.commands.parsers.PoiName
 import net.usbwire.base.commands.parsers.PoiParser
-import net.usbwire.base.config.VigilanceConfig
+import net.usbwire.base.config.Config
 import net.usbwire.base.util.Util
 import net.usbwire.base.util.chat.Coordinates
 
@@ -105,7 +105,7 @@ object Poi {
     Util.chat(message)
   }
 
-  fun changeState(value: Boolean = VigilanceConfig.poiEnabled) {
+  fun changeState(value: Boolean = Config.poiEnabled) {
     if (value == true && firstRun == true) {
       EssentialAPI.getCommandRegistry().registerParser(PoiName::class.java, PoiParser())
       firstRun = false
