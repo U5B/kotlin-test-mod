@@ -34,7 +34,7 @@ object BaseMod : ClientModInitializer {
     Poi.changeState()
     // ClientLifecycleEvents.CLIENT_STARTED.register { client -> run { initChat(client) } }
     ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) }}
-    WorldRenderEvents.BEFORE_DEBUG_RENDER .register { test -> run  { renderTick(test) }}
+    WorldRenderEvents.LAST.register { test -> run  { renderTick(test) }}
     HudRenderCallback.EVENT.register { matrix, ticks -> run  { hudRender(matrix, ticks) }}
   }
 
@@ -45,7 +45,7 @@ object BaseMod : ClientModInitializer {
   fun renderTick (test : WorldRenderContext) {
     if (mc.world == null) return
     for (entity in mc.world!!.players) {
-      Health.testHitbox(entity, test.tickDelta())
+      Health.testHitbox(entity, test)
     }
   }
 

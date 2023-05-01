@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import net.usbwire.base.config.Config
 import net.usbwire.base.BaseMod
 import net.usbwire.base.util.RenderUtil
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.vertex.UVertexConsumer
 import gg.essential.universal.UGraphics
@@ -34,12 +35,12 @@ object Health {
     return true
   }
 
-  fun testHitbox (entity: Entity, ticks: Float) {
+  fun testHitbox (entity: Entity, context: WorldRenderContext) {
     if (entity !is PlayerEntity) return
     val color = checkHealth(entity)
     if (color == Color.WHITE) return
     val box = entity.getBoundingBox().offset(-entity.getX(), -entity.getY(), -entity.getZ())
-    RenderUtil.drawBox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, color, ticks)
+    RenderUtil.drawBox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, color, context)
   }
 
   fun checkHealth (entity: PlayerEntity) : Color {
