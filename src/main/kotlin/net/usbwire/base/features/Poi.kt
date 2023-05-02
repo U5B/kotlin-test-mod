@@ -1,6 +1,7 @@
 package net.usbwire.base.features
 
 import gg.essential.api.EssentialAPI
+import gg.essential.api.utils.WebUtil
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
@@ -30,7 +31,7 @@ object Poi {
   var firstRun = true
 
   fun fetchPoiData() {
-    URL("https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json").openStream().use {
+    URL(Config.poiUrl).openStream().use {
       val project = Json.decodeFromStream<Map<String, JsonPoi>>(it) // read JSON from a URL
       updatePoiData(project)
       savePoiData()

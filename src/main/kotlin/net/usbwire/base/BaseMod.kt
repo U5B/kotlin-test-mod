@@ -19,16 +19,17 @@ import net.usbwire.base.features.HealthHud
 import org.slf4j.LoggerFactory
 import gg.essential.universal.UMatrixStack
 
-object BaseMod : ClientModInitializer {
+object BaseMod {
   // get this from gradle.properties
-  val modid: String = "usb_base" // base_name
-  val name: String = "BaseMod"
+  val modid: String = "usb" // base_name
+  val name: String = "usb.kt"
   val configPath: String = "./config/${modid}"
   val logger = LoggerFactory.getLogger(modid)
   // https://github.com/Skytils/SkytilsMod/blob/268e8e473a00e55cddc89c47653c3a00db263aac/src/main/kotlin/gg/skytils/skytilsmod/Skytils.kt#L122
   @JvmStatic val mc: MinecraftClient by lazy { MinecraftClient.getInstance() }
 
-  override fun onInitializeClient() {
+  @JvmStatic
+  fun init() {
     logger.info("Hello Fabric world!")
     BaseCommand.register()
     Poi.changeState()
@@ -74,16 +75,4 @@ object BaseMod : ClientModInitializer {
     logger.info(String.format("%s:: %s", sender.toString(), message.toString()))
     if (message.style?.clickEvent != null) logger.info(message.style.clickEvent.toString())
   }
-}
-
-open class BaseFeature {
-  fun onTick () {}
-
-  fun onWorldTick () {}
-
-  fun onRenderTick () {}
-
-  fun init () {}
-
-  fun onChat () {}
 }

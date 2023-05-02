@@ -1,57 +1,78 @@
 package net.usbwire.base.config
 
+import com.terraformersmc.modmenu.api.ConfigScreenFactory
+import com.terraformersmc.modmenu.api.ModMenuApi
 import gg.essential.vigilance.Vigilant
-import gg.essential.vigilance.data.Property
-import gg.essential.vigilance.data.PropertyType
+import java.awt.Color
 import java.io.File
 import java.nio.file.Path
+import net.minecraft.client.gui.screen.Screen
 import net.usbwire.base.BaseMod
-import net.usbwire.base.util.Util
 import net.usbwire.base.features.Poi
-import gg.essential.universal.UChat
-import java.awt.Color
-
+import net.usbwire.base.util.Util
 
 val configFile = "${BaseMod.configPath}/config.toml"
 
 object Config : Vigilant(File(configFile)) {
-  // POI Config Stuff
-  // Toggle
-  @Property(type = PropertyType.CHECKBOX, name = "Toggle POI Module", description = "", category = "POI")
+  // *POI*
   var poiEnabled = false
-  // Update button
-  @Property(type = PropertyType.BUTTON, name = "Update to latest pois.json", description = "Fetches from https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json for the latest data.", category = "POI")
-  fun poiButton() = Poi.fetchPoiData()
+  var poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json" // github url
 
-  // Health Hitbox (GlowHealth)
-  // Toggle
-  @Property(type = PropertyType.CHECKBOX, name = "Toggle GlowHealth Module", description = "", category = "GlowHealth")
+  // *GlowHealth*
   var healthEnabled = false
-  // Base color
-  @Property(type = PropertyType.COLOR, name = "Base Health Color", description = "By default, white does not show hitbox. Change the color here to make hitboxes show.", category = "GlowHealth")
+  var healthUpdateTicks = 1
   var healthBaseColor = Color.WHITE
-  // Good color
-  @Property(type = PropertyType.COLOR, name = "Good Health Color", description = "", category = "GlowHealth")
   var healthGoodColor = Color.GREEN
-  @Property(type = PropertyType.PERCENT_SLIDER, name = "Good Health Percentage", description = "", category = "GlowHealth")
   var healthGoodPercent = 1.0f
-  // Low color
-  @Property(type = PropertyType.COLOR, name = "Low Health Color", description = "", category = "GlowHealth")
   var healthLowColor = Color.YELLOW
-  @Property(type = PropertyType.PERCENT_SLIDER, name = "Low Health Percentage", description = "", category = "GlowHealth")
   var healthLowPercent = 0.7f
-  // Critical color
-  @Property(type = PropertyType.COLOR, name = "Critical Health Color", description = "", category = "GlowHealth")
   var healthCriticalColor = Color.RED
-  @Property(type = PropertyType.PERCENT_SLIDER, name = "Critical Health Percentage", description = "", category = "GlowHealth")
   var healthCriticalPercent = 0.4f
 
-  // DrawHealth
+  // *DrawHealth*
+  // Values from GlowHealth are also used in DrawHealth
+  var healthDrawX = 0.0f
+  var healthDrawY = 0.0f
+  var healthDrawAlign = 0
 
   init {
     Util.createDirectory(Path.of(configFile))
 
+    category("POI") {
+      checkbox(::poiEnabled, "Toggle POI")
+      button(
+          "Refresh POIs",
+          """
+        Fetches from ${poiUrl} for the latest data.
+        """.trimIndent(),
+          "",
+          true,
+      ) { Poi.fetchPoiData() }
+      text(::poiUrl, "Internal POI URL", hidden = true)
+    }
+
+    category("Health") {
+      subcategory("Hitbox") { checkbox(::healthEnabled, "Toggle GlowHealth") }
+      subcategory("Draw") {
+        decimalSlider(::healthDrawX, "X Position", min = 0.0f, max = 1.0f, decimalPlaces = 3)
+        decimalSlider(::healthDrawY, "Y Position", min = 0.0f, max = 1.0f, decimalPlaces = 3)
+        selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"))
+      }
+      slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 300) // really? 5 seconds?
+      color(::healthBaseColor, "Base HP color", "White (#ffffff) doesn't show.")
+      color(::healthGoodColor, "Good HP color")
+      percentSlider(::healthGoodPercent, "Good HP percent", "100% HP")
+      color(::healthLowColor, "Low HP color")
+      percentSlider(::healthLowPercent, "Low HP percent", "70% HP")
+      color(::healthCriticalColor, "Critical HP color")
+      percentSlider(::healthCriticalPercent, "Critical HP percent", "40% HP")
+    }
+
     registerListener("poiEnabled") { value: Boolean -> Poi.changeState(value) }
     initialize() // this needs to be called for whatever reason so that configs actually save
   }
+}
+
+class ModMenu : ModMenuApi {
+  override fun getModConfigScreenFactory() = ConfigScreenFactory<Screen> { Config.gui() }
 }

@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "id": "${base_name}",
   "version": "${mod_version}",
-  "name": "BaseMod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "usb.kt",
+  "description": "Port of U5B_'s jsmacro scripts!",
   "authors": [
-    "Me!"
+    "U5B_"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://discord.usbwire.net",
+    "sources": "https://github.com/U5B/kotlin-test-mod"
   },
   "license": "CC0-1.0",
   "icon": "assets/test/icon.png",
@@ -17,15 +17,12 @@
   "entrypoints": {
     "client": [
       {
-        "value": "net.usbwire.base.BaseMod",
-        "adapter": "kotlin"
+        "value": "net.usbwire.base.BaseMod::init"
       }
     ],
-    "main": [],
     "modmenu": [
       {
-        "value": "net.usbwire.base.config.ModMenuConfig",
-        "adapter": "kotlin"
+        "value": "net.usbwire.base.config.ModMenu"
       }
     ]
   },
@@ -39,5 +36,7 @@
     "fabric": ">=${fabric_api_version}",
     "fabric-language-kotlin": ">=1.9.4"
   },
-  "suggests": {}
+  "suggests": {
+    "modmenu": "*"
+  }
 }

@@ -17,6 +17,13 @@ import gg.essential.universal.vertex.UVertexConsumer
 import gg.essential.universal.UGraphics
 
 object Health {
+  data class HealthData (
+    val current: Float,
+    val max: Float,
+    val percent: Float,
+    val color: Color
+  )
+
   fun renderHitbox(
       matrix: MatrixStack,
       vertex: VertexConsumer,
@@ -24,7 +31,7 @@ object Health {
   ) : Boolean {
     if (Config.healthEnabled == false) return false
     if (entity !is PlayerEntity) return true
-    val color = checkHealth(entity)
+    val color = getHealthProperties(entity).color
     if (color == Color.WHITE) return true
     val box = entity.getBoundingBox().offset(-entity.getX(), -entity.getY(), -entity.getZ())
     val red = color.red / 255.0F
@@ -37,23 +44,28 @@ object Health {
 
   fun testHitbox (entity: Entity, context: WorldRenderContext) {
     if (entity !is PlayerEntity) return
-    val color = checkHealth(entity)
+    val color = getHealthProperties(entity).color
     if (color == Color.WHITE) return
     val box = entity.getBoundingBox().offset(-entity.getX(), -entity.getY(), -entity.getZ())
     RenderUtil.drawBox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, color, context)
   }
 
-  fun checkHealth (entity: PlayerEntity) : Color {
-    val health = entity.health
-    val maxHealth = entity.maxHealth
-    val percentHealth = health / maxHealth
-    if (percentHealth >= Config.healthGoodPercent) {
+  fun getHealthProperties (entity: PlayerEntity) : HealthData {
+    val current = entity.health
+    val max = entity.maxHealth
+    val percent = current / max
+    val color = getHealthColor(percent)
+    return HealthData(current, max, percent, color)
+  }
+
+  fun getHealthColor (percent: Float) : Color {
+    if (percent >= Config.healthGoodPercent) {
       return Config.healthBaseColor
-    } else if (percentHealth >= Config.healthLowPercent && percentHealth <= Config.healthGoodPercent) {
+    } else if (percent >= Config.healthLowPercent && percent <= Config.healthGoodPercent) {
       return Config.healthGoodColor
-    } else if (percentHealth >= Config.healthCriticalPercent && percentHealth <= Config.healthLowPercent) {
+    } else if (percent >= Config.healthCriticalPercent && percent <= Config.healthLowPercent) {
       return Config.healthLowColor
-    } else if (percentHealth <= Config.healthCriticalPercent) { // assuming its red
+    } else if (percent <= Config.healthCriticalPercent) { // assuming its red
       return Config.healthCriticalColor
     }
     return Config.healthBaseColor // fallback if something went wrong!
