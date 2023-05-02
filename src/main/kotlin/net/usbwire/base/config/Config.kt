@@ -9,6 +9,7 @@ import java.nio.file.Path
 import net.minecraft.client.gui.screen.Screen
 import net.usbwire.base.BaseMod
 import net.usbwire.base.features.Poi
+import net.usbwire.base.features.HealthHud
 import net.usbwire.base.util.Util
 
 val configFile = "${BaseMod.configPath}/config.toml"
@@ -18,8 +19,7 @@ object Config : Vigilant(File(configFile)) {
   var poiEnabled = false
   var poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json" // github url
 
-  // *GlowHealth*
-  var healthEnabled = false
+  // *Common Health*
   var healthUpdateTicks = 1
   var healthBaseColor = Color.WHITE
   var healthGoodColor = Color.GREEN
@@ -29,10 +29,18 @@ object Config : Vigilant(File(configFile)) {
   var healthCriticalColor = Color.RED
   var healthCriticalPercent = 0.4f
 
+  var healthHurtEnabled = false
+  var healthHurtColor = Color.PINK
+  var healthEffectEnabled = false
+  var healthEffectColor = Color.DARK_GRAY
+
+  // *GlowHealth*
+  var healthEnabled = false
+
   // *DrawHealth*
-  // Values from GlowHealth are also used in DrawHealth
-  var healthDrawX = 0
-  var healthDrawY = 0
+  var healthDrawEnabled = false
+  var healthDrawX = 0.0f
+  var healthDrawY = 0.0f
   var healthDrawAlign = 0
 
   init {
@@ -54,18 +62,25 @@ object Config : Vigilant(File(configFile)) {
     category("Health") {
       subcategory("Hitbox") { checkbox(::healthEnabled, "Toggle GlowHealth") }
       subcategory("Draw") {
-        slider(::healthDrawX, "X Position", min = 0, max = 100)
-        slider(::healthDrawY, "Y Position", min = 0, max = 100)
+        checkbox(::healthDrawEnabled, "Toggle DrawHealth")
+        percentSlider(::healthDrawX, "X Position", "", true) { HealthHud.xPos.set(healthDrawX) }
+        percentSlider(::healthDrawY, "Y Position", "", true) { HealthHud.yPos.set(healthDrawY) }
         selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"))
       }
-      slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 300) // really? 5 seconds?
-      color(::healthBaseColor, "Base HP color", "White (#ffffff) doesn't show.")
-      color(::healthGoodColor, "Good HP color")
-      percentSlider(::healthGoodPercent, "Good HP percent", "100% HP")
-      color(::healthLowColor, "Low HP color")
-      percentSlider(::healthLowPercent, "Low HP percent", "70% HP")
-      color(::healthCriticalColor, "Critical HP color")
-      percentSlider(::healthCriticalPercent, "Critical HP percent", "40% HP")
+      subcategory("General") {
+        slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 300) // really? 15 seconds?
+        percentSlider(::healthGoodPercent, "Good HP percent", "100% HP")
+        percentSlider(::healthLowPercent, "Low HP percent", "70% HP")
+        percentSlider(::healthCriticalPercent, "Critical HP percent", "40% HP")
+      }
+      subcategory("Color") {
+        color(::healthBaseColor, "Base HP color", "White (#ffffff) doesn't show.")
+        color(::healthGoodColor, "Good HP color")
+        color(::healthLowColor, "Low HP color")
+        color(::healthCriticalColor, "Critical HP color")
+        color(::healthHurtColor, "Hurt color")
+        color(::healthEffectColor, "Negative effect (Wither/Poison) color")
+      }
     }
 
     initialize() // this needs to be called for whatever reason so that configs actually save

@@ -2,34 +2,17 @@ package net.usbwire.base.features
 
 import java.awt.Color
 import net.minecraft.client.render.*
-import net.minecraft.client.render.entity.EntityRenderDispatcher
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
-import com.mojang.blaze3d.systems.RenderSystem
-
+import net.minecraft.entity.effect.StatusEffects
 import net.usbwire.base.config.Config
-import net.usbwire.base.BaseMod
-import net.usbwire.base.util.RenderUtil
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
-import gg.essential.universal.UMatrixStack
-import gg.essential.universal.vertex.UVertexConsumer
-import gg.essential.universal.UGraphics
 
 object Health {
-  data class HealthData (
-    val current: Float,
-    val max: Float,
-    val percent: Float,
-    val color: Color
-  )
+  data class HealthData(val current: Float, val max: Float, val absorption: Float, val percent: Float, val color: Color)
 
-  fun renderHitbox(
-      matrix: MatrixStack,
-      vertex: VertexConsumer,
-      entity: Entity
-  ) : Boolean {
-    if (Config.healthEnabled == false) return false
+  fun renderHitbox(matrix: MatrixStack, vertex: VertexConsumer, entity: Entity): Boolean {
+    if (!Config.healthEnabled) return false
     if (entity !is PlayerEntity) return true
     val color = getHealthProperties(entity).color
     if (color == Color.WHITE) return true
@@ -42,23 +25,21 @@ object Health {
     return true
   }
 
-  fun testHitbox (entity: Entity, context: WorldRenderContext) {
-    if (entity !is PlayerEntity) return
-    val color = getHealthProperties(entity).color
-    if (color == Color.WHITE) return
-    val box = entity.getBoundingBox().offset(-entity.getX(), -entity.getY(), -entity.getZ())
-    RenderUtil.drawBox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, color, context)
-  }
-
-  fun getHealthProperties (entity: PlayerEntity) : HealthData {
+  fun getHealthProperties(entity: PlayerEntity): HealthData {
     val current = entity.health
     val max = entity.maxHealth
+    val absorption = entity.absorptionAmount // not factored into health equation?
     val percent = current / max
-    val color = getHealthColor(percent)
-    return HealthData(current, max, percent, color)
+    var color: Color
+    if (Config.healthHurtEnabled && entity.hurtTime != 0) { // hurt damage visible
+      color = hasBadEffect(entity) ?: Config.healthHurtColor
+    } else {
+      color = getHealthColor(percent)
+    }
+    return HealthData(current, max, absorption, percent, color)
   }
 
-  fun getHealthColor (percent: Float) : Color {
+  fun getHealthColor(percent: Float): Color {
     if (percent >= Config.healthGoodPercent) {
       return Config.healthBaseColor
     } else if (percent >= Config.healthLowPercent && percent <= Config.healthGoodPercent) {
@@ -69,5 +50,33 @@ object Health {
       return Config.healthCriticalColor
     }
     return Config.healthBaseColor // fallback if something went wrong!
+  }
+
+  // https://github.com/TeamMonumenta/monumenta-plugins-public/blob/f4891b2ffd0c238a40125277cb8240dbad96f641/plugins/paper/src/main/java/com/playmonumenta/plugins/utils/PotionUtils.java#L279
+  // Effects that we can actually clear
+  final val badEffects = setOf(
+    // StatusEffects.BLINDNESS,
+		StatusEffects.POISON,
+		// StatusEffects.NAUSEA,
+		// StatusEffects.SLOWNESS,
+		// StatusEffects.MINING_FATIGUE,
+		StatusEffects.WITHER,
+		// StatusEffects.WEAKNESS,
+		StatusEffects.INSTANT_DAMAGE,
+		// StatusEffects.HUNGER,
+		// StatusEffects.LEVITATION,
+		// StatusEffects.UNLUCK
+  )
+  fun hasBadEffect(entity: PlayerEntity): Color? {
+    if (!Config.healthEffectEnabled) return null
+    for (type in badEffects) {
+      if (entity.hasStatusEffect(type)) {
+        val effect = entity.getStatusEffect(type)
+        if (effect != null && effect.getDuration() < 36000 /* 30 min */) {
+          return Config.healthEffectColor
+        }
+      }
+    }
+    return null
   }
 }

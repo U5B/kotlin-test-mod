@@ -25,7 +25,7 @@ object Coordinates {
     message.addTextComponent(copyCompoment)
 
     // xaero minimap support
-    if (supportsXaero == true) {
+    if (supportsXaero) {
       val xaeroCompoment = xaeroBuilder(name, x, y, z, dimension)
       if (xaeroCompoment == null) {
         supportsXaero = false
@@ -35,7 +35,7 @@ object Coordinates {
     }
 
     // journeymap support
-    if (supportsJourneymap == true) {
+    if (supportsJourneymap) {
       val journeymapCompoment = journeymapBuilder(name, x, y, z, dimension)
       if (journeymapCompoment == null) {
         supportsJourneymap = false

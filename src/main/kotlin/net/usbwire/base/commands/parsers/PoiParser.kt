@@ -10,7 +10,7 @@ import net.usbwire.base.features.Poi
 class PoiParser : ArgumentParser<PoiName> {
   override fun parse(arguments: ArgumentQueue, param: Parameter): PoiName {
     var name = ""
-    while (arguments.isEmpty() == false) {
+    while (!arguments.isEmpty()) {
       name += arguments.poll()
       if (arguments.peek() != null) name += " "
     }
@@ -19,7 +19,7 @@ class PoiParser : ArgumentParser<PoiName> {
 
   override fun complete(arguments: ArgumentQueue, param: Parameter): List<String> {
     var name = ""
-    while (arguments.isEmpty() == false) {
+    while (!arguments.isEmpty()) {
       name += arguments.poll()
       if (arguments.peek() != null) name += " "
     }

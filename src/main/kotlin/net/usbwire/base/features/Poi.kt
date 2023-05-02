@@ -107,14 +107,14 @@ object Poi {
   }
 
   fun changeState(value: Boolean = Config.poiEnabled) {
-    if (value == true && firstRun == true) {
+    if (value && firstRun) {
       EssentialAPI.getCommandRegistry().registerParser(PoiName::class.java, PoiParser())
       firstRun = false
     }
-    if (value == true) {
+    if (value) {
       loadPoiData()
       PoiCommand.register()
-    } else if (value == false) {
+    } else if (!value) {
       EssentialAPI.getCommandRegistry().unregisterCommand(PoiCommand)
     }
   }
