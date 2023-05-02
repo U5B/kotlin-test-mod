@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "${base_name}",
   "version": "${mod_version}",
-  "name": "usb.kt",
+  "name": "base.kt",
   "description": "Port of U5B_'s jsmacro scripts!",
   "authors": [
     "U5B_"
@@ -11,17 +11,19 @@
     "homepage": "https://discord.usbwire.net",
     "sources": "https://github.com/U5B/kotlin-test-mod"
   },
-  "license": "CC0-1.0",
-  "icon": "assets/test/icon.png",
+  "license": "GPL",
+  "icon": "assets/usb/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
       {
-        "value": "net.usbwire.base.BaseMod::init"
+        "adapter": "kotlin",
+        "value": "net.usbwire.base.BaseMod"
       }
     ],
     "modmenu": [
       {
+        "adapter": "kotlin",
         "value": "net.usbwire.base.config.ModMenu"
       }
     ]

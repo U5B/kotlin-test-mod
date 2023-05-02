@@ -1,6 +1,7 @@
 package net.usbwire.base.features
 
 import java.awt.Color
+import java.text.DecimalFormat
 
 import gg.essential.elementa.*
 import gg.essential.elementa.components.*
@@ -16,42 +17,42 @@ import net.minecraft.client.gui.screen.ChatScreen
 import net.usbwire.base.config.Config
 import net.usbwire.base.BaseMod
 import net.usbwire.base.features.Health
+import kotlin.math.roundToInt
 
-//
 object HealthHud {
+  val singleDecimalPlace = DecimalFormat("0.0")
   data class Help (
-    val name: String
-    val health: Health.HealthData 
+    val name: String,
+    val health: Health.HealthData,
     val text: UIComponent
   )
 
+  // TODO: Fix x and y not doing something properly
   val window by Window(ElementaVersion.V2)
   val container = UIContainer().constrain {
-    x = Config.healthDrawX.percent()
-    y = Config.healthDrawY.percent()
-    width = ChildBasedSizeConstraint(padding = 2f)
-    height = ChildBasedMaxSizeConstraint()
+    x = Config.healthDrawX.pixels()
+    y = Config.healthDrawY.pixels()
   } childOf window
 
   val cachedPlayer: MutableMap<String, Help> = mutableMapOf()
   var sortedCompoment: Map<String, Help> = mutableMapOf()
 
-  init {
-    Inspector(window).constrain {
-      x = 10.pixels(true)
-      y = 10.pixels(true)
-    } childOf window
-  }
-
   fun updatePlayers() : Boolean {
     cachedPlayer.clear()
     for (entity in BaseMod.mc.world!!.players) {
+      // TODO: have bad effects be different colors (wither, poison, etc, )
+      // can you even get effects of other players on Monumenta??
+      // is that even legal?
       val hp = Health.getHealthProperties(entity)
-      val name = entity.name.toString()
-      val message = "${name}: ${hp.current}/${hp.max}"
-      val uitext = UIText(message).constrain { 
-        x = SiblingConstraint(padding = 2f)
-       }.setColor(hp.color)
+      if (hp.color == Color.WHITE) continue
+      val name = UMessage(UTextComponent(entity.name)).unformattedText
+      val maxHp = singleDecimalPlace.format(hp.max)
+      val currentHp = singleDecimalPlace.format(hp.current)
+      val message = "${name}: ${currentHp}/${maxHp}"
+      val uitext = UIText(message).constrain {
+        y = SiblingConstraint(padding = 2f)
+       }
+       uitext.setColor(hp.color)
        cachedPlayer[name] = Help(name, hp, uitext)
     }
     sortedCompoment = cachedPlayer.toList().sortedBy { it.second.health.percent }.toMap() // may not work
@@ -64,6 +65,8 @@ object HealthHud {
     if (BaseMod.mc.currentScreen != null && BaseMod.mc.currentScreen !is ChatScreen) return
     if (sortedCompoment.isNullOrEmpty() || (world.time % Config.healthUpdateTicks).toInt() == 0) {
       updatePlayers()
+      container.setX(Config.healthDrawX.percent())
+      container.setY(Config.healthDrawX.percent())
       container.clearChildren()
       sortedCompoment.forEach { container.addChild(it.value.text) }
     }

@@ -31,15 +31,15 @@ object Config : Vigilant(File(configFile)) {
 
   // *DrawHealth*
   // Values from GlowHealth are also used in DrawHealth
-  var healthDrawX = 0.0f
-  var healthDrawY = 0.0f
+  var healthDrawX = 0
+  var healthDrawY = 0
   var healthDrawAlign = 0
 
   init {
     Util.createDirectory(Path.of(configFile))
 
     category("POI") {
-      checkbox(::poiEnabled, "Toggle POI")
+      checkbox(::poiEnabled, "Toggle POI", "", true) { Poi.changeState(poiEnabled) }
       button(
           "Refresh POIs",
           """
@@ -54,8 +54,8 @@ object Config : Vigilant(File(configFile)) {
     category("Health") {
       subcategory("Hitbox") { checkbox(::healthEnabled, "Toggle GlowHealth") }
       subcategory("Draw") {
-        decimalSlider(::healthDrawX, "X Position", min = 0.0f, max = 1.0f, decimalPlaces = 3)
-        decimalSlider(::healthDrawY, "Y Position", min = 0.0f, max = 1.0f, decimalPlaces = 3)
+        slider(::healthDrawX, "X Position", min = 0, max = 100)
+        slider(::healthDrawY, "Y Position", min = 0, max = 100)
         selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"))
       }
       slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 300) // really? 5 seconds?
@@ -68,7 +68,6 @@ object Config : Vigilant(File(configFile)) {
       percentSlider(::healthCriticalPercent, "Critical HP percent", "40% HP")
     }
 
-    registerListener("poiEnabled") { value: Boolean -> Poi.changeState(value) }
     initialize() // this needs to be called for whatever reason so that configs actually save
   }
 }
