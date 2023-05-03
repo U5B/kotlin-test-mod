@@ -28,7 +28,7 @@ object Compass {
 
   fun onTick () {
     val click = BaseMod.mc.mouse.wasLeftButtonClicked()
-    if (click && !clicked) {
+    if (click == true && clicked == false) {
       val mainItem = Registry.ITEM.getId(BaseMod.mc.player?.mainHandStack?.item).toString()
       if (mainItem == "minecraft:compass") {
         createCompass()

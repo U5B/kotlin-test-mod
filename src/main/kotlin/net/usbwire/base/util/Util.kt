@@ -10,7 +10,7 @@ import net.usbwire.base.BaseMod
 object Util {
   fun createPath(file: Path): Boolean {
     createDirectory(file)
-    if (!Files.exists(file)) {
+    if (Files.exists(file) == false) {
       Files.createFile(file)
       return true
     }
@@ -18,7 +18,7 @@ object Util {
   }
 
   fun createDirectory(file: Path): Boolean {
-    if (!Files.exists(file.parent)) {
+    if (Files.exists(file.parent) == false) {
       Files.createDirectories(file.parent)
       return true
     }

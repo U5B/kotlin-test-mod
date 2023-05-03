@@ -12,7 +12,7 @@ import net.usbwire.base.util.Util
 object PoiCommand : Command("poi", false) {
   @DefaultHandler
   fun handle(@Greedy poi_name: PoiName?) {
-    if (!Config.poiEnabled) return
+    if (Config.poiEnabled == false) return
     if (poi_name == null) return
     val poiString = poi_name.name
     var string = Util.trimString(poiString)

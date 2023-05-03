@@ -39,7 +39,7 @@ object Poi {
   }
 
   fun loadPoiData() {
-    if (Files.notExists(poiPath)) return fetchPoiData() // don't use file if it doesn't exist
+    if (Files.notExists(poiPath) == true) return fetchPoiData() // don't use file if it doesn't exist
     Files.newInputStream(poiPath).use {
       val project = Json.decodeFromStream<Map<String, JsonPoi>>(it) // read JSON from file
       updatePoiData(project)
@@ -52,7 +52,7 @@ object Poi {
   }
 
   private fun savePoiData() {
-    if (poiMap.isEmpty()) return
+    if (poiMap.isEmpty() == true) return
     Util.createPath(poiPath)
     Files.newOutputStream(poiPath).use { Json.encodeToStream(poiMap, it) }
   }
@@ -65,7 +65,7 @@ object Poi {
   }
 
   fun getCommandSuggestions(): List<String> {
-    if (poiSuggestions.isEmpty()) return makeCommandSuggestions()
+    if (poiSuggestions.isEmpty() == true) return makeCommandSuggestions()
     return poiSuggestions
   }
 
@@ -80,11 +80,11 @@ object Poi {
     }
     poiMap.forEach { poi ->
       val tags = Util.trimString(poi.value.name).split(' ')
-      if (tags.contains(Util.trimString(input))) response.add(poi.value)
+      if (tags.contains(Util.trimString(input)) == true) response.add(poi.value)
     }
     if (response.size == 0) {
       poiMap.forEach { poi ->
-        if (Util.cleanString(poi.value.name).contains(Util.cleanString(input)))
+        if (Util.cleanString(poi.value.name).contains(Util.cleanString(input)) == true)
             response.add(poi.value)
       }
     }
@@ -107,14 +107,14 @@ object Poi {
   }
 
   fun changeState(value: Boolean = Config.poiEnabled) {
-    if (value && firstRun) {
+    if (value == true && firstRun == true) {
       EssentialAPI.getCommandRegistry().registerParser(PoiName::class.java, PoiParser())
       firstRun = false
     }
-    if (value) {
+    if (value == true) {
       loadPoiData()
       PoiCommand.register()
-    } else if (!value) {
+    } else if (value == false) {
       EssentialAPI.getCommandRegistry().unregisterCommand(PoiCommand)
     }
   }

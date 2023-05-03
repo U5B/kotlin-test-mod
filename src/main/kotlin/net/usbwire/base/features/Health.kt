@@ -13,9 +13,9 @@ object Health {
 
   fun renderHitbox(matrix: MatrixStack, vertex: VertexConsumer, entity: Entity): Boolean {
     if (Config.healthEnabled == false) return false
-    if (entity !is PlayerEntity) return true
+    if (entity !is PlayerEntity) return Config.healthHitboxCancel
     val color = getHealthProperties(entity).color
-    if (color == Color.WHITE) return true
+    if (color == Color.WHITE) return Config.healthHitboxCancel
     val box = entity.getBoundingBox().offset(-entity.getX(), -entity.getY(), -entity.getZ())
     val red = color.red / 255.0F
     val green = color.green / 255.0F
@@ -31,7 +31,7 @@ object Health {
     val absorption = entity.absorptionAmount // not factored into health equation?
     val percent = current / max
     var color: Color
-    if (Config.healthHurtEnabled && entity.hurtTime != 0) { // hurt damage visible
+    if (Config.healthHurtEnabled == true && entity.hurtTime != 0) { // hurt damage visible
       color = hasBadEffect(entity) ?: Config.healthHurtColor
     } else {
       color = getHealthColor(percent)
@@ -68,9 +68,9 @@ object Health {
 		// StatusEffects.UNLUCK
   )
   fun hasBadEffect(entity: PlayerEntity): Color? {
-    if (!Config.healthEffectEnabled) return null
+    if (Config.healthEffectEnabled == false) return null
     for (type in badEffects) {
-      if (entity.hasStatusEffect(type)) {
+      if (entity.hasStatusEffect(type) == true) {
         val effect = entity.getStatusEffect(type)
         if (effect != null && effect.getDuration() < 36000 /* 30 min */) {
           return Config.healthEffectColor

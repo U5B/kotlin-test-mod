@@ -37,6 +37,7 @@ object Config : Vigilant(File(configFile)) {
 
   // *GlowHealth*
   var healthEnabled = false
+  var healthHitboxCancel = false
 
   // *DrawHealth*
   var healthDrawEnabled = false
@@ -48,26 +49,29 @@ object Config : Vigilant(File(configFile)) {
     Util.createDirectory(Path.of(configFile))
 
     category("POI") {
-      checkbox(::poiEnabled, "Toggle POI") { Poi.changeState(it) }
+      switch(::poiEnabled, "Toggle POI") { Poi.changeState(it) }
       button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
       text(::poiUrl, "Internal POI URL", "Should not be changed unless you know what you are doing!")
     }
 
     category("Health") {
-      subcategory("Hitbox") { checkbox(::healthEnabled, "Toggle GlowHealth") }
+      subcategory("Hitbox") { 
+        switch(::healthEnabled, "Toggle GlowHealth")
+        switch(::healthHitboxCancel, "Cancel other entities!")
+      }
       subcategory("Draw") {
-        checkbox(::healthDrawEnabled, "Toggle DrawHealth")
-        percentSlider(::healthDrawX, "X Position") { HealthHud.xPos.set(it) }
-        percentSlider(::healthDrawY, "Y Position") { HealthHud.yPos.set(it) }
+        switch(::healthDrawEnabled, "Toggle DrawHealth")
+        percentSlider(::healthDrawX, "X Position in Pixels") { HealthHud.xPos.set(it) }
+        percentSlider(::healthDrawY, "Y Position in Pixels") { HealthHud.yPos.set(it) }
         selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"))
       }
       subcategory("General") {
-        slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 300) // really? 15 seconds?
+        switch(::healthHurtEnabled, "Hurt Toggle")
+        switch(::healthEffectEnabled, "Effect Toggle")
+        slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 20) // really?
         percentSlider(::healthGoodPercent, "Good HP percent", "100%% HP")
         percentSlider(::healthLowPercent, "Low HP percent", "70%% HP")
         percentSlider(::healthCriticalPercent, "Critical HP percent", "40%% HP")
-        checkbox(::healthHurtEnabled, "Hurt Toggle")
-        checkbox(::healthEffectEnabled, "Effect Toggle")
       }
       subcategory("Color") {
         color(::healthBaseColor, "Base HP color", "White (#ffffff) doesn't show.")
@@ -80,10 +84,6 @@ object Config : Vigilant(File(configFile)) {
     }
 
     initialize() // this needs to be called for whatever reason so that configs actually save
-  }
-
-  fun runLater () {
-    registerListener("poiEnabled", { value: Boolean -> Poi.changeState(value) })
   }
 }
 

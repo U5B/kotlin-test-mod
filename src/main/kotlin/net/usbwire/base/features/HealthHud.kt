@@ -19,6 +19,7 @@ import net.minecraft.client.world.ClientWorld
 import net.usbwire.base.config.Config
 import net.usbwire.base.BaseMod
 import net.usbwire.base.features.Health
+import net.usbwire.base.util.Util
 
 object HealthHud {
   val DEC = DecimalFormat("0.0")
@@ -31,25 +32,22 @@ object HealthHud {
   val cachedPlayer: MutableMap<String, Data> = mutableMapOf()
   var sortedCompoment: Map<String, Data> = mutableMapOf()
 
-  val xPos = BasicState(Config.healthDrawX)
-  val yPos = BasicState(Config.healthDrawY)
+  val xPos: State<Number> = BasicState(Config.healthDrawX)
+  val yPos: State<Number> = BasicState(Config.healthDrawY)
 
   // TODO: Fix x and y not doing something properly
   val window by Window(ElementaVersion.V2).constrain {
-    x = 0.pixels
-    y = 0.pixels
-    width = 100.percent
-    height = 100.percent
+    width = FillConstraint(true)
+    height = FillConstraint(true)
   }
   val container = UIContainer().constrain {
-    x = xPos.get().pixels
-    y = yPos.get().pixels
+    x = xPos.percent
+    y = yPos.percent
     width = ChildBasedMaxSizeConstraint()
-    height = ChildBasedSizeConstraint()
   } childOf window
 
   fun updatePlayers(world: ClientWorld) {
-    val previousPlayer = cachedPlayer
+    val previousPlayer = cachedPlayer.toMap()
     cachedPlayer.clear()
     for (entity in world.players) {
       // if (entity == BaseMod.mc.player) continue // exclude yourself
@@ -75,12 +73,11 @@ object HealthHud {
         y = SiblingConstraint(2f)
         color = hp.color.toConstraint()
        }
-       line.setColor(hp.color)
        // Absorption?
       if (hp.absorption > 0) {
         val abHp = DEC.format(hp.absorption)
         UIText("+${abHp}").constrain {
-          x = SiblingConstraint(2f)
+          x = (line.getWidth() + 2.0f).pixels
           color = Color.ORANGE.toConstraint()
         } childOf line
       }
@@ -91,12 +88,12 @@ object HealthHud {
         val damageHp = DEC.format(changeHp)
         if (changeHp > 0) {
           UIText("+${damageHp}").constrain {
-            x = SiblingConstraint(2f)
+            x = (line.getWidth() + 4.0f).pixels
             color = Color.GREEN.toConstraint()
           } childOf line
         } else if (changeHp < 0) {
-          UIText("-${damageHp}").constrain {
-            x = SiblingConstraint(2f)
+          UIText("${damageHp}").constrain {
+            x = (line.getWidth() + 4.0f).pixels
             color = Color.RED.toConstraint()
           } childOf line
         }
@@ -107,13 +104,13 @@ object HealthHud {
   }
 
   fun draw (matrix: UMatrixStack) { // ChatScreen
-    if (!Config.healthDrawEnabled) return
+    if (Config.healthDrawEnabled == false) return
     val world = BaseMod.mc.world
     if (world == null || world.players == null) return
     if (BaseMod.mc.currentScreen != null && BaseMod.mc.currentScreen !is ChatScreen) return
     if (sortedCompoment.isNullOrEmpty() || (world.time % Config.healthUpdateTicks).toInt() == 0) {
-      updatePlayers(world)
       container.clearChildren()
+      updatePlayers(world)
       sortedCompoment.forEach { container.addChild(it.value.text) }
     }
     if (sortedCompoment.isNotEmpty()) window.draw(matrix)
