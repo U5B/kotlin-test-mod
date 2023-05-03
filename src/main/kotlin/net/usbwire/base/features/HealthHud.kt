@@ -28,6 +28,9 @@ object HealthHud {
     val text: UIComponent
   )
 
+  val cachedPlayer: MutableMap<String, Data> = mutableMapOf()
+  var sortedCompoment: Map<String, Data> = mutableMapOf()
+
   val xPos = BasicState(Config.healthDrawX)
   val yPos = BasicState(Config.healthDrawY)
 
@@ -45,9 +48,6 @@ object HealthHud {
     height = ChildBasedSizeConstraint()
   } childOf window
 
-  val cachedPlayer: MutableMap<String, Data> = mutableMapOf()
-  var sortedCompoment: Map<String, Data> = mutableMapOf()
-
   fun updatePlayers(world: ClientWorld) {
     val previousPlayer = cachedPlayer
     cachedPlayer.clear()
@@ -62,17 +62,27 @@ object HealthHud {
       val maxHp = DEC.format(hp.max)
       val currentHp = DEC.format(hp.current)
       var message = "${name}: ${currentHp}/${maxHp}"
+      var alignConstraint: XConstraint
+      if (Config.healthDrawAlign == 2) { // right align
+        alignConstraint = 0.pixels(true)
+      } else if (Config.healthDrawAlign == 1) { // center align
+        alignConstraint = CenterConstraint()
+      } else { // left align
+        alignConstraint = 0.pixels()
+      }
       val line = UIText(message).constrain {
-        y = SiblingConstraint(padding = 2f)
+        x = alignConstraint
+        y = SiblingConstraint(2f)
+        color = hp.color.toConstraint()
        }
        line.setColor(hp.color)
        // Absorption?
       if (hp.absorption > 0) {
         val abHp = DEC.format(hp.absorption)
-        val abLine = UIText("+${abHp}").constrain {
-          x = SiblingConstraint(padding = 2f, true)
+        UIText("+${abHp}").constrain {
+          x = SiblingConstraint(2f)
+          color = Color.ORANGE.toConstraint()
         } childOf line
-        abLine.setColor(Color.ORANGE) // hardcoded
       }
       // Damage Change
       if (previousPlayer[name] != null) {
@@ -80,15 +90,15 @@ object HealthHud {
         val changeHp = (hp.current + hp.absorption) - (prevHp.current + prevHp.absorption)
         val damageHp = DEC.format(changeHp)
         if (changeHp > 0) {
-          val changeLine = UIText("+${damageHp}").constrain {
-            x = SiblingConstraint(padding = 2f, true)
+          UIText("+${damageHp}").constrain {
+            x = SiblingConstraint(2f)
+            color = Color.GREEN.toConstraint()
           } childOf line
-          changeLine.setColor(Color.GREEN)
         } else if (changeHp < 0) {
-          val changeLine = UIText("-${damageHp}").constrain {
-            x = SiblingConstraint(padding = 2f, true)
+          UIText("-${damageHp}").constrain {
+            x = SiblingConstraint(2f)
+            color = Color.RED.toConstraint()
           } childOf line
-          changeLine.setColor(Color.RED)
         }
       }
       cachedPlayer[name] = Data(name, hp, line)

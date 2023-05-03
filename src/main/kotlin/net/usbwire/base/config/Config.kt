@@ -3,6 +3,7 @@ package net.usbwire.base.config
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import gg.essential.vigilance.Vigilant
+import gg.essential.vigilance.data.PropertyType
 import java.awt.Color
 import java.io.File
 import java.nio.file.Path
@@ -47,24 +48,17 @@ object Config : Vigilant(File(configFile)) {
     Util.createDirectory(Path.of(configFile))
 
     category("POI") {
-      checkbox(::poiEnabled, "Toggle POI", "", true) { Poi.changeState(poiEnabled) }
-      button(
-          "Refresh POIs",
-          """
-        Fetches from ${poiUrl} for the latest data.
-        """.trimIndent(),
-          "",
-          true,
-      ) { Poi.fetchPoiData() }
-      text(::poiUrl, "Internal POI URL", hidden = true)
+      checkbox(::poiEnabled, "Toggle POI") { Poi.changeState(it) }
+      button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
+      text(::poiUrl, "Internal POI URL", "Should not be changed unless you know what you are doing!")
     }
 
     category("Health") {
       subcategory("Hitbox") { checkbox(::healthEnabled, "Toggle GlowHealth") }
       subcategory("Draw") {
         checkbox(::healthDrawEnabled, "Toggle DrawHealth")
-        decimalSlider(::healthDrawX, "X Position", "", 0.0f, 300.0f, 1, true) { HealthHud.xPos.set(healthDrawX) }
-        decimalSlider(::healthDrawY, "Y Position", "", 0.0f, 300.0f, 1, true) { HealthHud.yPos.set(healthDrawY) }
+        percentSlider(::healthDrawX, "X Position") { HealthHud.xPos.set(it) }
+        percentSlider(::healthDrawY, "Y Position") { HealthHud.yPos.set(it) }
         selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"))
       }
       subcategory("General") {
