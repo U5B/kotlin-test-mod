@@ -21,22 +21,31 @@ import net.usbwire.base.BaseMod
 import net.usbwire.base.features.Health
 import net.usbwire.base.util.Util
 
+val DEC = DecimalFormat("0.0")
 object HealthHud {
-  val DEC = DecimalFormat("0.0")
-  data class Data (
+    data class PlayerHP (
     val name: String,
     val health: Health.HealthData,
-    val text: UIComponent
+    val components: PlayerHPCompoments,
+    var tick: Int = 0
   )
 
-  val cachedPlayer: MutableMap<String, Data> = mutableMapOf()
-  var sortedCompoment: Map<String, Data> = mutableMapOf()
+  data class PlayerHPCompoments (
+    val main: UIComponent,
+    val name: UIComponent,
+    val health: UIComponent,
+    val absorption: UIComponent?,
+    val damage: UIComponent?
+  )
+
+
+  val cachedPlayer: MutableMap<String, PlayerHP> = mutableMapOf()
+  var sortedCompoment: Map<String, PlayerHP> = mutableMapOf()
 
   val xPos: State<Number> = BasicState(Config.healthDrawX)
   val yPos: State<Number> = BasicState(Config.healthDrawY)
 
-  // TODO: Fix x and y not doing something properly
-  val window by Window(ElementaVersion.V2).constrain {
+  val window by Window(ElementaVersion.V2, 60).constrain {
     width = FillConstraint(true)
     height = FillConstraint(true)
   }
@@ -55,50 +64,84 @@ object HealthHud {
       // can you even get effects of other players on Monumenta??
       // is that even legal?
       val hp = Health.getHealthProperties(entity)
-      if (hp.color == Color.WHITE) continue
+      // if (hp.color == Color.WHITE) continue
+      // create player container
+      val playerContainer = UIContainer().constrain {
+        x = when (Config.healthDrawAlign) { // alignment
+          0 -> 0.pixels() // left
+          1 -> CenterConstraint() // middle
+          2 -> 0.pixels(true) // right
+          else -> 0.pixels() // left
+        }
+        y = SiblingConstraint(0f)
+        height = ChildBasedMaxSizeConstraint()
+      }
+
+      // create name contianer
       val name = UMessage(UTextComponent(entity.name)).unformattedText
+      var nameMessage = "${name}:"
+      val nameCompoment = UIText(nameMessage).constrain {
+        x = SiblingConstraint(1f)
+        color = hp.color.toConstraint()
+      }
+
       val maxHp = DEC.format(hp.max)
       val currentHp = DEC.format(hp.current)
-      var message = "${name}: ${currentHp}/${maxHp}"
-      var alignConstraint: XConstraint
-      if (Config.healthDrawAlign == 2) { // right align
-        alignConstraint = 0.pixels(true)
-      } else if (Config.healthDrawAlign == 1) { // center align
-        alignConstraint = CenterConstraint()
-      } else { // left align
-        alignConstraint = 0.pixels()
-      }
-      val line = UIText(message).constrain {
-        x = alignConstraint
-        y = SiblingConstraint(2f)
+      // ❤
+      val healthMessage = "${currentHp}❤/${maxHp}❤"
+      val healthCompoment = UIText(healthMessage).constrain {
+        x = SiblingConstraint(1f)
         color = hp.color.toConstraint()
        }
+
+      var absorptionCompoment: UIComponent? = null
        // Absorption?
       if (hp.absorption > 0) {
         val abHp = DEC.format(hp.absorption)
-        UIText("+${abHp}").constrain {
-          x = (line.getWidth() + 2.0f).pixels
+        absorptionCompoment = UIText("+${abHp}❤").constrain {
+          x = SiblingConstraint(1f)
           color = Color.ORANGE.toConstraint()
-        } childOf line
+        }
       }
-      // Damage Change
-      if (previousPlayer[name] != null) {
+      // Health Change
+      var damageCompoment: UIComponent? = null
+      var tick = 0
+      if (previousPlayer[name] != null && Config.healthDrawDamageEnabled) {
+        // tick
+        tick = previousPlayer[name]!!.tick + 1
+        val tickDelay = Config.healthDrawDamageDelay + 1
+
+        // previous health check
         val prevHp = previousPlayer[name]!!.health
         val changeHp = (hp.current + hp.absorption) - (prevHp.current + prevHp.absorption)
         val damageHp = DEC.format(changeHp)
-        if (changeHp > 0) {
-          UIText("+${damageHp}").constrain {
-            x = (line.getWidth() + 4.0f).pixels
+        if (changeHp > 0.1) {
+          damageCompoment = UIText("+${damageHp}❤").constrain {
+            x = SiblingConstraint(1f)
             color = Color.GREEN.toConstraint()
-          } childOf line
-        } else if (changeHp < 0) {
-          UIText("${damageHp}").constrain {
-            x = (line.getWidth() + 4.0f).pixels
+          }
+          tick = 0
+        } else if (changeHp < -0.1) {
+          damageCompoment = UIText("${damageHp}❤").constrain {
+            x = SiblingConstraint(1f)
             color = Color.RED.toConstraint()
-          } childOf line
+          }
+          tick = 0
+        } else if (previousPlayer[name]!!.components.damage != null && tick <= tickDelay) {
+          damageCompoment = previousPlayer[name]!!.components.damage
+        } else if (tick > tickDelay) {
+          tick = 0
+          damageCompoment = null
         }
       }
-      cachedPlayer[name] = Data(name, hp, line)
+
+      playerContainer.addChild(nameCompoment)
+      playerContainer.addChild(healthCompoment)
+      if (absorptionCompoment != null) playerContainer.addChild(absorptionCompoment)
+      if (damageCompoment != null) playerContainer.addChild(damageCompoment)
+      val compoments = PlayerHPCompoments(playerContainer, nameCompoment, healthCompoment, absorptionCompoment, damageCompoment)
+
+      cachedPlayer[name] = PlayerHP(name, hp, compoments, tick)
     }
     sortedCompoment = cachedPlayer.toList().sortedBy { it.second.health.percent }.toMap()
   }
@@ -111,7 +154,7 @@ object HealthHud {
     if (sortedCompoment.isNullOrEmpty() || (world.time % Config.healthUpdateTicks).toInt() == 0) {
       container.clearChildren()
       updatePlayers(world)
-      sortedCompoment.forEach { container.addChild(it.value.text) }
+      sortedCompoment.forEach { container.addChild(it.value.components.main) }
     }
     if (sortedCompoment.isNotEmpty()) window.draw(matrix)
   }

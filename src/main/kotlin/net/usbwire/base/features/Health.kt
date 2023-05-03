@@ -69,6 +69,9 @@ object Health {
   )
   fun hasBadEffect(entity: PlayerEntity): Color? {
     if (Config.healthEffectEnabled == false) return null
+    // Player on fire?
+    if (entity.isOnFire == true && entity.isFireImmune == false) return Config.healthEffectColor
+    // Effects that deal damage
     for (type in badEffects) {
       if (entity.hasStatusEffect(type) == true) {
         val effect = entity.getStatusEffect(type)

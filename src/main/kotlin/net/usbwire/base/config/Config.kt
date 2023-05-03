@@ -44,6 +44,8 @@ object Config : Vigilant(File(configFile)) {
   var healthDrawX = 0.0f
   var healthDrawY = 0.0f
   var healthDrawAlign = 0
+  var healthDrawDamageEnabled = false
+  var healthDrawDamageDelay = 0
 
   init {
     Util.createDirectory(Path.of(configFile))
@@ -64,11 +66,13 @@ object Config : Vigilant(File(configFile)) {
         percentSlider(::healthDrawX, "X Position in Pixels") { HealthHud.xPos.set(it) }
         percentSlider(::healthDrawY, "Y Position in Pixels") { HealthHud.yPos.set(it) }
         selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"))
+        switch(::healthDrawDamageEnabled, "Display Recent Damage")
+        slider(::healthDrawDamageDelay, "Hide Delay in Ticks", min = 1, max = 40)
       }
       subcategory("General") {
         switch(::healthHurtEnabled, "Hurt Toggle")
         switch(::healthEffectEnabled, "Effect Toggle")
-        slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 20) // really?
+        slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 20)
         percentSlider(::healthGoodPercent, "Good HP percent", "100%% HP")
         percentSlider(::healthLowPercent, "Low HP percent", "70%% HP")
         percentSlider(::healthCriticalPercent, "Critical HP percent", "40%% HP")

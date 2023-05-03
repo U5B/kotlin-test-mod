@@ -3,7 +3,8 @@
   "package": "net.usbwire.base.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "HitboxMixin"
+    "HitboxMixin",
+    "ChatHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1
