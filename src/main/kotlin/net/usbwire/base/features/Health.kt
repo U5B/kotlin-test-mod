@@ -12,7 +12,7 @@ object Health {
   data class HealthData(val current: Float, val max: Float, val absorption: Float, val percent: Float, val color: Color)
 
   fun renderHitbox(matrix: MatrixStack, vertex: VertexConsumer, entity: Entity): Boolean {
-    if (!Config.healthEnabled) return false
+    if (Config.healthEnabled == false) return false
     if (entity !is PlayerEntity) return true
     val color = getHealthProperties(entity).color
     if (color == Color.WHITE) return true

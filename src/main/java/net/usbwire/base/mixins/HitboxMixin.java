@@ -18,6 +18,6 @@ public abstract class HitboxMixin {
   private static void renderHitbox(MatrixStack matrices, VertexConsumer vertices, Entity entity, float tickDelta,
       CallbackInfo ci) {
     Boolean cancel = MixinHelper.INSTANCE.renderHitbox(matrices, vertices, entity);
-    if (!cancel) ci.cancel();
+    if (cancel) ci.cancel();
   }
 }

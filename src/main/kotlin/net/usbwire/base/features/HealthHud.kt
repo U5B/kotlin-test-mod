@@ -32,10 +32,17 @@ object HealthHud {
   val yPos = BasicState(Config.healthDrawY)
 
   // TODO: Fix x and y not doing something properly
-  val window by Window(ElementaVersion.V2)
+  val window by Window(ElementaVersion.V2).constrain {
+    x = 0.pixels
+    y = 0.pixels
+    width = 100.percent
+    height = 100.percent
+  }
   val container = UIContainer().constrain {
-    x = xPos.get().percent
-    y = yPos.get().percent
+    x = xPos.get().pixels
+    y = yPos.get().pixels
+    width = ChildBasedMaxSizeConstraint()
+    height = ChildBasedSizeConstraint()
   } childOf window
 
   val cachedPlayer: MutableMap<String, Data> = mutableMapOf()
@@ -45,7 +52,7 @@ object HealthHud {
     val previousPlayer = cachedPlayer
     cachedPlayer.clear()
     for (entity in world.players) {
-      if (entity == BaseMod.mc.player) continue // exclude yourself
+      // if (entity == BaseMod.mc.player) continue // exclude yourself
       // TODO: have bad effects be different colors (wither, poison, etc, )
       // can you even get effects of other players on Monumenta??
       // is that even legal?
@@ -63,10 +70,9 @@ object HealthHud {
       if (hp.absorption > 0) {
         val abHp = DEC.format(hp.absorption)
         val abLine = UIText("+${abHp}").constrain {
-          x = SiblingConstraint(padding = 2f)
-        }
+          x = SiblingConstraint(padding = 2f, true)
+        } childOf line
         abLine.setColor(Color.ORANGE) // hardcoded
-        line.addChild(abLine)
       }
       // Damage Change
       if (previousPlayer[name] != null) {
@@ -75,16 +81,14 @@ object HealthHud {
         val damageHp = DEC.format(changeHp)
         if (changeHp > 0) {
           val changeLine = UIText("+${damageHp}").constrain {
-            x = SiblingConstraint(padding = 2f)
-          }
+            x = SiblingConstraint(padding = 2f, true)
+          } childOf line
           changeLine.setColor(Color.GREEN)
-          line.addChild(changeLine)
         } else if (changeHp < 0) {
           val changeLine = UIText("-${damageHp}").constrain {
-            x = SiblingConstraint(padding = 2f)
-          }
+            x = SiblingConstraint(padding = 2f, true)
+          } childOf line
           changeLine.setColor(Color.RED)
-          line.addChild(changeLine)
         }
       }
       cachedPlayer[name] = Data(name, hp, line)

@@ -63,15 +63,17 @@ object Config : Vigilant(File(configFile)) {
       subcategory("Hitbox") { checkbox(::healthEnabled, "Toggle GlowHealth") }
       subcategory("Draw") {
         checkbox(::healthDrawEnabled, "Toggle DrawHealth")
-        percentSlider(::healthDrawX, "X Position", "", true) { HealthHud.xPos.set(healthDrawX) }
-        percentSlider(::healthDrawY, "Y Position", "", true) { HealthHud.yPos.set(healthDrawY) }
+        decimalSlider(::healthDrawX, "X Position", "", 0.0f, 300.0f, 1, true) { HealthHud.xPos.set(healthDrawX) }
+        decimalSlider(::healthDrawY, "Y Position", "", 0.0f, 300.0f, 1, true) { HealthHud.yPos.set(healthDrawY) }
         selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"))
       }
       subcategory("General") {
         slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 300) // really? 15 seconds?
-        percentSlider(::healthGoodPercent, "Good HP percent", "100% HP")
-        percentSlider(::healthLowPercent, "Low HP percent", "70% HP")
-        percentSlider(::healthCriticalPercent, "Critical HP percent", "40% HP")
+        percentSlider(::healthGoodPercent, "Good HP percent", "100%% HP")
+        percentSlider(::healthLowPercent, "Low HP percent", "70%% HP")
+        percentSlider(::healthCriticalPercent, "Critical HP percent", "40%% HP")
+        checkbox(::healthHurtEnabled, "Hurt Toggle")
+        checkbox(::healthEffectEnabled, "Effect Toggle")
       }
       subcategory("Color") {
         color(::healthBaseColor, "Base HP color", "White (#ffffff) doesn't show.")
@@ -84,6 +86,10 @@ object Config : Vigilant(File(configFile)) {
     }
 
     initialize() // this needs to be called for whatever reason so that configs actually save
+  }
+
+  fun runLater () {
+    registerListener("poiEnabled", { value: Boolean -> Poi.changeState(value) })
   }
 }
 
