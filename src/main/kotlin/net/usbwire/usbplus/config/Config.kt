@@ -57,14 +57,14 @@ object Config : Vigilant(File(configFile)) {
     }
 
     category("Health") {
-      subcategory("Hitbox") { 
+      subcategory("Hitbox") {
         switch(::healthEnabled, "Toggle GlowHealth")
         switch(::healthHitboxCancel, "Cancel other entities!")
       }
       subcategory("Draw") {
         switch(::healthDrawEnabled, "Toggle DrawHealth")
-        percentSlider(::healthDrawX, "X Position in Pixels") { HealthHud.xPos.set(it) }
-        percentSlider(::healthDrawY, "Y Position in Pixels") { HealthHud.yPos.set(it) }
+        decimalSlider(::healthDrawX, "X Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1) { HealthHud.xPos.set(it) }
+        decimalSlider(::healthDrawY, "Y Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1) { HealthHud.yPos.set(it) }
         selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"))
         switch(::healthDrawDamageEnabled, "Display Recent Damage")
         slider(::healthDrawDamageDelay, "Hide Delay in Ticks", min = 1, max = 40)

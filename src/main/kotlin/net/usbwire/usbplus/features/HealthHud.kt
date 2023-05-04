@@ -9,9 +9,11 @@ import gg.essential.elementa.constraints.*
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.*
 import gg.essential.elementa.components.inspector.Inspector
+import gg.essential.elementa.effects.OutlineEffect
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.wrappers.message.UMessage
 import gg.essential.universal.wrappers.message.UTextComponent
+import gg.essential.universal.UResolution
 import gg.essential.api.utils.GuiUtil
 import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.world.ClientWorld
@@ -45,15 +47,13 @@ object HealthHud {
   val xPos: State<Number> = BasicState(Config.healthDrawX)
   val yPos: State<Number> = BasicState(Config.healthDrawY)
 
-  val window by Window(ElementaVersion.V2, 60).constrain {
-    width = FillConstraint(true)
-    height = FillConstraint(true)
-  }
+  val window by Window(ElementaVersion.V2, 60) effect OutlineEffect(Color.BLUE, 2f, true)
   val container = UIContainer().constrain {
-    x = xPos.percent
-    y = yPos.percent
+    x = xPos.pixels
+    y = yPos.pixels
     width = ChildBasedMaxSizeConstraint()
-  } childOf window
+    height = ChildBasedSizeConstraint()
+  } childOf window effect OutlineEffect(Color.RED, 2f, true)
 
   fun updatePlayers(world: ClientWorld) {
     val previousPlayer = cachedPlayer.toMap()
@@ -75,6 +75,7 @@ object HealthHud {
         }
         y = SiblingConstraint(0f)
         height = ChildBasedMaxSizeConstraint()
+        width = ChildBasedSizeConstraint()
       }
 
       // create name contianer
