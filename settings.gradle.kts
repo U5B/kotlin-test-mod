@@ -9,5 +9,6 @@ pluginManagement {
     }
 }
 
-val base_name: String by settings
-rootProject.name = base_name
+val mod_id: String by settings
+val mod_version: String by settings
+rootProject.name = "${mod_id}-${mod_version}"

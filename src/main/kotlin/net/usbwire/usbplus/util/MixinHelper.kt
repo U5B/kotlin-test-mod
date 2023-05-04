@@ -1,4 +1,4 @@
-package net.usbwire.base.util
+package net.usbwire.usbplus.util
 
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.wrappers.message.UTextComponent
@@ -9,9 +9,9 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
 import net.minecraft.text.Text
-import net.usbwire.base.features.Compass
-import net.usbwire.base.features.Health
-import net.usbwire.base.features.HealthHud
+import net.usbwire.usbplus.features.Compass
+import net.usbwire.usbplus.features.Health
+import net.usbwire.usbplus.features.HealthHud
 
 object MixinHelper {
   fun init() {

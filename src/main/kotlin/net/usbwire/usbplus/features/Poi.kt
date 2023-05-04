@@ -1,4 +1,4 @@
-package net.usbwire.base.features
+package net.usbwire.usbplus.features
 
 import gg.essential.api.EssentialAPI
 import gg.essential.api.utils.WebUtil
@@ -7,13 +7,13 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import net.usbwire.base.BaseMod
-import net.usbwire.base.commands.PoiCommand
-import net.usbwire.base.commands.parsers.PoiName
-import net.usbwire.base.commands.parsers.PoiParser
-import net.usbwire.base.config.Config
-import net.usbwire.base.util.Util
-import net.usbwire.base.util.chat.Coordinates
+import net.usbwire.usbplus.USBPlus
+import net.usbwire.usbplus.commands.PoiCommand
+import net.usbwire.usbplus.commands.parsers.PoiName
+import net.usbwire.usbplus.commands.parsers.PoiParser
+import net.usbwire.usbplus.config.Config
+import net.usbwire.usbplus.util.Util
+import net.usbwire.usbplus.util.chat.Coordinates
 
 object Poi {
   @Serializable
@@ -25,7 +25,7 @@ object Poi {
       val coordinates: Coordinates.Coordinates?
   )
 
-  val poiPath = Path.of("${BaseMod.configPath}/pois.json")
+  val poiPath = Path.of("${USBPlus.configPath}/pois.json")
   var poiMap: Map<String, JsonPoi> = emptyMap()
   var poiSuggestions: List<String> = emptyList()
   var firstRun = true
@@ -97,7 +97,7 @@ object Poi {
       Util.chat("'${input}': No POI found.")
       return
     }
-    val dimension = BaseMod.mc.world!!.registryKey.value.toString()
+    val dimension = USBPlus.mc.world!!.registryKey.value.toString()
     val name = poi.name
     val x = poi.coordinates.x
     val y = poi.coordinates.y

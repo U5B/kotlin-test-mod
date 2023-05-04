@@ -1,14 +1,14 @@
-package net.usbwire.base
+package net.usbwire.usbplus
 
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
-import net.usbwire.base.commands.BaseCommand
-import net.usbwire.base.features.Poi
-import net.usbwire.base.util.MixinHelper
+import net.usbwire.usbplus.commands.BaseCommand
+import net.usbwire.usbplus.features.Poi
+import net.usbwire.usbplus.util.MixinHelper
 import org.slf4j.LoggerFactory
 
-object BaseMod : ClientModInitializer {
+object USBPlus : ClientModInitializer {
   // get this from gradle.properties
   val fabricmodjson by lazy { FabricLoader.getInstance().getModContainer("usb").get() }
   val modid: String by lazy { fabricmodjson.metadata.id }

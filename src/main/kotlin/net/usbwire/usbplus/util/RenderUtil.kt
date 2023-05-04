@@ -1,4 +1,4 @@
-package net.usbwire.base.util
+package net.usbwire.usbplus.util
 
 import gg.essential.universal.UGraphics
 import gg.essential.universal.UMatrixStack
@@ -7,7 +7,7 @@ import gg.essential.universal.vertex.UVertexConsumer
 import net.minecraft.util.math.Box
 
 import java.awt.Color
-import net.usbwire.base.BaseMod
+import net.usbwire.usbplus.USBPlus
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.entity.Entity
 
@@ -63,8 +63,8 @@ object RenderUtil {
       wr.drawDirect()
       UGraphics.disableBlend()
     } catch (e: Exception) {
-      BaseMod.logger.info("Error when trying to draw a box!")
-      BaseMod.logger.error(e.stackTraceToString())
+      USBPlus.logger.info("Error when trying to draw a box!")
+      USBPlus.logger.error(e.stackTraceToString())
     }
   }
 

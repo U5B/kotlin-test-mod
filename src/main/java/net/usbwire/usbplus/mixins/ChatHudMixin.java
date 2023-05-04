@@ -1,5 +1,5 @@
 // https://github.com/mrbuilder1961/ChatPatches/blob/1.18.x/src/main/java/obro1961/chatpatches/mixin/chat/ChatHudMixin.java
-package net.usbwire.base.mixins;
+package net.usbwire.usbplus.mixins;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import gg.essential.universal.wrappers.message.UTextComponent;
-import net.usbwire.base.util.MixinHelper;
+import net.usbwire.usbplus.util.MixinHelper;
 
 @Environment(EnvType.CLIENT)
 @Mixin(value = ChatHud.class, priority = 400)

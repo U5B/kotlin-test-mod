@@ -1,13 +1,13 @@
-package net.usbwire.base.commands
+package net.usbwire.usbplus.commands
 
 import gg.essential.api.commands.Command
 import gg.essential.api.commands.DefaultHandler
 import gg.essential.api.commands.Greedy
-import net.usbwire.base.BaseMod
-import net.usbwire.base.features.Poi
-import net.usbwire.base.commands.parsers.PoiName
-import net.usbwire.base.config.Config
-import net.usbwire.base.util.Util
+import net.usbwire.usbplus.USBPlus
+import net.usbwire.usbplus.features.Poi
+import net.usbwire.usbplus.commands.parsers.PoiName
+import net.usbwire.usbplus.config.Config
+import net.usbwire.usbplus.util.Util
 
 object PoiCommand : Command("poi", false) {
   @DefaultHandler

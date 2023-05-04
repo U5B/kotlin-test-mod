@@ -1,21 +1,21 @@
-package net.usbwire.base.features
+package net.usbwire.usbplus.features
 
 import gg.essential.universal.UMouse
 import gg.essential.universal.wrappers.UPlayer
 import net.minecraft.util.registry.Registry
 
-import net.usbwire.base.util.chat.Coordinates
-import net.usbwire.base.BaseMod
-import net.usbwire.base.util.Util
+import net.usbwire.usbplus.util.chat.Coordinates
+import net.usbwire.usbplus.USBPlus
+import net.usbwire.usbplus.util.Util
 
 object Compass {
   fun getCompass (): Coordinates.Coordinates {
-    val spawnPos = BaseMod.mc.world!!.spawnPos
+    val spawnPos = USBPlus.mc.world!!.spawnPos
     return Coordinates.Coordinates(spawnPos.x, spawnPos.y, spawnPos.z)
   }
 
   fun createCompass (compass : Coordinates.Coordinates = getCompass()) {
-    val dimension = BaseMod.mc.world!!.registryKey.value.toString()
+    val dimension = USBPlus.mc.world!!.registryKey.value.toString()
     val name = "Compass"
     val x = compass.x
     val y = compass.y
@@ -27,9 +27,9 @@ object Compass {
   var clicked = false
 
   fun onTick () {
-    val click = BaseMod.mc.mouse.wasLeftButtonClicked()
+    val click = USBPlus.mc.mouse.wasLeftButtonClicked()
     if (click == true && clicked == false) {
-      val mainItem = Registry.ITEM.getId(BaseMod.mc.player?.mainHandStack?.item).toString()
+      val mainItem = Registry.ITEM.getId(USBPlus.mc.player?.mainHandStack?.item).toString()
       if (mainItem == "minecraft:compass") {
         createCompass()
       }

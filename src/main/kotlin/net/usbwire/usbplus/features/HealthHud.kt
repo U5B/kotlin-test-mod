@@ -1,4 +1,4 @@
-package net.usbwire.base.features
+package net.usbwire.usbplus.features
 
 import java.awt.Color
 import java.text.DecimalFormat
@@ -16,10 +16,10 @@ import gg.essential.api.utils.GuiUtil
 import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.world.ClientWorld
 
-import net.usbwire.base.config.Config
-import net.usbwire.base.BaseMod
-import net.usbwire.base.features.Health
-import net.usbwire.base.util.Util
+import net.usbwire.usbplus.config.Config
+import net.usbwire.usbplus.USBPlus
+import net.usbwire.usbplus.features.Health
+import net.usbwire.usbplus.util.Util
 
 val DEC = DecimalFormat("0.0")
 object HealthHud {
@@ -59,7 +59,7 @@ object HealthHud {
     val previousPlayer = cachedPlayer.toMap()
     cachedPlayer.clear()
     for (entity in world.players) {
-      // if (entity == BaseMod.mc.player) continue // exclude yourself
+      // if (entity == USBPlus.mc.player) continue // exclude yourself
       // TODO: have bad effects be different colors (wither, poison, etc, )
       // can you even get effects of other players on Monumenta??
       // is that even legal?
@@ -148,9 +148,9 @@ object HealthHud {
 
   fun draw (matrix: UMatrixStack) { // ChatScreen
     if (Config.healthDrawEnabled == false) return
-    val world = BaseMod.mc.world
+    val world = USBPlus.mc.world
     if (world == null || world.players == null) return
-    if (BaseMod.mc.currentScreen != null && BaseMod.mc.currentScreen !is ChatScreen) return
+    if (USBPlus.mc.currentScreen != null && USBPlus.mc.currentScreen !is ChatScreen) return
     if (sortedCompoment.isNullOrEmpty() || (world.time % Config.healthUpdateTicks).toInt() == 0) {
       container.clearChildren()
       updatePlayers(world)

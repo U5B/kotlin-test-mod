@@ -1,6 +1,6 @@
 // https://github.com/Splzh/ClearHitboxes
 // https://github.com/W-OVERFLOW/Wyvtils/blob/1.17.1/src/main/java/xyz/qalcyo/rysm/mixins/EntityRenderDispatcherMixin.java
-package net.usbwire.base.mixins;
+package net.usbwire.usbplus.mixins;
 
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.usbwire.base.util.MixinHelper;
+import net.usbwire.usbplus.util.MixinHelper;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class HitboxMixin {

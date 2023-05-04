@@ -1,4 +1,4 @@
-package net.usbwire.base.features
+package net.usbwire.usbplus.features
 
 import java.awt.Color
 import net.minecraft.client.render.*
@@ -6,7 +6,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.effect.StatusEffects
-import net.usbwire.base.config.Config
+import net.usbwire.usbplus.config.Config
 
 object Health {
   data class HealthData(val current: Float, val max: Float, val absorption: Float, val percent: Float, val color: Color)

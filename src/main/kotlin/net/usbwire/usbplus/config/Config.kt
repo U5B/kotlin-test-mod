@@ -1,4 +1,4 @@
-package net.usbwire.base.config
+package net.usbwire.usbplus.config
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
@@ -8,12 +8,12 @@ import java.awt.Color
 import java.io.File
 import java.nio.file.Path
 import net.minecraft.client.gui.screen.Screen
-import net.usbwire.base.BaseMod
-import net.usbwire.base.features.Poi
-import net.usbwire.base.features.HealthHud
-import net.usbwire.base.util.Util
+import net.usbwire.usbplus.USBPlus
+import net.usbwire.usbplus.features.Poi
+import net.usbwire.usbplus.features.HealthHud
+import net.usbwire.usbplus.util.Util
 
-val configFile = "${BaseMod.configPath}/config.toml"
+val configFile = "${USBPlus.configPath}/config.toml"
 
 object Config : Vigilant(File(configFile)) {
   // *POI*

@@ -1,11 +1,11 @@
-package net.usbwire.base.util
+package net.usbwire.usbplus.util
 
 import gg.essential.universal.UChat
 import gg.essential.universal.wrappers.message.UMessage
 import gg.essential.universal.wrappers.message.UTextComponent
 import java.nio.file.Files
 import java.nio.file.Path
-import net.usbwire.base.BaseMod
+import net.usbwire.usbplus.USBPlus
 
 object Util {
   fun createPath(file: Path): Boolean {
@@ -40,11 +40,11 @@ object Util {
   }
 
   fun chat(str: String) {
-    UChat.chat(UChat.addColor("§7[§a${BaseMod.name}§7]§r ${str}"))
+    UChat.chat(UChat.addColor("§7[§a${USBPlus.name}§7]§r ${str}"))
   }
 
   fun chat(message: UMessage) {
-    val prefix = UTextComponent(UChat.addColor("§7[§a${BaseMod.name}§7]§r "))
+    val prefix = UTextComponent(UChat.addColor("§7[§a${USBPlus.name}§7]§r "))
     message.addTextComponent(0, prefix)
     message.chat()
   }

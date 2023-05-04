@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "${base_name}",
+  "id": "${mod_id}",
   "version": "${mod_version}",
-  "name": "base.kt",
-  "description": "Port of U5B_'s jsmacro scripts!",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
   "authors": [
     "U5B_"
   ],
@@ -12,31 +12,31 @@
     "sources": "https://github.com/U5B/kotlin-test-mod"
   },
   "license": "GPL",
-  "icon": "assets/usb/icon.png",
+  "icon": "assets/${mod_id}/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
       {
         "adapter": "kotlin",
-        "value": "net.usbwire.base.BaseMod"
+        "value": "${maven_group}.USBPlus"
       }
     ],
     "modmenu": [
       {
         "adapter": "kotlin",
-        "value": "net.usbwire.base.config.ModMenu"
+        "value": "${maven_group}.config.ModMenu"
       }
     ]
   },
   "mixins": [
-    "base.mixins.json"
+    "${mod_id}.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "minecraft": "~${minecraft_version}",
     "java": ">=17",
     "fabric": ">=${fabric_api_version}",
-    "fabric-language-kotlin": ">=1.9.4"
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}"
   },
   "suggests": {
     "modmenu": "*"

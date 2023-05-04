@@ -7,14 +7,8 @@ plugins {
   id("gg.essential.defaults") version "0.1.18"
 }
 
-val base_name: String by project
-val mod_version: String by project
-val maven_group: String by project
-
-val minecraft_version: String by project
 val fabric_api_version: String by project
 val fabric_kotlin_version: String by project
-val fabric_loader_version: String by project
 
 repositories {
   // Add repositories to retrieve artifacts from in here.
@@ -55,7 +49,6 @@ tasks {
   processResources {
     val expansions = project.properties
 
-    // inputs.property("mod_version_expansions", expansions)
     filesMatching(listOf("fabric.mod.json")) { expand(expansions) }
   }
 

@@ -1,12 +1,12 @@
-package net.usbwire.base.util.chat
+package net.usbwire.usbplus.util.chat
 
 import gg.essential.universal.wrappers.message.UMessage
 import gg.essential.universal.wrappers.message.UTextComponent
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import net.minecraft.text.ClickEvent
-import net.usbwire.base.BaseMod
-import net.usbwire.base.util.Util
+import net.usbwire.usbplus.USBPlus
+import net.usbwire.usbplus.util.Util
 
 object Coordinates {
   var supportsXaero = true
@@ -63,7 +63,7 @@ object Coordinates {
       val xaeroCompoment = UTextComponent(" ${minecraftColor}[XAERO]§r")
       val waypoint =
           "xaero_waypoint_add:${name}:${name[0].uppercase()}:${x}:${y}:${z}:${xaeroColor}:false:0:Internal_dim%${currentDimension}_waypoints"
-      BaseMod.logger.info("Xaero: " + waypoint)
+      USBPlus.logger.info("Xaero: " + waypoint)
       // val shareableWaypoint =
       // "xaero-waypoint:${poi.name}:${poi.name[0].uppercase()}:${poi.coordinates.x}:${poi.coordinates.y}:${poi.coordinates.z}:${xaeroColor}:false:0:Internal-dim%${currentWorld}-waypoints"
       xaeroCompoment.clickAction = ClickEvent.Action.RUN_COMMAND

@@ -1,11 +1,11 @@
 // https://github.com/Sk1erLLC/Patcher/blob/e70db7cdc9d0dbc116f276783b2b68937a0ce883/src/main/kotlin/club/sk1er/patcher/commands/PatcherPlayerArgumentParser.kt#L9
-package net.usbwire.base.commands.parsers
+package net.usbwire.usbplus.commands.parsers
 
 import gg.essential.api.commands.ArgumentParser
 import gg.essential.api.commands.ArgumentQueue
 import java.lang.reflect.Parameter
-import net.usbwire.base.BaseMod
-import net.usbwire.base.features.Poi
+import net.usbwire.usbplus.USBPlus
+import net.usbwire.usbplus.features.Poi
 
 class PoiParser : ArgumentParser<PoiName> {
   override fun parse(arguments: ArgumentQueue, param: Parameter): PoiName {
