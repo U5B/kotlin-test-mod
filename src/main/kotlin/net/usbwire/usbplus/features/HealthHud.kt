@@ -28,26 +28,18 @@ object HealthHud {
   data class PlayerHP (
     val name: String,
     var health: Health.HealthData,
-    val components: PlayerHPCompoments,
+    val root: UIComponent,
     val states: PlayerHPStates,
     var tick: PlayerHPTicks
   )
-
-  data class PlayerHPCompoments (
-    val root: UIComponent,
-    val name: UIComponent,
-    val health: UIComponent,
-    val absorption: UIComponent,
-    val damage: UIComponent
-  )
-
   data class PlayerHPStates (
     val name: State<String>,
     val health: State<String>,
     val absorption: State<String>,
-    val damage: State<String>
+    val damage: State<String>,
+    val healthColor: State<Color>,
+    val damageColor: State<Color>
   )
-
   data class PlayerHPTicks (
     var main: Int = -1,
     var damage: Int = -1
@@ -59,7 +51,18 @@ object HealthHud {
   val xPos: State<Number> = BasicState(Config.healthDrawX)
   val yPos: State<Number> = BasicState(Config.healthDrawY)
   val textSize: State<Number> = BasicState(Config.healthDrawScale)
-  val alignPos: State<Number> = BasicState(Config.healthDrawAlign)
+
+  val alignXConstraints: List<XConstraint> = listOf(0.pixels, CenterConstraint(), 0.pixels(true))
+  val alignPos: State<Int> = BasicState(Config.healthDrawAlign)
+  val testState = MappedState(alignPos) {
+    alignXConstraints[it]
+  }
+  val testState2 = MappedState(alignPos) {
+    when (it) {
+      2 -> true
+      else -> false
+    }
+  }
 
   val window by Window(ElementaVersion.V2, 60)
   val container = UIContainer().constrain {
@@ -85,14 +88,28 @@ object HealthHud {
         val healthS = BasicState("0/0 ❤")
         val absorptionS = BasicState("")
         val damageS = BasicState("")
+        val hpColorS = BasicState(hp.color)
+        val damageColorS = BasicState(Color.WHITE)
 
         // create containers
         val rootC = UIContainer().constrain {
-          x = returnAlignConstraint()
           y = SiblingConstraint(0f)
           height = ChildBasedMaxSizeConstraint()
           width = ChildBasedSizeConstraint()
           textScale = textSize.pixels
+        }
+
+        val mainC = UIContainer().constrain {
+          height = ChildBasedMaxSizeConstraint()
+          width = ChildBasedSizeConstraint()
+          color = hpColorS.constraint
+        }
+
+        val extraC = UIContainer().constrain {
+          x = SiblingConstraint(2f, true)
+          height = ChildBasedMaxSizeConstraint()
+          width = ChildBasedSizeConstraint()
+          color = damageColorS.constraint
         }
 
         // create children
@@ -104,17 +121,22 @@ object HealthHud {
         }
         val absorptionC = UIText().bindText(absorptionS).constrain {
           x = SiblingConstraint(2f)
+          color = Color.ORANGE.toConstraint()
         }
         val damageC = UIText().bindText(damageS).constrain {
           x = SiblingConstraint(2f)
         }
 
-        rootC.addChild(nameC)
-        rootC.addChild(healthC)
-        rootC.addChild(absorptionC)
-        val compoments = PlayerHPCompoments(rootC, nameC, healthC, absorptionC, damageC)
-        val states = PlayerHPStates(nameS, healthS, absorptionS, damageS)
-        playerMap[name] = PlayerHP(name, hp, compoments, states, PlayerHPTicks())
+        mainC.addChild(nameC)
+        mainC.addChild(healthC)
+
+        extraC.addChild(absorptionC)
+        extraC.addChild(damageC)
+
+        rootC.addChild(mainC)
+        rootC.addChild(extraC)
+        val states = PlayerHPStates(nameS, healthS, absorptionS, damageS, hpColorS, damageColorS)
+        playerMap[name] = PlayerHP(name, hp, rootC, states, PlayerHPTicks())
       }
 
       // increase tick
@@ -122,19 +144,17 @@ object HealthHud {
 
       // name
       // cachedPlayer[name]!!.states.name.set(name)
-      playerMap[name]!!.components.name.setColor(hp.color.toConstraint())
+      playerMap[name]!!.states.healthColor.set(hp.color)
 
       // health
       val maxHp = DEC.format(hp.max)
       val currentHp = DEC.format(hp.current)
       playerMap[name]!!.states.health.set("${currentHp}/${maxHp} ❤")
-      playerMap[name]!!.components.health.setColor(hp.color.toConstraint())
 
       // absorption
       if (hp.absorption > 0) {
         val abHp = DEC.format(hp.absorption)
         playerMap[name]!!.states.absorption.set("+${abHp}")
-        playerMap[name]!!.components.absorption.setColor(Color.ORANGE.toConstraint())
       } else {
         playerMap[name]!!.states.absorption.set("")
       }
@@ -146,11 +166,11 @@ object HealthHud {
           val damageHp = DEC.format(changeHp)
           if (changeHp > 0.1) {
             playerMap[name]!!.states.damage.set("+${damageHp}")
-            playerMap[name]!!.components.damage.setColor(Config.healthGoodColor)
+            playerMap[name]!!.states.damageColor.set(Config.healthGoodColor)
             playerMap[name]!!.tick.damage = -1
           } else if (changeHp < -0.1) {
             playerMap[name]!!.states.damage.set("${damageHp}") // no negative sign needed
-            playerMap[name]!!.components.damage.setColor(Config.healthCriticalColor)
+            playerMap[name]!!.states.damageColor.set(Config.healthCriticalColor)
             playerMap[name]!!.tick.damage = -1
           }
         } else if (playerMap[name]!!.tick.damage > Config.healthDrawDamageDelay) {
@@ -158,6 +178,8 @@ object HealthHud {
         } else {
           playerMap[name]!!.tick.damage++
         }
+      } else {
+        playerMap[name]!!.states.damage.set("")
       }
 
       playerMap[name]!!.health = hp // this must be after damage/heal change
@@ -167,14 +189,14 @@ object HealthHud {
     for (player in previousPlayerMap) {
       if (currentPlayers.contains(player.key)) continue
       playerMap.remove(player.key)
-      container.removeChild(player.value.components.root)
+      container.removeChild(player.value.root)
     }
 
     // sort map by health
     sortedPlayerMap = playerMap.toList().sortedBy { it.second.health.percent }.toMap()
     for (player in sortedPlayerMap) {
-      if (playerMap.containsKey(player.key) && player.value.components.root.hasParent == false) {
-        container.addChild(player.value.components.root)
+      if (playerMap.containsKey(player.key) && player.value.root.hasParent == false) {
+        container.addChild(player.value.root)
       }
     }
   }
@@ -198,14 +220,5 @@ object HealthHud {
     if (world == null || world.players == null) return
     if (USBPlus.mc.currentScreen != null && USBPlus.mc.currentScreen !is ChatScreen) return
     if (playerMap.isNotEmpty()) window.draw(matrix)
-  }
-
-  fun returnAlignConstraint (): XConstraint {
-    return when (alignPos.get()) {
-      0 -> 0.pixels() // left
-      1 -> CenterConstraint() // middle
-      2 -> 0.pixels(true) // right
-      else -> 0.pixels() // left
-    }
   }
 }

@@ -64,16 +64,18 @@ object Config : Vigilant(File(configFile)) {
       }
       subcategory("Draw") {
         switch(::healthDrawEnabled, "Toggle DrawHealth")
-        decimalSlider(::healthDrawX, "X Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1, triggerActionOnInitialization = false) { 
+        decimalSlider(::healthDrawX, "X Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1, triggerActionOnInitialization = false) {
           HealthHud.xPos.set(it)
         }
-        decimalSlider(::healthDrawY, "Y Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1, triggerActionOnInitialization = false) { 
+        decimalSlider(::healthDrawY, "Y Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1, triggerActionOnInitialization = false) {
           HealthHud.yPos.set(it)
         }
-        selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right")) {
+        selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"), triggerActionOnInitialization = false) {
           HealthHud.alignPos.set(it)
         }
-        decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 2, triggerActionOnInitialization = false) { HealthHud.textSize.set(it) }
+        decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 2, triggerActionOnInitialization = false) {
+           HealthHud.textSize.set(it)
+        }
         switch(::healthDrawDamageEnabled, "Display Recent Damage")
         slider(::healthDrawDamageDelay, "Hide Delay in Ticks", min = 1, max = 60)
       }
