@@ -25,29 +25,64 @@ import net.usbwire.usbplus.util.Util
 
 val DEC = DecimalFormat("0.0")
 object HealthHud {
-    data class PlayerHP (
+  data class PlayerHP (
     val name: String,
-    val health: Health.HealthData,
+    var health: Health.HealthData,
     val components: PlayerHPCompoments,
-    var tick: Int = 0
+    val states: PlayerHPStates,
+    var tick: PlayerHPTicks
   )
 
   data class PlayerHPCompoments (
     val main: UIComponent,
     val name: UIComponent,
     val health: UIComponent,
-    val absorption: UIComponent?,
-    val damage: UIComponent?
+    val absorption: UIComponent,
+    val damage: UIComponent
   )
 
+  data class PlayerHPStates (
+    val name: State<String>
+    val health: State<String>
+    val absorption: State<String>
+    val damage: State<String>
+  )
 
-  val cachedPlayer: MutableMap<String, PlayerHP> = mutableMapOf()
-  var sortedCompoment: Map<String, PlayerHP> = mutableMapOf()
+  data class PlayerHPTicks (
+    var main: Int = -1,
+    var damage: Int = -1
+  )
+
+  val playerMap: MutableMap<String, PlayerHP> = mutableMapOf()
+  var sortedPlayerMap: Map<String, PlayerHP> = emptyMap()
 
   val xPos: State<Number> = BasicState(Config.healthDrawX)
   val yPos: State<Number> = BasicState(Config.healthDrawY)
+  val textSize: State<Number> = BasicState(Config.healthDrawScale)
+  val alignState: State<Number> = BasicState(Config.healthDrawAlign)
+  val alignXConstraint: MappedStateDelegator<State<Number>, XConstraint> = map(::alignState) { 
+    when (it.get()) {
+      0 -> 0.pixels() // left
+      1 -> CenterConstraint() // middle
+      2 -> 0.pixels(true) // right
+      else -> 0.pixels() // left
+    }
+  }
+  val alignBoolean: MappedStateDelegator<State<Number>, Boolean> = map(::alignState) {
+    when (it.get()) {
+      2 -> true // right
+      else -> false // left & center
+    }
+  }
+  val xSpacing: State<Float> = BasicState(1f)
+  val xSiblingConstraint: MappedStateDelegator<State<Float>, SiblingConstraint> = map(::xSpacing) {
+    SiblingConstraint(it.get())
+  }
+  val xSiblingAlignConstraint: MappedStateDelegator<State<Float>, SiblingConstraint> = map(::xSpacing) {
+    SiblingConstraint(it.get(), alignBoolean.state.get())
+  }
 
-  val window by Window(ElementaVersion.V2, 60) effect OutlineEffect(Color.BLUE, 2f, true)
+  val window by Window(ElementaVersion.V2, 60)
   val container = UIContainer().constrain {
     x = xPos.pixels
     y = yPos.pixels
@@ -56,107 +91,132 @@ object HealthHud {
   } childOf window effect OutlineEffect(Color.RED, 2f, true)
 
   fun updatePlayers(world: ClientWorld) {
-    val previousPlayer = cachedPlayer.toMap()
-    cachedPlayer.clear()
-    for (entity in world.players) {
-      // if (entity == USBPlus.mc.player) continue // exclude yourself
-      // TODO: have bad effects be different colors (wither, poison, etc, )
-      // can you even get effects of other players on Monumenta??
-      // is that even legal?
-      val hp = Health.getHealthProperties(entity)
-      // if (hp.color == Color.WHITE) continue
-      // create player container
-      val playerContainer = UIContainer().constrain {
-        x = when (Config.healthDrawAlign) { // alignment
-          0 -> 0.pixels() // left
-          1 -> CenterConstraint() // middle
-          2 -> 0.pixels(true) // right
-          else -> 0.pixels() // left
+    val worldPlayers = world.players
+    if (worldPlayers.isNullOrEmpty()) return
+
+    val previousPlayerMap = playerMap.toMap()
+    for (player in worldPlayers) {
+      val name = UMessage(UTextComponent(player.name)).unformattedText
+      if (name.isNullOrBlank()) continue
+      val hp = Health.getHealthProperties(player)
+
+      if (playerMap[name] == null) {
+        val playerContainer = UIContainer().constrain {
+          x = alignXConstraint.state.get()
+          y = SiblingConstraint(0f)
+          height = ChildBasedMaxSizeConstraint()
+          width = ChildBasedSizeConstraint()
+          textScale = textSize.pixels 
         }
-        y = SiblingConstraint(0f)
-        height = ChildBasedMaxSizeConstraint()
-        width = ChildBasedSizeConstraint()
+        // create states
+        val nameS = BasicState("${name}:")
+        val healthS = BasicState("0/0 ❤")
+        val absorptionS = BasicState("")
+        val damageS = BasicState("")
+        // create constraints
+        val nameC = UIText().bindText(nameS).constrain {
+          x = xSiblingConstraint.state.get()
+        }
+        val healthC = UIText().bindText(healthS).constrain {
+          x = xSiblingConstraint.state.get()
+        }
+        val absorptionC = UIText().bindText(absorptionS).constrain {
+          x = xSiblingConstraint.state.get()
+        }
+        val damageC = UIText().bindText(damageS).constrain {
+          x = xSiblingAlignConstraint.state.get()
+        }
+        playerContainer.addChildren(nameC, healthC, absorptionC, damageC)
+        val compoments = PlayerHPCompoments(playerContainer, nameC, healthC, absorptionC, damageC)
+        val states = PlayerHPStates(nameS, healthS, absorptionS, damageS)
+        playerMap[name] = PlayerHP(name, hp, compoments, states, PlayerHPTicks())
+        playerMap[name]!!.components.absorption.hide(true)
+        playerMap[name]!!.components.damage.hide(true)
       }
 
-      // create name contianer
-      val name = UMessage(UTextComponent(entity.name)).unformattedText
-      var nameMessage = "${name}:"
-      val nameCompoment = UIText(nameMessage).constrain {
-        x = SiblingConstraint(1f)
-        color = hp.color.toConstraint()
-      }
+      // increase tick
+      playerMap[name]!!.tick.main++
 
+      // name
+      // cachedPlayer[name]!!.states.name.set(name)
+      playerMap[name]!!.components.name.setColor(hp.color.toConstraint())
+      
+      // health
       val maxHp = DEC.format(hp.max)
       val currentHp = DEC.format(hp.current)
-      // ❤
-      val healthMessage = "${currentHp}❤/${maxHp}❤"
-      val healthCompoment = UIText(healthMessage).constrain {
-        x = SiblingConstraint(1f)
-        color = hp.color.toConstraint()
-       }
-
-      var absorptionCompoment: UIComponent? = null
-       // Absorption?
+      playerMap[name]!!.states.health.set("${currentHp}/${maxHp} ❤")
+      playerMap[name]!!.components.health.setColor(hp.color.toConstraint())
+      
+      // absorption
       if (hp.absorption > 0) {
+        playerMap[name]!!.components.absorption.unhide(true)
         val abHp = DEC.format(hp.absorption)
-        absorptionCompoment = UIText("+${abHp}❤").constrain {
-          x = SiblingConstraint(1f)
-          color = Color.ORANGE.toConstraint()
-        }
+        playerMap[name]!!.states.absorption.set("+${abHp}")
+        playerMap[name]!!.components.absorption.setColor(Color.ORANGE.toConstraint())
+      } else {
+        playerMap[name]!!.states.absorption.set("")
+        playerMap[name]!!.components.absorption.hide(true)
       }
-      // Health Change
-      var damageCompoment: UIComponent? = null
-      var tick = 0
-      if (previousPlayer[name] != null && Config.healthDrawDamageEnabled) {
-        // tick
-        tick = previousPlayer[name]!!.tick + 1
-        val tickDelay = Config.healthDrawDamageDelay + 1
 
-        // previous health check
-        val prevHp = previousPlayer[name]!!.health
-        val changeHp = (hp.current + hp.absorption) - (prevHp.current + prevHp.absorption)
-        val damageHp = DEC.format(changeHp)
-        if (changeHp > 0.1) {
-          damageCompoment = UIText("+${damageHp}❤").constrain {
-            x = SiblingConstraint(1f)
-            color = Color.GREEN.toConstraint()
+      // damage/heal change
+      if (Config.healthDrawDamageEnabled == true) {
+        if (playerMap[name]!!.health.current != hp.current) {
+          val changeHp = (hp.current + hp.absorption) - (playerMap[name]!!.health.current + playerMap[name]!!.health.absorption)
+          val damageHp = DEC.format(changeHp)
+          if (changeHp > 0.1) {
+            playerMap[name]!!.components.damage.unhide(true)
+            playerMap[name]!!.states.damage.set("+${damageHp}")
+            playerMap[name]!!.components.damage.setColor(Config.healthGoodColor)
+            playerMap[name]!!.tick.damage = -1
+          } else if (changeHp < -0.1) {
+            playerMap[name]!!.components.damage.unhide(true)
+            playerMap[name]!!.states.damage.set("${damageHp}") // no negative sign needed
+            playerMap[name]!!.components.damage.setColor(Config.healthCriticalColor)
+            playerMap[name]!!.tick.damage = -1
           }
-          tick = 0
-        } else if (changeHp < -0.1) {
-          damageCompoment = UIText("${damageHp}❤").constrain {
-            x = SiblingConstraint(1f)
-            color = Color.RED.toConstraint()
-          }
-          tick = 0
-        } else if (previousPlayer[name]!!.components.damage != null && tick <= tickDelay) {
-          damageCompoment = previousPlayer[name]!!.components.damage
-        } else if (tick > tickDelay) {
-          tick = 0
-          damageCompoment = null
+        } else if (playerMap[name]!!.tick.damage > Config.healthDrawDamageDelay) {
+          playerMap[name]!!.states.damage.set("")
+          playerMap[name]!!.components.damage.hide(true)
+        } else {
+          playerMap[name]!!.tick.damage++
         }
       }
 
-      playerContainer.addChild(nameCompoment)
-      playerContainer.addChild(healthCompoment)
-      if (absorptionCompoment != null) playerContainer.addChild(absorptionCompoment)
-      if (damageCompoment != null) playerContainer.addChild(damageCompoment)
-      val compoments = PlayerHPCompoments(playerContainer, nameCompoment, healthCompoment, absorptionCompoment, damageCompoment)
-
-      cachedPlayer[name] = PlayerHP(name, hp, compoments, tick)
+      playerMap[name]!!.health = hp // this must be after damage/heal change
     }
-    sortedCompoment = cachedPlayer.toList().sortedBy { it.second.health.percent }.toMap()
+    // the purge!
+    for (player in playerMap) {
+      if (previousPlayerMap.isNotEmpty() && previousPlayerMap.containsKey(player.key)) {
+        val prevPlayer = previousPlayerMap[player.key]!!
+        if (prevPlayer.tick.main == player.value.tick.main) { // if tick is the same - then player isn't in range
+          playerMap.remove(player.key)
+          container.removeChild(prevPlayer.components.main)
+        }
+        //  ! This might be necessary for compoments to update 
+        // else { // otherwise player exists
+        //   container.replaceChild(player.value.components.main, prevPlayer.components.main)
+        // }
+      } else {
+        container.addChild(player.value.components.main)
+      }
+    }
+  }
+
+  var updating = false
+  fun onWorldTick (world: ClientWorld) {
+    if (Config.healthDrawEnabled == false) return
+    if ((world.time % Config.healthUpdateTicks).toInt() == 0) {
+      updating = true
+      updatePlayers(world)
+      updating = false
+    }
   }
 
   fun draw (matrix: UMatrixStack) { // ChatScreen
     if (Config.healthDrawEnabled == false) return
     val world = USBPlus.mc.world
-    if (world == null || world.players == null) return
+    if (world == null) return
     if (USBPlus.mc.currentScreen != null && USBPlus.mc.currentScreen !is ChatScreen) return
-    if (sortedCompoment.isNullOrEmpty() || (world.time % Config.healthUpdateTicks).toInt() == 0) {
-      container.clearChildren()
-      updatePlayers(world)
-      sortedCompoment.forEach { container.addChild(it.value.components.main) }
-    }
-    if (sortedCompoment.isNotEmpty()) window.draw(matrix)
+    if (updating == false) window.draw(matrix)
   }
 }

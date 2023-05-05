@@ -31,9 +31,9 @@ object Config : Vigilant(File(configFile)) {
   var healthCriticalPercent = 0.4f
 
   var healthHurtEnabled = false
-  var healthHurtColor = Color.PINK
+  var healthHurtColor = Color.ORANGE
   var healthEffectEnabled = false
-  var healthEffectColor = Color.DARK_GRAY
+  var healthEffectColor = Color.GRAY
 
   // *GlowHealth*
   var healthEnabled = false
@@ -44,8 +44,9 @@ object Config : Vigilant(File(configFile)) {
   var healthDrawX = 0.0f
   var healthDrawY = 0.0f
   var healthDrawAlign = 0
+  var healthDrawScale = 1.0f
   var healthDrawDamageEnabled = false
-  var healthDrawDamageDelay = 0
+  var healthDrawDamageDelay = 40
 
   init {
     Util.createDirectory(Path.of(configFile))
@@ -66,8 +67,9 @@ object Config : Vigilant(File(configFile)) {
         decimalSlider(::healthDrawX, "X Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1) { HealthHud.xPos.set(it) }
         decimalSlider(::healthDrawY, "Y Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1) { HealthHud.yPos.set(it) }
         selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"))
+        decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 2) { HealthHud.textSize.set(it) }
         switch(::healthDrawDamageEnabled, "Display Recent Damage")
-        slider(::healthDrawDamageDelay, "Hide Delay in Ticks", min = 1, max = 40)
+        slider(::healthDrawDamageDelay, "Hide Delay in Ticks", min = 1, max = 60)
       }
       subcategory("General") {
         switch(::healthHurtEnabled, "Hurt Toggle")

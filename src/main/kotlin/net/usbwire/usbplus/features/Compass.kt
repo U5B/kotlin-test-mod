@@ -26,7 +26,7 @@ object Compass {
 
   var clicked = false
 
-  fun onTick () {
+  fun onWorldTick () {
     val click = USBPlus.mc.mouse.wasLeftButtonClicked()
     if (click == true && clicked == false) {
       val mainItem = Registry.ITEM.getId(USBPlus.mc.player?.mainHandStack?.item).toString()
