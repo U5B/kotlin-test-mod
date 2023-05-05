@@ -21,7 +21,6 @@ object USBPlus : ClientModInitializer {
   override fun onInitializeClient() {
     logger.info("Hello Fabric world!")
     ConfigCommand.register()
-    Poi.changeState()
     MixinHelper.init()
   }
 }

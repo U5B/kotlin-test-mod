@@ -53,8 +53,8 @@ object Config : Vigilant(File(configFile)) {
 
     category("POI") {
       switch(::poiEnabled, "Toggle POI") { Poi.changeState(it) }
-      button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
       text(::poiUrl, "Internal POI URL", "Should not be changed unless you know what you are doing!")
+      button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
     }
 
     category("Health") {
@@ -64,10 +64,16 @@ object Config : Vigilant(File(configFile)) {
       }
       subcategory("Draw") {
         switch(::healthDrawEnabled, "Toggle DrawHealth")
-        decimalSlider(::healthDrawX, "X Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1) { HealthHud.xPos.set(it) }
-        decimalSlider(::healthDrawY, "Y Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1) { HealthHud.yPos.set(it) }
-        selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"))
-        decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 2) { HealthHud.textSize.set(it) }
+        decimalSlider(::healthDrawX, "X Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1, triggerActionOnInitialization = false) { 
+          HealthHud.xPos.set(it)
+        }
+        decimalSlider(::healthDrawY, "Y Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1, triggerActionOnInitialization = false) { 
+          HealthHud.yPos.set(it)
+        }
+        selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right")) {
+          HealthHud.alignPos.set(it)
+        }
+        decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 2, triggerActionOnInitialization = false) { HealthHud.textSize.set(it) }
         switch(::healthDrawDamageEnabled, "Display Recent Damage")
         slider(::healthDrawDamageDelay, "Hide Delay in Ticks", min = 1, max = 60)
       }
