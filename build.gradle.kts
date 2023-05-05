@@ -1,13 +1,13 @@
-import gg.essential.gradle.util.noServerRunConfigs
-
 plugins {
   kotlin("jvm") version "1.8.21"
   kotlin("plugin.serialization") version "1.8.21"
-  id("gg.essential.defaults.loom") version "0.1.18"
-  id("gg.essential.defaults") version "0.1.18"
+  id("gg.essential.loom") version "0.10.0.2"
 }
 
+val minecraft_version: String by project
+val yarn_mappings: String by project
 val fabric_api_version: String by project
+val fabric_loader_version: String by project
 val fabric_kotlin_version: String by project
 
 repositories {
@@ -22,6 +22,10 @@ repositories {
 }
 
 dependencies {
+  minecraft("com.mojang:minecraft:$minecraft_version")
+  mappings("net.fabricmc:yarn:$yarn_mappings:v2")
+  // fabric loader
+  modImplementation("net.fabricmc:fabric-loader:$fabric_loader_version")
   // kotlin dependency (may not need this if I have essential)
   modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
 
@@ -84,10 +88,6 @@ tasks {
   	}
   }
   */
-}
-
-loom {
-  noServerRunConfigs()
 }
 
 /*

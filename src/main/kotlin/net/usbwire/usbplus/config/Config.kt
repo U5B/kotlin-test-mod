@@ -4,6 +4,7 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import gg.essential.vigilance.Vigilant
 import gg.essential.vigilance.data.PropertyType
+import gg.essential.universal.UResolution
 import java.awt.Color
 import java.io.File
 import java.nio.file.Path
@@ -41,9 +42,10 @@ object Config : Vigilant(File(configFile)) {
 
   // *DrawHealth*
   var healthDrawEnabled = false
-  var healthDrawX = 0.0f
-  var healthDrawY = 0.0f
+  var healthDrawX = 0
+  var healthDrawY = 0
   var healthDrawAlign = 0
+  var healthDrawAlignExtra = 0
   var healthDrawScale = 1.0f
   var healthDrawDamageEnabled = false
   var healthDrawDamageDelay = 40
@@ -64,14 +66,17 @@ object Config : Vigilant(File(configFile)) {
       }
       subcategory("Draw") {
         switch(::healthDrawEnabled, "Toggle DrawHealth")
-        decimalSlider(::healthDrawX, "X Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1, triggerActionOnInitialization = false) {
+        slider(::healthDrawX, "X Position in Pixels", min = 0, max = USBPlus.mc.getWindow().getScaledWidth(), triggerActionOnInitialization = false) {
           HealthHud.xPos.set(it)
         }
-        decimalSlider(::healthDrawY, "Y Position in Pixels", min = 0f, max = 1000f, decimalPlaces = 1, triggerActionOnInitialization = false) {
+        slider(::healthDrawY, "Y Position in Pixels", min = 0, max = USBPlus.mc.getWindow().getScaledHeight(), triggerActionOnInitialization = false) {
           HealthHud.yPos.set(it)
         }
         selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"), triggerActionOnInitialization = false) {
           HealthHud.alignPos.set(it)
+        }
+        selector(::healthDrawAlignExtra, "Extra Alignment", options = listOf("left", "center", "right"), triggerActionOnInitialization = false) {
+          HealthHud.alignExtra.set(it)
         }
         decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 2, triggerActionOnInitialization = false) {
            HealthHud.textSize.set(it)

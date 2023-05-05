@@ -8,6 +8,7 @@ import gg.essential.elementa.components.*
 import gg.essential.elementa.constraints.*
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.*
+import gg.essential.elementa.utils.*
 import gg.essential.elementa.components.inspector.Inspector
 import gg.essential.elementa.effects.OutlineEffect
 import gg.essential.universal.UMatrixStack
@@ -53,16 +54,11 @@ object HealthHud {
   val textSize: State<Number> = BasicState(Config.healthDrawScale)
 
   val alignXConstraints: List<XConstraint> = listOf(0.pixels, CenterConstraint(), 0.pixels(true))
+  val alignXSiblings: List<SiblingConstraint> = listOf(SiblingConstraint(2f), SiblingConstraint(2f), SiblingConstraint(2f, true))
+  val invertedXSiblings: List<SiblingConstraint> = listOf(SiblingConstraint(2f, true), SiblingConstraint(2f), SiblingConstraint(2f))
   val alignPos: State<Int> = BasicState(Config.healthDrawAlign)
-  val testState = MappedState(alignPos) {
-    alignXConstraints[it]
-  }
-  val testState2 = MappedState(alignPos) {
-    when (it) {
-      2 -> true
-      else -> false
-    }
-  }
+  val alignExtra: State<Int> = BasicState(Config.healthDrawAlignExtra)
+  val alignOpposite: State<Boolean> = BasicState(alignPos.map({ if (it >= 2) { true } else { false }} ).get())
 
   val window by Window(ElementaVersion.V2, 60)
   val container = UIContainer().constrain {
@@ -91,40 +87,43 @@ object HealthHud {
         val hpColorS = BasicState(hp.color)
         val damageColorS = BasicState(Color.WHITE)
 
-        // create containers
+        // root container (contains everything)
         val rootC = UIContainer().constrain {
+          x = alignPos.map({ alignXConstraints[it] }).get()
           y = SiblingConstraint(0f)
           height = ChildBasedMaxSizeConstraint()
           width = ChildBasedSizeConstraint()
           textScale = textSize.pixels
         }
 
+        // name and health container
         val mainC = UIContainer().constrain {
+          x = alignPos.map({ alignXSiblings[it] }).get()
           height = ChildBasedMaxSizeConstraint()
           width = ChildBasedSizeConstraint()
+        }
+        val nameC = UIText().bindText(nameS).constrain {
+          x = alignPos.map({ alignXSiblings[it] }).get()
+          color = hpColorS.constraint
+        }
+        val healthC = UIText().bindText(healthS).constrain {
+          x = alignPos.map({ alignXSiblings[it] }).get()
           color = hpColorS.constraint
         }
 
+        // extra container
         val extraC = UIContainer().constrain {
-          x = SiblingConstraint(2f, true)
+          x = alignPos.map({ invertedXSiblings[it] }).get()
           height = ChildBasedMaxSizeConstraint()
           width = ChildBasedSizeConstraint()
-          color = damageColorS.constraint
-        }
-
-        // create children
-        val nameC = UIText().bindText(nameS).constrain {
-          x = SiblingConstraint(2f)
-        }
-        val healthC = UIText().bindText(healthS).constrain {
-          x = SiblingConstraint(2f)
         }
         val absorptionC = UIText().bindText(absorptionS).constrain {
-          x = SiblingConstraint(2f)
+          x = alignPos.map({ invertedXSiblings[it] }).get()
           color = Color.ORANGE.toConstraint()
         }
         val damageC = UIText().bindText(damageS).constrain {
-          x = SiblingConstraint(2f)
+          x = alignPos.map({ invertedXSiblings[it] }).get()
+          color = damageColorS.constraint
         }
 
         mainC.addChild(nameC)
@@ -142,8 +141,7 @@ object HealthHud {
       // increase tick
       playerMap[name]!!.tick.main++
 
-      // name
-      // cachedPlayer[name]!!.states.name.set(name)
+      // set color
       playerMap[name]!!.states.healthColor.set(hp.color)
 
       // health
@@ -203,7 +201,10 @@ object HealthHud {
 
   var configDirty = true
   fun onWorldTick (world: ClientWorld) {
-    if (Config.healthDrawEnabled == false) return
+    if (Config.healthDrawEnabled == false) {
+      configDirty = true
+      return
+    }
     if (configDirty == true) {
       playerMap.clear()
       container.clearChildren()
