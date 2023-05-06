@@ -31,15 +31,14 @@ dependencies {
 
   // fabric api
   setOf(
-          "fabric-api-base",
-          "fabric-networking-api-v1",
-          "fabric-lifecycle-events-v1",
-          "fabric-rendering-v1"
-      )
-      .forEach {
-        // Add each module as a dependency
-        modImplementation(fabricApi.module(it, "$fabric_api_version"))
-      }
+    "fabric-api-base",
+    "fabric-networking-api-v1",
+    "fabric-lifecycle-events-v1",
+    "fabric-rendering-v1"
+  ).forEach {
+    // Add each module as a dependency
+    modImplementation(fabricApi.module(it, "$fabric_api_version"))
+  }
 
   // essential dependencies
   "include"("modRuntimeOnly"("gg.essential:loader-fabric:1.0.0")!!)
@@ -60,12 +59,12 @@ tasks {
 
   compileKotlin {
     kotlinOptions.freeCompilerArgs +=
-        listOf(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
-            "-Xno-param-assertions",
-            "-Xjvm-default=all-compatibility"
-        )
+      listOf(
+        "-opt-in=kotlin.RequiresOptIn",
+        "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
+        "-Xno-param-assertions",
+        "-Xjvm-default=all-compatibility"
+      )
     kotlinOptions.jvmTarget = "17"
   }
   /*
@@ -90,9 +89,33 @@ tasks {
   */
 }
 
+/*
 java {
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this line, sources will not be generated.
-withSourcesJar()
+  // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+  // if it is present.
+  // If you remove this line, sources will not be generated.
+  withSourcesJar()
+}
+*/
+
+loom {
+  launchConfigs {
+    getByName("client") {
+      property("elementa.dev", "true")
+      property("elementa.debug", "true")
+      property("elementa.invalid_usage", "warn")
+      property("mixin.debug.verbose", "true")
+      property("mixin.debug.export", "true")
+      property("mixin.dumpTargetOnFailure", "true")
+      property("legacy.debugClassLoading", "true")
+      property("legacy.debugClassLoadingSave", "true")
+      property("legacy.debugClassLoadingFiner", "true")
+    }
+  }
+  runConfigs {
+    getByName("client") {
+        isIdeConfigGenerated = true
+    }
+    remove(getByName("server"))
+  }
 }

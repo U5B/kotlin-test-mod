@@ -19,7 +19,6 @@ object USBPlus : ClientModInitializer {
   @JvmStatic val mc: MinecraftClient by lazy { MinecraftClient.getInstance() }
 
   override fun onInitializeClient() {
-    logger.info("Hello Fabric world!")
     ConfigCommand.register()
     MixinHelper.init()
   }
