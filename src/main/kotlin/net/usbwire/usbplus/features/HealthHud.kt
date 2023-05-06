@@ -89,47 +89,50 @@ object HealthHud {
 
         // root container (contains everything)
         val rootC = UIContainer().constrain {
-          x = alignPos.map({ alignXConstraints[it] }).get()
+          x = 0.pixels()
           y = SiblingConstraint(0f)
           height = ChildBasedMaxSizeConstraint()
           width = ChildBasedSizeConstraint()
-          textScale = textSize.pixels
         }
 
         // name and health container
         val mainC = UIContainer().constrain {
-          x = alignPos.map({ alignXSiblings[it] }).get()
+          x = SiblingConstraint(5f)
           height = ChildBasedMaxSizeConstraint()
           width = ChildBasedSizeConstraint()
         }
         val nameC = UIText().bindText(nameS).constrain {
-          x = alignPos.map({ alignXSiblings[it] }).get()
+          x = SiblingConstraint(5f)
           color = hpColorS.constraint
+          textScale = textSize.pixels
         }
         val healthC = UIText().bindText(healthS).constrain {
-          x = alignPos.map({ alignXSiblings[it] }).get()
+          x = SiblingConstraint(5f)
           color = hpColorS.constraint
+          textScale = textSize.pixels
+        }
+        val absorptionC = UIText().bindText(absorptionS).constrain {
+          x = SiblingConstraint(5f)
+          color = Color.ORANGE.toConstraint()
+          textScale = textSize.pixels
         }
 
         // extra container
         val extraC = UIContainer().constrain {
-          x = alignPos.map({ invertedXSiblings[it] }).get()
+          x = SiblingConstraint(5f, true)
           height = ChildBasedMaxSizeConstraint()
           width = ChildBasedSizeConstraint()
         }
-        val absorptionC = UIText().bindText(absorptionS).constrain {
-          x = alignPos.map({ invertedXSiblings[it] }).get()
-          color = Color.ORANGE.toConstraint()
-        }
         val damageC = UIText().bindText(damageS).constrain {
-          x = alignPos.map({ invertedXSiblings[it] }).get()
+          x = SiblingConstraint(5f, true)
           color = damageColorS.constraint
+          textScale = textSize.pixels
         }
 
         mainC.addChild(nameC)
         mainC.addChild(healthC)
+        mainC.addChild(absorptionC)
 
-        extraC.addChild(absorptionC)
         extraC.addChild(damageC)
 
         rootC.addChild(mainC)

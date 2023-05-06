@@ -66,10 +66,10 @@ object Config : Vigilant(File(configFile)) {
       }
       subcategory("Draw") {
         switch(::healthDrawEnabled, "Toggle DrawHealth")
-        slider(::healthDrawX, "X Position in Pixels", min = 0, max = USBPlus.mc.getWindow().getScaledWidth(), triggerActionOnInitialization = false) {
+        slider(::healthDrawX, "X Position in Pixels", min = 0, max = USBPlus.mc.getWindow().getWidth(), triggerActionOnInitialization = false) {
           HealthHud.xPos.set(it)
         }
-        slider(::healthDrawY, "Y Position in Pixels", min = 0, max = USBPlus.mc.getWindow().getScaledHeight(), triggerActionOnInitialization = false) {
+        slider(::healthDrawY, "Y Position in Pixels", min = 0, max = USBPlus.mc.getWindow().getHeight(), triggerActionOnInitialization = false) {
           HealthHud.yPos.set(it)
         }
         selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"), triggerActionOnInitialization = false) {

@@ -1,7 +1,7 @@
 plugins {
   kotlin("jvm") version "1.8.21"
   kotlin("plugin.serialization") version "1.8.21"
-  id("gg.essential.loom") version "0.10.0.2"
+  id("gg.essential.loom") version "0.10.0.+"
 }
 
 val minecraft_version: String by project
@@ -90,11 +90,9 @@ tasks {
   */
 }
 
-/*
- java {
- 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
- 	// if it is present.
- 	// If you remove this line, sources will not be generated.
- 	withSourcesJar()
- }
- */
+java {
+// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+// if it is present.
+// If you remove this line, sources will not be generated.
+withSourcesJar()
+}
