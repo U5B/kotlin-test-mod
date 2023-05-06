@@ -15,7 +15,10 @@ import gg.essential.universal.UMatrixStack
 import gg.essential.universal.wrappers.message.UMessage
 import gg.essential.universal.wrappers.message.UTextComponent
 import gg.essential.universal.UResolution
+import gg.essential.universal.UMouse
+import gg.essential.universal.UGraphics
 import gg.essential.api.utils.GuiUtil
+import gg.essential.api.EssentialAPI
 import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.world.ClientWorld
 
@@ -49,24 +52,23 @@ object HealthHud {
   val playerMap: MutableMap<String, PlayerHP> = mutableMapOf()
   var sortedPlayerMap: Map<String, PlayerHP> = emptyMap()
 
-  val xPos: State<Number> = BasicState(Config.healthDrawX)
-  val yPos: State<Number> = BasicState(Config.healthDrawY)
+  val xPos: State<Float> = BasicState(Config.healthDrawX)
+  val yPos: State<Float> = BasicState(Config.healthDrawY)
   val textSize: State<Number> = BasicState(Config.healthDrawScale)
 
   val alignXConstraints: List<XConstraint> = listOf(0.pixels, CenterConstraint(), 0.pixels(true))
   val alignXSiblings: List<SiblingConstraint> = listOf(SiblingConstraint(2f), SiblingConstraint(2f), SiblingConstraint(2f, true))
   val invertedXSiblings: List<SiblingConstraint> = listOf(SiblingConstraint(2f, true), SiblingConstraint(2f), SiblingConstraint(2f))
-  val alignPos: State<Int> = BasicState(Config.healthDrawAlign)
-  val alignExtra: State<Int> = BasicState(Config.healthDrawAlignExtra)
-  val alignOpposite: State<Boolean> = BasicState(alignPos.map({ if (it >= 2) { true } else { false }} ).get())
+  val alignRight: State<Boolean> = BasicState(Config.healthDrawAlignRight)
+  val alignRightExtra: State<Boolean> = BasicState(Config.healthDrawAlignExtraRight)
 
   val window by Window(ElementaVersion.V2, 60)
-  val container = UIContainer().constrain {
-    x = xPos.pixels
-    y = yPos.pixels
+  val container = UIContainer().constrain { // hardcoded for now!
+    x = CenterConstraint()
+    y = 0.pixels
     width = ChildBasedMaxSizeConstraint()
     height = ChildBasedSizeConstraint()
-  } childOf window
+  }
 
   fun updatePlayers(world: ClientWorld) {
     val worldPlayers = world.players
@@ -89,54 +91,46 @@ object HealthHud {
 
         // root container (contains everything)
         val rootC = UIContainer().constrain {
-          x = 0.pixels()
+          x = 0.pixels(alignRight.get())
           y = SiblingConstraint(0f)
-          height = ChildBasedMaxSizeConstraint()
           width = ChildBasedSizeConstraint()
+          height = ChildBasedMaxSizeConstraint()
         }
 
-        // name and health container
-        val mainC = UIContainer().constrain {
-          x = SiblingConstraint(5f)
-          height = ChildBasedMaxSizeConstraint()
-          width = ChildBasedSizeConstraint()
-        }
         val nameC = UIText().bindText(nameS).constrain {
-          x = SiblingConstraint(5f)
+          x = SiblingConstraint("l".width(textSize.get().toFloat()))
           color = hpColorS.constraint
           textScale = textSize.pixels
         }
         val healthC = UIText().bindText(healthS).constrain {
-          x = SiblingConstraint(5f)
+          x = SiblingConstraint("l".width(textSize.get().toFloat()))
           color = hpColorS.constraint
           textScale = textSize.pixels
         }
         val absorptionC = UIText().bindText(absorptionS).constrain {
-          x = SiblingConstraint(5f)
+          x = SiblingConstraint("l".width(textSize.get().toFloat()))
           color = Color.ORANGE.toConstraint()
           textScale = textSize.pixels
         }
 
-        // extra container
-        val extraC = UIContainer().constrain {
-          x = SiblingConstraint(5f, true)
-          height = ChildBasedMaxSizeConstraint()
-          width = ChildBasedSizeConstraint()
-        }
         val damageC = UIText().bindText(damageS).constrain {
-          x = SiblingConstraint(5f, true)
+          x = SiblingConstraint("l".width(textSize.get().toFloat()))
           color = damageColorS.constraint
           textScale = textSize.pixels
         }
 
-        mainC.addChild(nameC)
-        mainC.addChild(healthC)
-        mainC.addChild(absorptionC)
-
-        extraC.addChild(damageC)
-
-        rootC.addChild(mainC)
-        rootC.addChild(extraC)
+        if (alignRightExtra.get()) { // reverse order
+          rootC.addChild(damageC)
+          rootC.addChild(nameC)
+          rootC.addChild(healthC)
+          rootC.addChild(absorptionC)
+        }
+        else {
+          rootC.addChild(nameC)
+          rootC.addChild(healthC)
+          rootC.addChild(absorptionC)
+          rootC.addChild(damageC)
+        }
         val states = PlayerHPStates(nameS, healthS, absorptionS, damageS, hpColorS, damageColorS)
         playerMap[name] = PlayerHP(name, hp, rootC, states, PlayerHPTicks())
       }

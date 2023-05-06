@@ -42,10 +42,10 @@ object Config : Vigilant(File(configFile)) {
 
   // *DrawHealth*
   var healthDrawEnabled = false
-  var healthDrawX = 0
-  var healthDrawY = 0
-  var healthDrawAlign = 0
-  var healthDrawAlignExtra = 0
+  var healthDrawX = 0.0f
+  var healthDrawY = 0.0f
+  var healthDrawAlignRight = false
+  var healthDrawAlignExtraRight = true
   var healthDrawScale = 1.0f
   var healthDrawDamageEnabled = false
   var healthDrawDamageDelay = 40
@@ -66,20 +66,25 @@ object Config : Vigilant(File(configFile)) {
       }
       subcategory("Draw") {
         switch(::healthDrawEnabled, "Toggle DrawHealth")
-        slider(::healthDrawX, "X Position in Pixels", min = 0, max = USBPlus.mc.getWindow().getWidth(), triggerActionOnInitialization = false) {
+        percentSlider(::healthDrawX, "X Position in Pixels", triggerActionOnInitialization = false) {
           HealthHud.xPos.set(it)
+          HealthHud.configDirty = true
         }
-        slider(::healthDrawY, "Y Position in Pixels", min = 0, max = USBPlus.mc.getWindow().getHeight(), triggerActionOnInitialization = false) {
+        percentSlider(::healthDrawY, "Y Position in Pixels", triggerActionOnInitialization = false) {
           HealthHud.yPos.set(it)
+          HealthHud.configDirty = true
         }
-        selector(::healthDrawAlign, "Text Alignment", options = listOf("left", "center", "right"), triggerActionOnInitialization = false) {
-          HealthHud.alignPos.set(it)
+        switch(::healthDrawAlignRight, "Text Alignment", triggerActionOnInitialization = false) {
+          HealthHud.alignRight.set(it)
+          HealthHud.configDirty = true
         }
-        selector(::healthDrawAlignExtra, "Extra Alignment", options = listOf("left", "center", "right"), triggerActionOnInitialization = false) {
-          HealthHud.alignExtra.set(it)
+        switch(::healthDrawAlignExtraRight, "Extra Alignment", triggerActionOnInitialization = false) {
+          HealthHud.alignRightExtra.set(it)
+          HealthHud.configDirty = true
         }
         decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 2, triggerActionOnInitialization = false) {
            HealthHud.textSize.set(it)
+           HealthHud.configDirty = true
         }
         switch(::healthDrawDamageEnabled, "Display Recent Damage")
         slider(::healthDrawDamageDelay, "Hide Delay in Ticks", min = 1, max = 60)
