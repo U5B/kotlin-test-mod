@@ -44,7 +44,7 @@ object Config : Vigilant(File(configFile)) {
   var healthDrawEnabled = false
   var healthDrawX = 0.0f
   var healthDrawY = 0.0f
-  var healthDrawAlignRight = false
+  var healthDrawAlign = 0.0f
   var healthDrawAlignExtraRight = true
   var healthDrawScale = 1.0f
   var healthDrawDamageEnabled = false
@@ -74,8 +74,8 @@ object Config : Vigilant(File(configFile)) {
           HealthHud.yPos.set(it)
           HealthHud.configDirty = true
         }
-        switch(::healthDrawAlignRight, "Text Alignment", triggerActionOnInitialization = false) {
-          HealthHud.alignRight.set(it)
+        percentSlider(::healthDrawAlign, "Text Alignment", triggerActionOnInitialization = false) {
+          HealthHud.alignPos.set(it)
           HealthHud.configDirty = true
         }
         switch(::healthDrawAlignExtraRight, "Extra Alignment", triggerActionOnInitialization = false) {

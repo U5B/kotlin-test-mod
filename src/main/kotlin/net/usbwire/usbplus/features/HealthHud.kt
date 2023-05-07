@@ -26,7 +26,6 @@ import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.features.Health
 import net.usbwire.usbplus.util.Util
-import net.usbwire.usbplus.hud.CustomCenterConstraint
 
 val DEC = DecimalFormat("0.0")
 object HealthHud {
@@ -55,20 +54,17 @@ object HealthHud {
 
   val xPos: State<Float> = BasicState(Config.healthDrawX)
   val yPos: State<Float> = BasicState(Config.healthDrawY)
+  val alignPos: State<Float> = BasicState(Config.healthDrawAlign)
   val textSize: State<Number> = BasicState(Config.healthDrawScale)
 
-  val alignXConstraints: List<XConstraint> = listOf(0.pixels, CenterConstraint(), 0.pixels(true))
-  val alignXSiblings: List<SiblingConstraint> = listOf(SiblingConstraint(2f), SiblingConstraint(2f), SiblingConstraint(2f, true))
-  val invertedXSiblings: List<SiblingConstraint> = listOf(SiblingConstraint(2f, true), SiblingConstraint(2f), SiblingConstraint(2f))
-  val alignRight: State<Boolean> = BasicState(Config.healthDrawAlignRight)
   val alignRightExtra: State<Boolean> = BasicState(Config.healthDrawAlignExtraRight)
 
   // CenterConstraint code
   // parent.getLeft() + (parent.getWidth() / 2 - component.getWidth() / 2).roundToRealPixels()
   val window by Window(ElementaVersion.V2, 60)
-  val container = UIContainer().constrain { // hardcoded for now!
-    x = CustomCenterConstraint(xPos)
-    y =  CustomCenterConstraint(yPos)
+  val container = UIContainer().constrain {
+    x = CenterConstraint() - 50.percent * xPos.map({ it })
+    y = CenterConstraint() - 50.percent * yPos.map({ it })
     width = ChildBasedMaxSizeConstraint()
     height = ChildBasedSizeConstraint()
   } childOf window
@@ -94,6 +90,7 @@ object HealthHud {
 
         // root container (contains everything)
         val rootC = UIContainer().constrain {
+          x = CenterConstraint() - 50.percent * alignPos.map({ it })
           y = SiblingConstraint(0f)
           width = ChildBasedSizeConstraint()
           height = ChildBasedMaxSizeConstraint()
