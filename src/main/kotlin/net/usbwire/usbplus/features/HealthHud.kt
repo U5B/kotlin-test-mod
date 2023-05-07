@@ -26,6 +26,7 @@ import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.features.Health
 import net.usbwire.usbplus.util.Util
+import net.usbwire.usbplus.hud.CustomCenterConstraint
 
 val DEC = DecimalFormat("0.0")
 object HealthHud {
@@ -62,13 +63,15 @@ object HealthHud {
   val alignRight: State<Boolean> = BasicState(Config.healthDrawAlignRight)
   val alignRightExtra: State<Boolean> = BasicState(Config.healthDrawAlignExtraRight)
 
+  // CenterConstraint code
+  // parent.getLeft() + (parent.getWidth() / 2 - component.getWidth() / 2).roundToRealPixels()
   val window by Window(ElementaVersion.V2, 60)
   val container = UIContainer().constrain { // hardcoded for now!
-    x = CenterConstraint()
-    y = 0.pixels
+    x = CustomCenterConstraint(xPos)
+    y =  CustomCenterConstraint(yPos)
     width = ChildBasedMaxSizeConstraint()
     height = ChildBasedSizeConstraint()
-  }
+  } childOf window
 
   fun updatePlayers(world: ClientWorld) {
     val worldPlayers = world.players
@@ -91,7 +94,6 @@ object HealthHud {
 
         // root container (contains everything)
         val rootC = UIContainer().constrain {
-          x = 0.pixels(alignRight.get())
           y = SiblingConstraint(0f)
           width = ChildBasedSizeConstraint()
           height = ChildBasedMaxSizeConstraint()
