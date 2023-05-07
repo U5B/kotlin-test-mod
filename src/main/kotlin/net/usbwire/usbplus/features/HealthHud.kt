@@ -26,6 +26,7 @@ import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.features.Health
 import net.usbwire.usbplus.util.Util
+import net.usbwire.usbplus.hud.CustomCenterConstraint
 
 val DEC = DecimalFormat("0.0")
 object HealthHud {
@@ -63,8 +64,8 @@ object HealthHud {
   // parent.getLeft() + (parent.getWidth() / 2 - component.getWidth() / 2).roundToRealPixels()
   val window by Window(ElementaVersion.V2, 60)
   val container = UIContainer().constrain {
-    x = CenterConstraint() - 50.percent * xPos.map({ it })
-    y = CenterConstraint() - 50.percent * yPos.map({ it })
+    x = CustomCenterConstraint(xPos)
+    y = CustomCenterConstraint(yPos)
     width = ChildBasedMaxSizeConstraint()
     height = ChildBasedSizeConstraint()
   } childOf window
@@ -90,34 +91,37 @@ object HealthHud {
 
         // root container (contains everything)
         val rootC = UIContainer().constrain {
-          x = CenterConstraint() - 50.percent * alignPos.map({ it })
+          x = CustomCenterConstraint(alignPos)
           y = SiblingConstraint(0f)
           width = ChildBasedSizeConstraint()
           height = ChildBasedMaxSizeConstraint()
         }
+        rootC.componentName = name
 
         val nameC = UIText().bindText(nameS).constrain {
           x = SiblingConstraint("l".width(textSize.get().toFloat()))
           color = hpColorS.constraint
           textScale = textSize.pixels
         }
+        nameC.componentName = "name"
         val healthC = UIText().bindText(healthS).constrain {
           x = SiblingConstraint("l".width(textSize.get().toFloat()))
           color = hpColorS.constraint
           textScale = textSize.pixels
         }
+        healthC.componentName = "health"
         val absorptionC = UIText().bindText(absorptionS).constrain {
           x = SiblingConstraint("l".width(textSize.get().toFloat()))
           color = Color.ORANGE.toConstraint()
           textScale = textSize.pixels
         }
-
+        absorptionC.componentName = "absorption"
         val damageC = UIText().bindText(damageS).constrain {
           x = SiblingConstraint("l".width(textSize.get().toFloat()))
           color = damageColorS.constraint
           textScale = textSize.pixels
         }
-
+        damageC.componentName = "damage"
         if (alignRightExtra.get()) { // reverse order
           rootC.addChild(damageC)
           rootC.addChild(nameC)
@@ -186,12 +190,15 @@ object HealthHud {
       container.removeChild(player.value.root)
     }
 
-    // sort map by health
-    sortedPlayerMap = playerMap.toList().sortedBy { it.second.health.percent }.toMap()
-    for (player in sortedPlayerMap) {
-      if (playerMap.containsKey(player.key) && player.value.root.hasParent == false) {
+    for (player in playerMap) {
+      if (player.value.root.hasParent == false) {
         container.addChild(player.value.root)
       }
+    }
+
+    // sort container by health
+    container.children.sortBy {
+      playerMap[it.componentName]!!.health.percent
     }
   }
 
