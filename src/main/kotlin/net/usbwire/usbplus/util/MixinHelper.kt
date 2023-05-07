@@ -9,35 +9,33 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
 import net.minecraft.text.Text
-import net.usbwire.usbplus.features.Compass
-import net.usbwire.usbplus.features.Health
-import net.usbwire.usbplus.features.HealthHud
+import net.usbwire.usbplus.features.*
 
 object MixinHelper {
-  fun init() {
-    ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) } }
-    // WorldRenderEvents.LAST.register { test -> run  { renderTick(test) }}
-    HudRenderCallback.EVENT.register { matrix, ticks -> run { hudRender(matrix, ticks) } }
-  }
+	fun init() {
+		ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) } }
+		// WorldRenderEvents.LAST.register { test -> run  { renderTick(test) }}
+		HudRenderCallback.EVENT.register { matrix, ticks -> run { hudRender(matrix, ticks) } }
+	}
 
-  fun worldTick(clientWorld: ClientWorld) {
-    HealthHud.onWorldTick(clientWorld)
-    Compass.onWorldTick()
-  }
+	fun worldTick(clientWorld: ClientWorld) {
+		HealthHud.onWorldTick(clientWorld)
+		Compass.onWorldTick()
+	}
 
-  fun renderTick(test: WorldRenderContext) {}
+	fun renderTick(test: WorldRenderContext) {}
 
-  fun hudRender(matrixStack: MatrixStack, ticks: Float) {
-    val matrix = UMatrixStack(matrixStack)
-    HealthHud.draw(matrix)
-  }
+	fun hudRender(matrixStack: MatrixStack, ticks: Float) {
+		val matrix = UMatrixStack(matrixStack)
+		HealthHud.draw(matrix)
+	}
 
-  fun renderHitbox(matrix: MatrixStack, vertex: VertexConsumer, entity: Entity): Boolean {
-    return Health.renderHitbox(matrix, vertex, entity)
-  }
+	fun renderHitbox(matrix: MatrixStack, vertex: VertexConsumer, entity: Entity): Boolean {
+		return Health.renderHitbox(matrix, vertex, entity)
+	}
 
-  fun onMessage(mcText: Text, id: Int, ticks: Int, refresh: Boolean): Boolean {
-    val message = UTextComponent(mcText)
-    return false
-  }
+	fun onMessage(mcText: Text, id: Int, ticks: Int, refresh: Boolean): Boolean {
+		val message = UTextComponent(mcText)
+		return false
+	}
 }

@@ -3,8 +3,8 @@
   "package": "net.usbwire.usbplus.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "HitboxMixin",
-    "ChatHudMixin"
+    "ChatHudMixin",
+    "HitboxMixin"
   ],
   "injectors": {
     "defaultRequire": 1
