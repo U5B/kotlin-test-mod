@@ -68,6 +68,9 @@ object HealthHud {
 		val currentPlayers: MutableList<String> = mutableListOf()
 		for (player in worldPlayers) {
 			val name = UMessage(UTextComponent(player.name)).unformattedText
+
+			if (Config.healthWhitelistEnabled && !Config.healthWhitelist.lowercase().contains(name.lowercase())) continue
+
 			val hp = Health.getHealthProperties(player)
 
 			if (playerMap[name] == null) {
@@ -82,7 +85,7 @@ object HealthHud {
 				// root container (contains everything)
 				val rootC = UIContainer().constrain {
 					x = CustomCenterConstraint(alignPos)
-					y = SiblingConstraint(0f)
+					y = SiblingConstraint(2f + textSize.get().toFloat())
 					width = ChildBasedSizeConstraint()
 					height = ChildBasedMaxSizeConstraint()
 				}
@@ -172,7 +175,7 @@ object HealthHud {
 			playerMap[name]!!.health = hp // this must be after damage/heal change
 			currentPlayers.add(name) // required for removal
 		}
-		// remove out of range players players
+		// remove out of range players
 		for (player in previousPlayerMap) {
 			if (currentPlayers.contains(player.key)) continue
 			playerMap.remove(player.key)
@@ -185,9 +188,11 @@ object HealthHud {
 			}
 		}
 
-		// sort container by health
-		container.children.sortBy {
-			playerMap[it.componentName]!!.health.percent
+		// sort container by max health and percent
+		if (Config.healthDrawSort == 0) {
+			container.children.sortBy { it.componentName }
+		} else if (Config.healthDrawSort == 1) {
+			container.children.sortBy { playerMap[it.componentName]!!.health.percent }
 		}
 	}
 

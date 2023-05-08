@@ -18,6 +18,8 @@ object Config : Vigilant(File(configFile)) {
 	var poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json" // github url
 
 	// *Common Health*
+	var healthWhitelistEnabled = false
+	var healthWhitelist = ""
 	var healthUpdateTicks = 1
 	var healthBaseColor = Color.WHITE
 	var healthGoodColor = Color.GREEN
@@ -45,6 +47,7 @@ object Config : Vigilant(File(configFile)) {
 	var healthDrawScale = 1.0f
 	var healthDrawDamageEnabled = false
 	var healthDrawDamageDelay = 10
+	var healthDrawSort = 0
 
 	init {
 		Util.createDirectory(Path.of(configFile))
@@ -55,12 +58,24 @@ object Config : Vigilant(File(configFile)) {
 			button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
 		}
 
-		category("Health") {
-			subcategory("Hitbox") {
-				switch(::healthEnabled, "Toggle GlowHealth")
-				switch(::healthHitboxCancel, "Cancel other entities!")
+    category("Health Colors") {
+      subcategory("Color") {
+				color(::healthBaseColor, "Base HP color", "White (#ffffff) doesn't show.")
+				color(::healthGoodColor, "Good HP color")
+        percentSlider(::healthGoodPercent, "Good HP percent", "100%% HP")
+				color(::healthLowColor, "Low HP color")
+        percentSlider(::healthLowPercent, "Low HP percent", "70%% HP")
+				color(::healthCriticalColor, "Critical HP color")
+        percentSlider(::healthCriticalPercent, "Critical HP percent", "40%% HP")
+        switch(::healthHurtEnabled, "Hurt Color Toggle")
+				color(::healthHurtColor, "Hurt color")
+        switch(::healthEffectEnabled, "Fire Color Toggle")
+				color(::healthEffectColor, "Fire Color")
 			}
-			subcategory("Draw") {
+    }
+
+		category("Health Draw") {
+      subcategory("Draw") {
 				switch(::healthDrawEnabled, "Toggle DrawHealth")
 				percentSlider(::healthDrawX, "X Position Percent", triggerActionOnInitialization = false) {
 					HealthHud.xPos.set(it)
@@ -74,32 +89,29 @@ object Config : Vigilant(File(configFile)) {
 					HealthHud.alignPos.set(it)
 					HealthHud.configDirty = true
 				}
-				switch(::healthDrawAlignExtraRight, "Extra Alignment", triggerActionOnInitialization = false) {
-					HealthHud.alignRightExtra.set(it)
-					HealthHud.configDirty = true
-				}
 				decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 2, triggerActionOnInitialization = false) {
 					HealthHud.textSize.set(it)
 					HealthHud.configDirty = true
 				}
 				switch(::healthDrawDamageEnabled, "Display Recent Damage")
-				slider(::healthDrawDamageDelay, "Hide Delay in Ticks", min = 1, max = 60)
+				slider(::healthDrawDamageDelay, "Damage Hide Delay in Ticks", min = 1, max = 60)
+				switch(::healthDrawAlignExtraRight, "Recent Damage Alignment", triggerActionOnInitialization = false) {
+					HealthHud.alignRightExtra.set(it)
+					HealthHud.configDirty = true
+				}
+				selector(::healthDrawSort, "Sort player list by", options = listOf("alphabetical", "health", "time"))
+			}
+		}
+
+		category("Health General") {
+			subcategory("Hitbox") {
+				switch(::healthEnabled, "Toggle BoxHealth", "F3+B Hitboxes must be ON and color must not be white!")
+				switch(::healthHitboxCancel, "Disable rendering hitboxes on entities other than players!")
 			}
 			subcategory("General") {
-				switch(::healthHurtEnabled, "Hurt Color Toggle")
-				switch(::healthEffectEnabled, "Fire Color Toggle")
 				slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 20)
-				percentSlider(::healthGoodPercent, "Good HP percent", "100%% HP")
-				percentSlider(::healthLowPercent, "Low HP percent", "70%% HP")
-				percentSlider(::healthCriticalPercent, "Critical HP percent", "40%% HP")
-			}
-			subcategory("Color") {
-				color(::healthBaseColor, "Base HP color", "White (#ffffff) doesn't show.")
-				color(::healthGoodColor, "Good HP color")
-				color(::healthLowColor, "Low HP color")
-				color(::healthCriticalColor, "Critical HP color")
-				color(::healthHurtColor, "Hurt color")
-				color(::healthEffectColor, "Fire Color")
+				switch(::healthWhitelistEnabled, "Toggle Whitelist")
+				paragraph(::healthWhitelist, "Player names separated by spaces to allow")
 			}
 		}
 
