@@ -52,26 +52,10 @@ object Health {
 		return Config.healthBaseColor // fallback if something went wrong!
 	}
 
-	// https://github.com/TeamMonumenta/monumenta-plugins-public/blob/f4891b2ffd0c238a40125277cb8240dbad96f641/plugins/paper/src/main/java/com/playmonumenta/plugins/utils/PotionUtils.java#L279
-	// Effects that we can actually clear
-	final val badEffects = setOf(
-		// StatusEffects.BLINDNESS,
-		StatusEffects.POISON,
-		// StatusEffects.NAUSEA,
-		// StatusEffects.SLOWNESS,
-		// StatusEffects.MINING_FATIGUE,
-		StatusEffects.WITHER,
-		// StatusEffects.WEAKNESS,
-		StatusEffects.INSTANT_DAMAGE,
-		// StatusEffects.HUNGER,
-		// StatusEffects.LEVITATION,
-		// StatusEffects.UNLUCK
-	)
-
 	fun hasBadEffect(entity: PlayerEntity): Color? {
 		if (Config.healthEffectEnabled == false) return null
 		// Player on fire?
 		if (entity.isOnFire == true && entity.isFireImmune == false) return Config.healthEffectColor
-		return null
+    return null
 	}
 }
