@@ -4,6 +4,7 @@ import net.minecraft.util.registry.Registry
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.util.Util
 import net.usbwire.usbplus.util.chat.Coordinates
+import net.usbwire.usbplus.config.Config
 
 object Compass {
 	fun getCompass(): Coordinates.Coordinates {
@@ -24,6 +25,7 @@ object Compass {
 	var clicked = false
 
 	fun onWorldTick() {
+    if (Config.compassEnabled == false) return
 		val click = USBPlus.mc.mouse.wasLeftButtonClicked()
 		if (click == true && clicked == false) {
 			val mainItem = Registry.ITEM.getId(USBPlus.mc.player?.mainHandStack?.item).toString()

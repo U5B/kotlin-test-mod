@@ -17,24 +17,31 @@ object Config : Vigilant(File(configFile)) {
 	var poiEnabled = false
 	var poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json" // github url
 
-	// *Common Health*
+  // *Compass*
+  var compassEnabled = false
+
+  // *Common Health*
+  // Health Whitelist
 	var healthWhitelistEnabled = false
 	var healthWhitelist = ""
 	var healthUpdateTicks = 1
-	var healthBaseColor = Color.WHITE
-	var healthGoodColor = Color.GREEN
+
+  // *Health Color Toggles & Percentages*
+	var healthHurtEnabled = false
+	var healthEffectEnabled = false
 	var healthGoodPercent = 1.0f
-	var healthLowColor = Color.YELLOW
 	var healthLowPercent = 0.7f
-	var healthCriticalColor = Color.RED
 	var healthCriticalPercent = 0.4f
 
-	var healthHurtEnabled = false
-	var healthHurtColor = Color.ORANGE
-	var healthEffectEnabled = false
+  // *Health Colors*
+  var healthBaseColor = Color.WHITE
+  var healthGoodColor = Color.GREEN
+  var healthLowColor = Color.YELLOW
+  var healthCriticalColor = Color.RED
+  var healthHurtColor = Color.ORANGE
 	var healthEffectColor = Color.GRAY
 
-	// *GlowHealth*
+	// *BoxHealth*
 	var healthEnabled = false
 	var healthHitboxCancel = false
 
@@ -57,6 +64,10 @@ object Config : Vigilant(File(configFile)) {
 			text(::poiUrl, "Internal POI URL", "Should not be changed unless you know what you are doing!")
 			button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
 		}
+
+    category("Compass") {
+      switch(::compassEnabled, "Toggle Compass", "Trigger by left clicking with a compass.")
+    }
 
     category("Health Colors") {
       subcategory("Color") {
@@ -89,7 +100,7 @@ object Config : Vigilant(File(configFile)) {
 					HealthHud.alignPos.set(it)
 					HealthHud.configDirty = true
 				}
-				decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 2, triggerActionOnInitialization = false) {
+				decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 1, triggerActionOnInitialization = false) {
 					HealthHud.textSize.set(it)
 					HealthHud.configDirty = true
 				}
