@@ -42,7 +42,7 @@ dependencies {
 		modImplementation(fabricApi.module(it, "${fabric_api_version}+${platform.mcVersionStr}"))
 	}
 
-	// essential dependencies
+  // essential dependencies
 	"include"("modRuntimeOnly"("gg.essential:loader-fabric:1.0.0")!!)
 	compileOnly("gg.essential:essential-$platform:12328+g551779957")
 
