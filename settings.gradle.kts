@@ -2,12 +2,16 @@ pluginManagement {
 	repositories {
 		gradlePluginPortal()
 		mavenCentral()
-    maven("https://jitpack.io")
+		maven("https://jitpack.io")
 		maven("https://maven.fabricmc.net")
 		maven("https://maven.architectury.dev/")
 		maven("https://maven.minecraftforge.net")
 		maven("https://repo.essential.gg/repository/maven-public")
 	}
+	plugins {
+		id("gg.essential.multi-version.root") version "0.1.19"
+	}
+	/*
   resolutionStrategy {
     eachPlugin {
       when (requested.id.id) {
@@ -17,12 +21,13 @@ pluginManagement {
       }
     }
   }
+  */
 }
 
 
 val mod_id: String by settings
 val mod_version: String by settings
-rootProject.name = "${mod_id}-${mod_version}"
+rootProject.name = "${mod_id}-${mod_version}-"
 rootProject.buildFileName = "root.gradle.kts"
 
 listOf(

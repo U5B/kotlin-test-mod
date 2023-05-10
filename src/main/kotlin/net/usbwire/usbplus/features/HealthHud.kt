@@ -7,7 +7,6 @@ import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.*
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.wrappers.message.*
-import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.world.ClientWorld
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.config.Config
@@ -41,7 +40,6 @@ object HealthHud {
 	)
 
 	val playerMap: MutableMap<String, PlayerHP> = mutableMapOf()
-	var sortedPlayerMap: Map<String, PlayerHP> = emptyMap()
 
 	val xPos: State<Float> = BasicState(Config.healthDrawX)
 	val yPos: State<Float> = BasicState(Config.healthDrawY)
@@ -214,9 +212,6 @@ object HealthHud {
 
 	fun draw(matrix: UMatrixStack) { // ChatScreen
 		if (Config.healthDrawEnabled == false) return
-		val world = USBPlus.mc.world
-		if (world == null || world.players == null) return
-		if (USBPlus.mc.currentScreen != null && USBPlus.mc.currentScreen !is ChatScreen) return
 		if (playerMap.isNotEmpty()) window.draw(matrix)
 	}
 }

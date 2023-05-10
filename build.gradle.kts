@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-	modImplementation("net.fabricmc:fabric-language-kotlin:${fabric_kotlin_version}")
+	// modImplementation("net.fabricmc:fabric-language-kotlin:${fabric_kotlin_version}")
 
 	// fabric api
 	setOf(
@@ -52,8 +52,10 @@ loom.noServerRunConfigs()
 tasks {
 	processResources {
 		val expansions = project.properties
-
-		filesMatching(listOf("fabric.mod.json")) { expand(expansions) }
+		filesMatching(listOf("fabric.mod.json")) {
+			"minecraft_version" to platform.mcVersionStr
+			expand(expansions)
+		}
 	}
 
 	jar { from("LICENSE") }

@@ -1,8 +1,8 @@
 import gg.essential.gradle.util.*
 
 plugins {
-  kotlin("jvm") version "1.8.21" apply false
-  kotlin("plugin.serialization") version "1.8.21" apply false
+  kotlin("jvm") version "1.6.21" apply false
+  kotlin("plugin.serialization") version "1.6.21" apply false
   id("gg.essential.multi-version.root")
 }
 
