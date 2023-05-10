@@ -1,6 +1,5 @@
 package net.usbwire.usbplus.features
 
-import net.minecraft.util.registry.Registry
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.util.Util
 import net.usbwire.usbplus.util.chat.Coordinates
@@ -28,7 +27,7 @@ object Compass {
     if (Config.compassEnabled == false) return
 		val click = USBPlus.mc.mouse.wasLeftButtonClicked()
 		if (click == true && clicked == false) {
-			val mainItem = Registry.ITEM.getId(USBPlus.mc.player?.mainHandStack?.item).toString()
+			val mainItem = ItemHelper.getItemId(USBPlus.mc.player?.mainHandStack?.item)
 			if (mainItem == "minecraft:compass") {
 				createCompass()
 			}
