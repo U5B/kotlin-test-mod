@@ -9,15 +9,16 @@ pluginManagement {
 		maven("https://repo.essential.gg/repository/maven-public")
 	}
 	plugins {
+    val kotlinVersion = "1.6.21"
+    kotlin("jvm") version kotlinVersion apply false
+    kotlin("plugin.serialization") version kotlinVersion apply false
 		id("gg.essential.multi-version.root") version "0.1.19"
 	}
-	/*
+  /*
   resolutionStrategy {
     eachPlugin {
-      when (requested.id.id) {
-        "gg.essential.defaults" -> useModule("com.github.Skytils.essential-gradle-toolkit:essential-gradle-toolkit:a243c8ed83")
-        "gg.essential.multi-version" -> useModule("com.github.Skytils.essential-gradle-toolkit:essential-gradle-toolkit:a243c8ed83")
-        "gg.essential.multi-version.root" -> useModule("com.github.Skytils.essential-gradle-toolkit:essential-gradle-toolkit:a243c8ed83")
+      if (requested.id.id.startsWith("gg.essential.")) {
+        useModule("com.github.Skytils.essential-gradle-toolkit:essential-gradle-toolkit:a243c8ed83")
       }
     }
   }

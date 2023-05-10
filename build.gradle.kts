@@ -7,10 +7,14 @@ plugins {
   id("gg.essential.defaults")
 }
 
-val minecraft_version: String by project
-val yarn_mappings: String by project
-val fabric_api_version: String by project
+val mod_id: String by project
+val mod_version: String by project
+val mod_name: String by project
+val mod_description: String by project
+val maven_group: String by project
+
 val fabric_loader_version: String by project
+val fabric_api_version: String by project
 val fabric_kotlin_version: String by project
 
 repositories {
@@ -51,9 +55,17 @@ loom.noServerRunConfigs()
 
 tasks {
 	processResources {
-		val expansions = project.properties
+		val expansions = mapOf(
+      "minecraft_version" to platform.mcVersionStr,
+      "mod_id" to mod_id,
+      "mod_version" to mod_version,
+      "mod_name" to mod_name,
+      "mod_description" to mod_description,
+      "maven_group" to maven_group,
+      "fabric_loader_version" to fabric_loader_version,
+      "fabric_api_version" to fabric_api_version
+    )
 		filesMatching(listOf("fabric.mod.json")) {
-			"minecraft_version" to platform.mcVersionStr
 			expand(expansions)
 		}
 	}
