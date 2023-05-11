@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-	// modImplementation("net.fabricmc:fabric-language-kotlin:${fabric_kotlin_version}")
+	modImplementation("net.fabricmc:fabric-language-kotlin:${fabric_kotlin_version}")
 
 	// fabric api
 	setOf(
@@ -45,7 +45,7 @@ dependencies {
 	}
 
   // essential dependencies
-	"include"("modRuntimeOnly"("gg.essential:loader-fabric:1.0.0")!!)
+	include(modRuntimeOnly("gg.essential:loader-fabric:1.0.0")!!)
 	compileOnly("gg.essential:essential-$platform:12328+g551779957")
 
 	// mod menu

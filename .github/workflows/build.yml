@@ -14,8 +14,8 @@ jobs:
         java: [
           17,    # Current Java LTS & minimum supported by Minecraft
         ]
-        # and run on both Linux and Windows
-        os: [ ubuntu-22.04, windows-2022 ]
+        # and run on Linux
+        os: [ ubuntu-22.04 ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: checkout repository
@@ -32,3 +32,27 @@ jobs:
         run: chmod +x ./gradlew
       - name: build
         run: ./gradlew build
+      - name: artifact 1.18.2 version
+        if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
+        uses: actions/upload-artifact@v3
+        with:
+          name: v1.18.2
+          path: versions/1.18.2-fabric/build/libs/
+      - name: artifact 1.19.2 version
+        if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
+        uses: actions/upload-artifact@v3
+        with:
+          name: v1.19.2
+          path: versions/1.19.2-fabric/build/libs/
+      - name: artifact 1.19.3
+        if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
+        uses: actions/upload-artifact@v3
+        with:
+          name: v1.19.3
+          path: versions/1.19.3-fabric/build/libs/
+      - name: artifact 1.19.4
+        if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
+        uses: actions/upload-artifact@v3
+        with:
+          name: v1.19.4
+          path: versions/1.19.4-fabric/build/libs/

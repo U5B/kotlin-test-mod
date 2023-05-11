@@ -10,7 +10,10 @@ object PoiCommand : Command("poi", false) {
 	@DefaultHandler
 	fun handle(@Greedy poi_name: PoiName?) {
 		if (Config.poiEnabled == false) return
-		if (poi_name == null) return
+		if (poi_name == null) {
+      Util.chat("No arguments provided! Input a POI to search for...")
+			return
+    }
 		val poiString = poi_name.name
 		var string = Util.trimString(poiString)
 		if (string.length <= 3) {

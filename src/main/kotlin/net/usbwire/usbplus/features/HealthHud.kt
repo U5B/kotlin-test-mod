@@ -187,9 +187,9 @@ object HealthHud {
 		}
 
 		// sort container by max health and percent
-		if (Config.healthDrawSort == 0) {
+		if (Config.healthDrawSort == 0) { // name
 			container.children.sortBy { it.componentName }
-		} else if (Config.healthDrawSort == 1) {
+		} else if (Config.healthDrawSort == 1) { // health
 			container.children.sortBy { playerMap[it.componentName]!!.health.percent }
 		}
 	}

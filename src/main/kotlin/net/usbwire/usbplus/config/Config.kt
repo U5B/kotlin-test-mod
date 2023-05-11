@@ -60,7 +60,7 @@ object Config : Vigilant(File(configFile)) {
 		Util.createDirectory(Path.of(configFile))
 
 		category("POI") {
-			switch(::poiEnabled, "Toggle POI") { Poi.changeState(it) }
+			switch(::poiEnabled, "Toggle POI", "Type /poi to get started!") { Poi.changeState(it) }
 			text(::poiUrl, "Internal POI URL", "Should not be changed unless you know what you are doing!")
 			button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
 		}
@@ -78,10 +78,10 @@ object Config : Vigilant(File(configFile)) {
         percentSlider(::healthLowPercent, "Low HP percent", "70%% HP")
 				color(::healthCriticalColor, "Critical HP color")
         percentSlider(::healthCriticalPercent, "Critical HP percent", "40%% HP")
+        color(::healthHurtColor, "Hurt color")
         switch(::healthHurtEnabled, "Hurt Color Toggle")
-				color(::healthHurtColor, "Hurt color")
+        color(::healthEffectColor, "Fire Color")
         switch(::healthEffectEnabled, "Fire Color Toggle")
-				color(::healthEffectColor, "Fire Color")
 			}
     }
 
