@@ -3,55 +3,16 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Minecraft Client",
+      "name": "Minecraft Client (:1.19.3-fabric)",
       "request": "launch",
-      "cwd": "${workspaceFolder}/run",
+      "cwd": "${workspaceFolder}/versions/1.19.3-fabric/run",
       "console": "internalConsole",
       "stopOnEntry": false,
       "mainClass": "net.fabricmc.devlaunchinjector.Main",
-      "vmArgs": "\"-Dfabric.dli.config\u003dC:\\shared\\codez\\Github\\kotlin-test-mod\\.gradle\\loom-cache\\launch.cfg\" \"-Dfabric.dli.env\u003dclient\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotClient\"",
+      "vmArgs": "\"-Dfabric.dli.config\u003d/home/bot/github/kotlin-test-mod/versions/1.19.3-fabric/.gradle/loom-cache/launch.cfg\" \"-Dfabric.dli.env\u003dclient\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotClient\"",
       "args": "",
       "env": {},
-      "projectName": ""
-    },
-    {
-      "type": "java",
-      "name": "Minecraft Server",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/run",
-      "console": "internalConsole",
-      "stopOnEntry": false,
-      "mainClass": "net.fabricmc.devlaunchinjector.Main",
-      "vmArgs": "\"-Dfabric.dli.config\u003dC:\\shared\\codez\\Github\\kotlin-test-mod\\.gradle\\loom-cache\\launch.cfg\" \"-Dfabric.dli.env\u003dserver\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotServer\"",
-      "args": "\"nogui\"",
-      "env": {},
-      "projectName": ""
-    },
-    {
-      "type": "java",
-      "name": "Minecraft Client (:1.18.1-fabric)",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/versions/1.18.1-fabric/run",
-      "console": "internalConsole",
-      "stopOnEntry": false,
-      "mainClass": "net.fabricmc.devlaunchinjector.Main",
-      "vmArgs": "\"-Dfabric.dli.config\u003d/home/bot/github/kotlin-test-mod/versions/1.18.1-fabric/.gradle/loom-cache/launch.cfg\" \"-Dfabric.dli.env\u003dclient\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotClient\"",
-      "args": "",
-      "env": {},
-      "projectName": "1.18.1-fabric"
-    },
-    {
-      "type": "java",
-      "name": "Minecraft Server (:1.18.1-fabric)",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/versions/1.18.1-fabric/run",
-      "console": "internalConsole",
-      "stopOnEntry": false,
-      "mainClass": "net.fabricmc.devlaunchinjector.Main",
-      "vmArgs": "\"-Dfabric.dli.config\u003d/home/bot/github/kotlin-test-mod/versions/1.18.1-fabric/.gradle/loom-cache/launch.cfg\" \"-Dfabric.dli.env\u003dserver\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotServer\"",
-      "args": "\"nogui\"",
-      "env": {},
-      "projectName": "1.18.1-fabric"
+      "projectName": "1.19.3-fabric"
     },
     {
       "type": "java",
@@ -68,19 +29,6 @@
     },
     {
       "type": "java",
-      "name": "Minecraft Server (:1.18.2-fabric)",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/versions/1.18.2-fabric/run",
-      "console": "internalConsole",
-      "stopOnEntry": false,
-      "mainClass": "net.fabricmc.devlaunchinjector.Main",
-      "vmArgs": "\"-Dfabric.dli.config\u003d/home/bot/github/kotlin-test-mod/versions/1.18.2-fabric/.gradle/loom-cache/launch.cfg\" \"-Dfabric.dli.env\u003dserver\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotServer\"",
-      "args": "\"nogui\"",
-      "env": {},
-      "projectName": "1.18.2-fabric"
-    },
-    {
-      "type": "java",
       "name": "Minecraft Client (:1.19.2-fabric)",
       "request": "launch",
       "cwd": "${workspaceFolder}/versions/1.19.2-fabric/run",
@@ -91,19 +39,6 @@
       "args": "",
       "env": {},
       "projectName": "1.19.2-fabric"
-    },
-    {
-      "type": "java",
-      "name": "Minecraft Client (:1.19.3-fabric)",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/versions/1.19.3-fabric/run",
-      "console": "internalConsole",
-      "stopOnEntry": false,
-      "mainClass": "net.fabricmc.devlaunchinjector.Main",
-      "vmArgs": "\"-Dfabric.dli.config\u003d/home/bot/github/kotlin-test-mod/versions/1.19.3-fabric/.gradle/loom-cache/launch.cfg\" \"-Dfabric.dli.env\u003dclient\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotClient\"",
-      "args": "",
-      "env": {},
-      "projectName": "1.19.3-fabric"
     },
     {
       "type": "java",
