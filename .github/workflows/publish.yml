@@ -21,7 +21,7 @@ jobs:
         distribution: 'microsoft'
     - name: make gradle wrapper executable
       run: chmod +x ./gradlew
-          # from https://github.com/orgs/community/discussions/35120#discussioncomment-3805387
+    # from https://github.com/orgs/community/discussions/35120#discussioncomment-3805387
     - name: get changelog
       id: changelog
       uses: actions/github-script@v6.3.1
