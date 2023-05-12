@@ -6,6 +6,9 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-22.04
+    env:
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+      PROD: TRUE
     steps:
     - name: checkout repository
       uses: actions/checkout@v3
