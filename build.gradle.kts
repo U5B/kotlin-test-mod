@@ -63,6 +63,7 @@ tasks.processResources {
     "mod_description" to mod_description,
     "maven_group" to maven_group,
     "fabric_loader_version" to fabric_loader_version,
+    "fabric_kotlin_version" to fabric_kotlin_version,
     "fabric_api_version" to fabric_api_version
   )
   filesMatching(listOf("fabric.mod.json")) {
