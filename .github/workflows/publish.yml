@@ -1,8 +1,8 @@
 name: publish main
 on:
   push:
-    branch:
-      'main'
+    branches:
+      - 'main'
 jobs:
   publish:
     runs-on: ubuntu-22.04
