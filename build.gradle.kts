@@ -21,13 +21,13 @@ val mod_menu_version: String by project
 
 val version = if (System.getenv("PROD") == null) {
   if (System.getenv("GITHUB_SHA") != null) {
-    "${mod_version}+${System.getenv("GITHUB_SHA")}"
+    "${mod_version}+${System.getenv("GITHUB_SHA").substring(0, 8)}"
   } else "${mod_version}+local"
 } else "${mod_version}"
 
 val baseJarName = if (System.getenv("PROD") == null) {
   if (System.getenv("GITHUB_SHA") != null) {
-    "${mod_id}-${mod_version}+${platform.mcVersionStr}+${System.getenv("GITHUB_SHA")}"
+    "${mod_id}-${mod_version}+${platform.mcVersionStr}+${System.getenv("GITHUB_SHA").substring(0, 8)}"
   } else "${mod_id}-${mod_version}+${platform.mcVersionStr}+local"
 } else "${mod_id}-${mod_version}+${platform.mcVersionStr}"
 
@@ -83,9 +83,9 @@ tasks.processResources {
   }
 }
 
-tasks.jar { 
+tasks.jar {
   archiveBaseName.set(baseJarName)
-  from("LICENSE") 
+  from("LICENSE")
 }
 
 tasks.remapJar {
