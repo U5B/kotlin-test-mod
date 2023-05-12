@@ -36,7 +36,7 @@ jobs:
     - name: publish to modrinth
       env:
         CHANGELOG: ${{ steps.changelog.outputs.result }}
-      run: ./gradlew modrinth
+      run: ./gradlew clean modrinth
     # from https://github.com/JsMacros/JsMacros/blob/d0991a04159eb54b32b534e4bcac96b5ce613ccb/.github/workflows/betabuild.yml
     - name: get current mod version
       uses: actions/github-script@v2

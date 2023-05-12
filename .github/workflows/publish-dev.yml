@@ -25,4 +25,4 @@ jobs:
     - name: make gradle wrapper executable
       run: chmod +x ./gradlew
     - name: publish to modrinth (dev)
-      run: ./gradlew modrinth
+      run: ./gradlew clean modrinth
