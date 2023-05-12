@@ -1,8 +1,11 @@
 name: publish main
-on: [ pull_request, workflow_dispatch ]
+on:
+  push:
+    branches:
+      - 'main'
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
       PROD: TRUE
@@ -36,7 +39,7 @@ jobs:
     - name: publish to modrinth
       env:
         CHANGELOG: ${{ steps.changelog.outputs.result }}
-      run: ./gradlew clean modrinth
+      run: ./gradlew modrinth
     # from https://github.com/JsMacros/JsMacros/blob/d0991a04159eb54b32b534e4bcac96b5ce613ccb/.github/workflows/betabuild.yml
     - name: get current mod version
       uses: actions/github-script@v2
