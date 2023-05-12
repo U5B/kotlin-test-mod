@@ -1,11 +1,8 @@
 name: publish main
-on:
-  push:
-    branches:
-      - 'main'
+on: [ pull_request, workflow_dispatch ]
 jobs:
   publish:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
       PROD: TRUE
@@ -33,13 +30,13 @@ jobs:
             const commits = JSON.parse(process.env.COMMITS);
             var lines = "";
             for (const commit of commits) {
-              lines += "* " + commit.message + " (" + commit.id + ") @" + commit.author.username + "\n"
+              lines += "* " + commit.message + " (" + commit.id.substring(0,8) + ") @" + commit.author.username + "\n"
             }
             return lines
     - name: publish to modrinth
       env:
         CHANGELOG: ${{ steps.changelog.outputs.result }}
-      run: ./gradlew modrinth
+      run: ./gradlew clean modrinth
     # from https://github.com/JsMacros/JsMacros/blob/d0991a04159eb54b32b534e4bcac96b5ce613ccb/.github/workflows/betabuild.yml
     - name: get current mod version
       uses: actions/github-script@v2

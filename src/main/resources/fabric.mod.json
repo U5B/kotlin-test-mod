@@ -9,6 +9,7 @@
   ],
   "contact": {
     "homepage": "https://discord.usbwire.net",
+    "issues": "https://github.com/U5B/kotlin-test-mod/issues",
     "sources": "https://github.com/U5B/kotlin-test-mod"
   },
   "license": "GPL",
