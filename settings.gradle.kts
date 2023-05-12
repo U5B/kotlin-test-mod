@@ -28,7 +28,6 @@ pluginManagement {
 
 val mod_id: String by settings
 val mod_version: String by settings
-rootProject.name = "${mod_id}-${mod_version}"
 rootProject.buildFileName = "root.gradle.kts"
 
 listOf(

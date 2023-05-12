@@ -19,6 +19,18 @@ val fabric_api_version: String by project
 val fabric_kotlin_version: String by project
 val mod_menu_version: String by project
 
+val version = if (System.getenv("PROD") == null) {
+  if (System.getenv("GITHUB_SHA") != null) {
+    "${mod_version}+${System.getenv("GITHUB_SHA")}"
+  } else "${mod_version}+local"
+} else "${mod_version}"
+
+val baseJarName = if (System.getenv("PROD") == null) {
+  if (System.getenv("GITHUB_SHA") != null) {
+    "${mod_id}-${mod_version}+${platform.mcVersionStr}+${System.getenv("GITHUB_SHA")}"
+  } else "${mod_id}-${mod_version}+${platform.mcVersionStr}+local"
+} else "${mod_id}-${mod_version}+${platform.mcVersionStr}"
+
 repositories {
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
@@ -58,7 +70,7 @@ tasks.processResources {
   val expansions = mapOf(
     "minecraft_version" to platform.mcVersionStr,
     "mod_id" to mod_id,
-    "mod_version" to mod_version,
+    "mod_version" to version,
     "mod_name" to mod_name,
     "mod_description" to mod_description,
     "maven_group" to maven_group,
@@ -71,7 +83,14 @@ tasks.processResources {
   }
 }
 
-tasks.jar { from("LICENSE") }
+tasks.jar { 
+  archiveBaseName.set(baseJarName)
+  from("LICENSE") 
+}
+
+tasks.remapJar {
+  archiveBaseName.set(baseJarName)
+}
 
 tasks.compileKotlin {
   kotlinOptions.freeCompilerArgs +=
@@ -89,12 +108,12 @@ modrinth {
   projectId.set("b6qJY4kH")
   if (System.getenv("PROD") != null) {
     versionType.set("release")
-    versionNumber.set(mod_version)
+    versionNumber.set(version)
   } else {
     versionType.set("alpha")
-    versionNumber.set("${mod_version}+${System.getenv("GITHUB_SHA")}")
+    versionNumber.set(version)
   }
-  uploadFile.set(tasks.jar.get())
+  uploadFile.set(tasks.remapJar.get())
   loaders.add("fabric")
   dependencies {
     embedded.project("essential")
