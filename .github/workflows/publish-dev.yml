@@ -3,9 +3,12 @@ on:
   push:
     branches:
       - 'dev'
+    paths:
+      - 'src/main/**'
+    
 jobs:
   publish:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
       CHANGELOG: ${{ github.event.head_commit.message }}
