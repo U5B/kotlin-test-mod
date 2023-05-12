@@ -23,3 +23,21 @@ jobs:
       run: chmod +x ./gradlew
     - name: publish to modrinth
       run: ./gradlew modrinth
+      # from https://github.com/JsMacros/JsMacros/blob/d0991a04159eb54b32b534e4bcac96b5ce613ccb/.github/workflows/betabuild.yml
+    - uses: actions/github-script@v2
+      id: mod_version
+      with:
+        result-encoding: string
+        script: |
+          const fs = require("fs");
+          let file = fs.readFileSync("./gradle.properties");
+          const mod_version = file.toString().split("\n").filter(e => e.trim().startsWith("mod_version"))[0].split("=")[1].trim();
+          return mod_version;
+      
+    - name: create tag
+    - uses: rickstaa/action-create-tag@v1
+        id: "tag_create"
+        with:
+          tag: ${{ steps.mod_version.outputs.result }}
+          tag_exists_error: false
+          message: ""

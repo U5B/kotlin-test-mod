@@ -119,6 +119,11 @@ modrinth {
   // modrinth can't find the file properly
   uploadFile.set(file("build/libs/${baseJarName}.jar"))
   loaders.add("fabric")
+  if (platform.mcVersionStr == "1.18.2" && System.getenv("CHANGELOG") != null) {
+    changeLog.set(System.getenv("CHANGELOG"))
+  } else {
+    changeLog.set("")
+  }
   dependencies {
     embedded.project("essential")
     required.project("fabric-language-kotlin")
