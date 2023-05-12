@@ -107,13 +107,19 @@ modrinth {
   token.set(System.getenv("MODRINTH_TOKEN")) // This is the default. Remember to have the MODRINTH_TOKEN environment variable set or else this will fail, or set it to whatever you want - just make sure it stays private!
   projectId.set("b6qJY4kH")
   if (System.getenv("PROD") != null) {
+    versionName.set("[${platform.mcVersionStr}] ${mod_name} ${version}")
     versionType.set("release")
     versionNumber.set(version)
   } else {
+    versionName.set("[${platform.mcVersionStr}] ${mod_name} ${version}")
     versionType.set("alpha")
     versionNumber.set(version)
   }
-  uploadFile.set(tasks.remapJar.get())
+  if (System.getenv("DEBUG") != null) {
+    debugMode.set(true)
+  }
+  // modrinth can't find the file properly
+  uploadFile.set(file("build/libs/${baseJarName}.jar"))
   loaders.add("fabric")
   dependencies {
     embedded.project("essential")
