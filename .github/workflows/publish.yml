@@ -21,9 +21,26 @@ jobs:
         distribution: 'microsoft'
     - name: make gradle wrapper executable
       run: chmod +x ./gradlew
+          # from https://github.com/orgs/community/discussions/35120#discussioncomment-3805387
+    - name: get changelog
+      id: changelog
+      uses: actions/github-script@v6.3.1
+      env:
+        COMMITS: ${{ toJSON(github.event.commits) }}
+      with:
+        result-encoding: string
+        script: |
+            const commits = JSON.parse(process.env.COMMITS);
+            var lines = "";
+            for (const commit of commits) {
+              lines += "* " + commit.message + " (" + commit.id + ") @" + commit.author.username + "\n"
+            }
+            return lines
     - name: publish to modrinth
+      env:
+        CHANGELOG: ${{ steps.changelog.outputs.result }}
       run: ./gradlew modrinth
-      # from https://github.com/JsMacros/JsMacros/blob/d0991a04159eb54b32b534e4bcac96b5ce613ccb/.github/workflows/betabuild.yml
+    # from https://github.com/JsMacros/JsMacros/blob/d0991a04159eb54b32b534e4bcac96b5ce613ccb/.github/workflows/betabuild.yml
     - name: get current mod version
       uses: actions/github-script@v2
       id: mod_version
