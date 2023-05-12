@@ -3,6 +3,7 @@ package net.usbwire.usbplus.util.chat
 import gg.essential.universal.wrappers.message.*
 import kotlinx.serialization.Serializable
 import net.minecraft.text.ClickEvent
+import net.minecraft.text.HoverEvent
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.util.Util
 
@@ -10,16 +11,17 @@ object Coordinates {
 	var supportsXaero = true
 	var supportsJourneymap = true
 	fun coordinateBuilder(name: String, x: Int, y: Int, z: Int, dimension: String, message: UMessage = UMessage()): UMessage {
-		val coordinates = "${x}, ${y}, ${z}"
 
 		// prefix
 		val baseCompoment = UTextComponent("'${name}':")
 		message.addTextComponent(baseCompoment)
 
 		// copy
-		val copyCompoment = UTextComponent(" §a(${coordinates})§r")
+		val copyCompoment = UTextComponent(" §a(${x}, ${y}, ${z})§r")
 		copyCompoment.clickAction = ClickEvent.Action.COPY_TO_CLIPBOARD
-		copyCompoment.clickValue = coordinates
+		copyCompoment.clickValue = "${x} ${y} ${z}"
+    copyCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
+    copyCompoment.hoverValue = "Click to copy coordinates to clipboard!"
 		message.addTextComponent(copyCompoment)
 
 		// xaero minimap support
@@ -28,6 +30,8 @@ object Coordinates {
 			if (xaeroCompoment == null) {
 				supportsXaero = false
 			} else {
+        xaeroCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
+        xaeroCompoment.hoverValue = "Click to create a new xaero waypoint!"
 				message.addTextComponent(xaeroCompoment)
 			}
 		}
@@ -38,6 +42,8 @@ object Coordinates {
 			if (journeymapCompoment == null) {
 				supportsJourneymap = false
 			} else {
+        journeymapCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
+        journeymapCompoment.hoverValue = "Click to create a new journey map waypoint!"
 				message.addTextComponent(journeymapCompoment)
 			}
 		}

@@ -1,14 +1,23 @@
+import gg.essential.gradle.util.*
+
 plugins {
-	kotlin("jvm") version "1.8.21"
-	kotlin("plugin.serialization") version "1.8.21"
-	id("gg.essential.loom") version "0.10.0.+"
+  kotlin("jvm")
+  kotlin("plugin.serialization")
+  id("gg.essential.multi-version")
+  id("gg.essential.defaults")
+  id("com.modrinth.minotaur") version "2.+"
 }
 
-val minecraft_version: String by project
-val yarn_mappings: String by project
-val fabric_api_version: String by project
+val mod_id: String by project
+val mod_version: String by project
+val mod_name: String by project
+val mod_description: String by project
+val maven_group: String by project
+
 val fabric_loader_version: String by project
+val fabric_api_version: String by project
 val fabric_kotlin_version: String by project
+val mod_menu_version: String by project
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
@@ -22,12 +31,7 @@ repositories {
 }
 
 dependencies {
-	minecraft("com.mojang:minecraft:$minecraft_version")
-	mappings("net.fabricmc:yarn:$yarn_mappings:v2")
-	// fabric loader
-	modImplementation("net.fabricmc:fabric-loader:$fabric_loader_version")
-	// kotlin dependency (may not need this if I have essential)
-	modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
+	modImplementation("net.fabricmc:fabric-language-kotlin:${fabric_kotlin_version}")
 
 	// fabric api
 	setOf(
@@ -37,85 +41,65 @@ dependencies {
 		"fabric-rendering-v1"
 	).forEach {
 		// Add each module as a dependency
-		modImplementation(fabricApi.module(it, "$fabric_api_version"))
+		modImplementation(fabricApi.module(it, "${fabric_api_version}+${platform.mcVersionStr}"))
 	}
 
-	// essential dependencies
-	"include"("modRuntimeOnly"("gg.essential:loader-fabric:1.0.0")!!)
-	compileOnly("gg.essential:essential-1.18.2-fabric:12328+g551779957")
+  // essential dependencies
+	include(modRuntimeOnly("gg.essential:loader-fabric:1.0.0")!!)
+	compileOnly("gg.essential:essential-$platform:12328+g551779957")
 
 	// mod menu
-	modApi("com.terraformersmc:modmenu:3.2.5")
+	modApi("com.terraformersmc:modmenu:${mod_menu_version}")
 }
 
-tasks {
-	processResources {
-		val expansions = project.properties
+loom.noServerRunConfigs()
 
-		filesMatching(listOf("fabric.mod.json")) { expand(expansions) }
-	}
-
-	jar { from("LICENSE") }
-
-	compileKotlin {
-		kotlinOptions.freeCompilerArgs +=
-			listOf(
-				"-opt-in=kotlin.RequiresOptIn",
-				"-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
-				"-Xno-param-assertions",
-				"-Xjvm-default=all-compatibility"
-			)
-		kotlinOptions.jvmTarget = "17"
-	}
-	/*
-	publishing {
-			publications {
-							create<MavenPublication>("mavenJava") {
-											artifact(remapJar) {
-															builtBy(remapJar)
-											}
-											artifact(kotlinSourcesJar) {
-															builtBy(remapSourcesJar)
-											}
-							}
-			}
-
-			// select the repositories you want to publish to
-			repositories {
-							// uncomment to publish to the local maven
-							// mavenLocal()
-			}
-	}
-	*/
+tasks.processResources {
+  val expansions = mapOf(
+    "minecraft_version" to platform.mcVersionStr,
+    "mod_id" to mod_id,
+    "mod_version" to mod_version,
+    "mod_name" to mod_name,
+    "mod_description" to mod_description,
+    "maven_group" to maven_group,
+    "fabric_loader_version" to fabric_loader_version,
+    "fabric_kotlin_version" to fabric_kotlin_version,
+    "fabric_api_version" to fabric_api_version
+  )
+  filesMatching(listOf("fabric.mod.json")) {
+    expand(expansions)
+  }
 }
 
-/*
-java {
-  // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-  // if it is present.
-  // If you remove this line, sources will not be generated.
-  withSourcesJar()
-}
-*/
+tasks.jar { from("LICENSE") }
 
-loom {
-	launchConfigs {
-		getByName("client") {
-			property("elementa.dev", "true")
-			property("elementa.debug", "true")
-			property("elementa.invalid_usage", "warn")
-			property("mixin.debug.verbose", "true")
-			property("mixin.debug.export", "true")
-			property("mixin.dumpTargetOnFailure", "true")
-			property("legacy.debugClassLoading", "true")
-			property("legacy.debugClassLoadingSave", "true")
-			property("legacy.debugClassLoadingFiner", "true")
-		}
-	}
-	runConfigs {
-		getByName("client") {
-			isIdeConfigGenerated = true
-		}
-		remove(getByName("server"))
-	}
+tasks.compileKotlin {
+  kotlinOptions.freeCompilerArgs +=
+    listOf(
+      "-opt-in=kotlin.RequiresOptIn",
+      "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
+      "-Xno-param-assertions",
+      "-Xjvm-default=all"
+    )
+  kotlinOptions.jvmTarget = "17"
+}
+
+modrinth {
+  token.set(System.getenv("MODRINTH_TOKEN")) // This is the default. Remember to have the MODRINTH_TOKEN environment variable set or else this will fail, or set it to whatever you want - just make sure it stays private!
+  projectId.set("b6qJY4kH")
+  if (System.getenv("PROD") != null) {
+    versionType.set("release")
+    versionNumber.set(mod_version)
+  } else {
+    versionType.set("alpha")
+    versionNumber.set("${mod_version}+${System.getenv("GITHUB_SHA")}")
+  }
+  uploadFile.set(tasks.jar.get())
+  loaders.add("fabric")
+  dependencies {
+    embedded.project("essential")
+    required.version("fabric-language-kotlin", fabric_kotlin_version)
+    required.version("fabric-api", "${fabric_api_version}+${platform.mcVersionStr}")
+    optional.version("modmenu", mod_menu_version)
+  }
 }
