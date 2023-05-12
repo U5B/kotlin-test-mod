@@ -83,13 +83,19 @@ tasks.compileKotlin {
     )
   kotlinOptions.jvmTarget = "17"
 }
+
 modrinth {
   token.set(System.getenv("MODRINTH_TOKEN")) // This is the default. Remember to have the MODRINTH_TOKEN environment variable set or else this will fail, or set it to whatever you want - just make sure it stays private!
   projectId.set("b6qJY4kH")
-  versionNumber.set(mod_version)
+  if (System.getenv("PROD") != null) {
+    versionType.set("release")
+    versionNumber.set(mod_version)
+  } else {
+    versionType.set("alpha")
+    versionNumber.set("${mod_version}+${System.getenv("GITHUB_SHA")}")
+  }
   uploadFile.set(tasks.jar.get())
   loaders.add("fabric")
-  debugMode.set(true)
   dependencies {
     embedded.project("essential")
     required.version("fabric-language-kotlin", fabric_kotlin_version)
