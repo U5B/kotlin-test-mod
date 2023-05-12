@@ -83,9 +83,9 @@ tasks.processResources {
   }
 }
 
-tasks.jar { 
+tasks.jar {
   archiveBaseName.set(baseJarName)
-  from("LICENSE") 
+  from("LICENSE")
 }
 
 tasks.remapJar {

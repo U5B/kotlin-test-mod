@@ -11,6 +11,6 @@
 * and more features that I have forgotten
 
 # 1.2.0
-* Multi version support! 1.18.2, 1.19.2, 1.19.3, 1.19.4
+* Multi version support! 1.18.2, 1.19.2, 1.19.4
 * Modrinth auto-publish added
 * Split into two branches: dev (alpha) and main (release)
