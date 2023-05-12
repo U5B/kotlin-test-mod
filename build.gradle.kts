@@ -120,9 +120,9 @@ modrinth {
   uploadFile.set(file("build/libs/${baseJarName}.jar"))
   loaders.add("fabric")
   if (platform.mcVersionStr == "1.18.2" && System.getenv("CHANGELOG") != null) {
-    changeLog.set(System.getenv("CHANGELOG"))
+    changelog.set(System.getenv("CHANGELOG"))
   } else {
-    changeLog.set("")
+    changelog.set("")
   }
   dependencies {
     embedded.project("essential")
