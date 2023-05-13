@@ -21,7 +21,7 @@ object Coordinates {
 		copyCompoment.clickAction = ClickEvent.Action.COPY_TO_CLIPBOARD
 		copyCompoment.clickValue = "${x} ${y} ${z}"
     copyCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
-    copyCompoment.hoverValue = "Click to copy coordinates to clipboard!"
+    copyCompoment.hoverValue = UTextComponent("§aClick to copy coordinates to clipboard!§r")
 		message.addTextComponent(copyCompoment)
 
 		// xaero minimap support
@@ -30,8 +30,6 @@ object Coordinates {
 			if (xaeroCompoment == null) {
 				supportsXaero = false
 			} else {
-        xaeroCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
-        xaeroCompoment.hoverValue = "Click to create a new xaero waypoint!"
 				message.addTextComponent(xaeroCompoment)
 			}
 		}
@@ -42,8 +40,6 @@ object Coordinates {
 			if (journeymapCompoment == null) {
 				supportsJourneymap = false
 			} else {
-        journeymapCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
-        journeymapCompoment.hoverValue = "Click to create a new journey map waypoint!"
 				message.addTextComponent(journeymapCompoment)
 			}
 		}
@@ -72,6 +68,9 @@ object Coordinates {
 			// "xaero-waypoint:${poi.name}:${poi.name[0].uppercase()}:${poi.coordinates.x}:${poi.coordinates.y}:${poi.coordinates.z}:${xaeroColor}:false:0:Internal-dim%${currentWorld}-waypoints"
 			xaeroCompoment.clickAction = ClickEvent.Action.RUN_COMMAND
 			xaeroCompoment.clickValue = waypoint
+
+      xaeroCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
+      xaeroCompoment.hoverValue = UTextComponent("${minecraftColor}Click to create a new xaero waypoint!§r")
 			return xaeroCompoment
 		} catch (e: Exception) {
 			return null
@@ -92,6 +91,9 @@ object Coordinates {
 			val waypoint = "/jm wpedit [name:\"${name}\", x:${x}, y:${y}, z:${z}, dim:${dimension}]"
 			journeymapCompoment.clickAction = ClickEvent.Action.RUN_COMMAND
 			journeymapCompoment.clickValue = waypoint
+
+      journeymapCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
+      journeymapCompoment.hoverValue = UTextComponent("${minecraftColor}Click to create a new journey map waypoint!§r")
 			return journeymapCompoment
 		} catch (e: Exception) {
 			return null
