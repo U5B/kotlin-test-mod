@@ -21,7 +21,7 @@ jobs:
       with:
         java-version: 17
         distribution: 'microsoft'
-    - name: make gradle wrapper executable
-      run: chmod +x ./gradlew
-    - name: publish to modrinth (dev)
-      run: ./gradlew clean modrinth
+    - name: publish alpha to modrinth
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: modrinth

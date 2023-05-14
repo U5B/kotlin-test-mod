@@ -21,8 +21,6 @@ jobs:
       with:
         java-version: 17
         distribution: 'microsoft'
-    - name: make gradle wrapper executable
-      run: chmod +x ./gradlew
     # from https://github.com/orgs/community/discussions/35120#discussioncomment-3805387
     - name: get changelog
       id: changelog
@@ -49,9 +47,11 @@ jobs:
             }
             return lines
     - name: publish to modrinth
+      uses: gradle/gradle-build-action@v2
       env:
         CHANGELOG: ${{ steps.changelog.outputs.result }}
-      run: ./gradlew modrinth
+      with:
+        arguments: modrinth
     # from https://github.com/JsMacros/JsMacros/blob/d0991a04159eb54b32b534e4bcac96b5ce613ccb/.github/workflows/betabuild.yml
     - name: get current mod version
       uses: actions/github-script@v6
