@@ -26,7 +26,7 @@ object RenderUtil {
 
 		UGraphics.enableBlend()
 		UGraphics.tryBlendFuncSeparate(770, 771, 1, 0)
-		// UGraphics.depthMask(false)
+		UGraphics.depthMask(false)
 		UGraphics.disableLighting()
 		UGraphics.enableDepth()
 
@@ -49,11 +49,11 @@ object RenderUtil {
 			color.blue,
 			(color.alpha * Config.healthFillPercent).toInt()
 		)
-		if (fill) drawFilledBox(matrix, box, filledColor)
 		if (outline) drawOutlineBox(matrix, context, box, color)
+		if (fill) drawFilledBox(matrix, box, filledColor)
 
 		UGraphics.disableBlend()
-		// UGraphics.depthMask(true)
+		UGraphics.depthMask(true)
 		UGraphics.enableLighting()
 		UGraphics.disableDepth()
 	}

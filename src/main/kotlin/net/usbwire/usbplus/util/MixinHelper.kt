@@ -14,7 +14,7 @@ import net.usbwire.usbplus.features.*
 object MixinHelper {
 	fun init() {
 		ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) } }
-		WorldRenderEvents.AFTER_TRANSLUCENT.register { context -> run  { renderTick(context) }}
+		WorldRenderEvents.AFTER_ENTITIES.register { context -> run  { renderTick(context) }}
 		HudRenderCallback.EVENT.register { matrix, ticks -> run { hudRender(matrix, ticks) } }
 	}
 
