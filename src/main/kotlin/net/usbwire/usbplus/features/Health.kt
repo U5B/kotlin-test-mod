@@ -6,23 +6,26 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.entity.player.PlayerEntity
 import net.usbwire.usbplus.config.Config
+import net.usbwire.usbplus.util.RenderUtil
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import java.awt.Color
 
 object Health {
 	data class HealthData(val current: Float, val max: Float, val absorption: Float, val percent: Float, val color: Color)
 
-	fun renderHitbox(matrix: MatrixStack, vertex: VertexConsumer, entity: Entity): Boolean {
-		if (Config.healthEnabled == false) return false
-		if (entity !is PlayerEntity) return Config.healthHitboxCancel
-		val color = getHealthProperties(entity).color
-		if (color.alpha <= 10) return Config.healthHitboxCancel
-		val box = entity.getBoundingBox().offset(-entity.getX(), -entity.getY(), -entity.getZ())
-		val red = color.red / 255.0f
-		val green = color.green / 255.0f
-		val blue = color.blue / 255.0f
-		val alpha = color.alpha / 255.0f
-		WorldRenderer.drawBox(matrix, vertex, box, red, green, blue, alpha)
-		return true
+	fun onRenderTick(context: WorldRenderContext) {
+		if (Config.healthEnabled == false) return
+		val camera = context.camera()
+		for (player in context.world().players) {
+			if (player == camera.focusedEntity && !camera.isThirdPerson()) continue
+			val color = getHealthProperties(player).color
+			if (color.alpha <= 10) continue
+			if (Config.healthFillPercent == 0f) {
+				RenderUtil.drawEntityBox(player, color, context, true, false)
+			} else {
+				RenderUtil.drawEntityBox(player, color, context, true, true)
+			}
+		}
 	}
 
 	fun getHealthProperties(entity: PlayerEntity): HealthData {

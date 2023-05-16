@@ -32,6 +32,7 @@ object Config : Vigilant(File(configFile)) {
 	var healthGoodPercent = 1.0f
 	var healthLowPercent = 0.7f
 	var healthCriticalPercent = 0.4f
+	var healthFillPercent = 0.1f
 
   // *Health Colors*
   var healthBaseColor = Color.WHITE
@@ -71,7 +72,7 @@ object Config : Vigilant(File(configFile)) {
 
     category("Health Colors") {
       subcategory("Color") {
-				color(::healthBaseColor, "Base HP color", "White (#ffffff) doesn't show.")
+				color(::healthBaseColor, "Base HP color", "Alpha under 10 doesn't show")
 				color(::healthGoodColor, "Good HP color")
         percentSlider(::healthGoodPercent, "Good HP percent", "100%% HP")
 				color(::healthLowColor, "Low HP color")
@@ -116,8 +117,8 @@ object Config : Vigilant(File(configFile)) {
 
 		category("Health General") {
 			subcategory("Hitbox") {
-				switch(::healthEnabled, "Toggle BoxHealth", "F3+B Hitboxes must be ON and color must not be white!")
-				switch(::healthHitboxCancel, "Disable rendering hitboxes on entities other than players!")
+				switch(::healthEnabled, "Toggle BoxHealth")
+				percentSlider(::healthFillPercent, "Alpha Percentage of Inside Box", "Set to 0 to disable.")
 			}
 			subcategory("General") {
 				slider(::healthUpdateTicks, "Update Rate In Ticks", min = 1, max = 20)

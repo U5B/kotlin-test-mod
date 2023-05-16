@@ -5,7 +5,9 @@ import gg.essential.elementa.utils.withAlpha
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.entity.Entity
 import net.minecraft.util.math.Box
+import net.minecraft.client.render.*
 import net.usbwire.usbplus.USBPlus
+import net.usbwire.usbplus.config.Config
 import java.awt.Color
 
 
@@ -17,7 +19,8 @@ object RenderUtil {
 	 * @see box.minZttps://github.com/Splzh/ClearHitboxes/blob/5439f1e3f789e35371939f4bc72ab0fb4eb7d2aa/src/main/java/splash/utils/BoxUtils.java#L74
 	 * @author Mojang
 	 */
-	fun drawEntityBox(entity: Entity, color: Color, context: WorldRenderContext) {
+	fun drawEntityBox(entity: Entity, color: Color, context: WorldRenderContext, outline: Boolean = true, fill: Boolean = true) {
+		if (!fill && !outline) return
 		val camera = context.camera().pos
 		val matrix = UMatrixStack(context.matrixStack())
 
@@ -25,7 +28,7 @@ object RenderUtil {
 		UGraphics.tryBlendFuncSeparate(770, 771, 1, 0)
 		// UGraphics.depthMask(false)
 		UGraphics.disableLighting()
-		UGraphics.disableDepth()
+		UGraphics.enableDepth()
 
 		val x = entity.prevX + (entity.getX() - entity.prevX) * context.tickDelta() - camera.x
 		val y = entity.prevY + (entity.getY() - entity.prevY) * context.tickDelta() - camera.y
@@ -40,43 +43,24 @@ object RenderUtil {
 			entityBox.maxZ - entity.getZ() + z
 		)
 
-		drawFilledBox(matrix, box, color)
-		drawOutlineBox(matrix, box, color)
+		val filledColor = Color(
+			color.red,
+			color.green,
+			color.blue,
+			(color.alpha * Config.healthFillPercent).toInt()
+		)
+		if (fill) drawFilledBox(matrix, box, filledColor)
+		if (outline) drawOutlineBox(matrix, context, box, color)
 
 		UGraphics.disableBlend()
 		// UGraphics.depthMask(true)
 		UGraphics.enableLighting()
-		UGraphics.enableDepth()
+		UGraphics.disableDepth()
 	}
 
-	fun drawOutlineBox (matrix: UMatrixStack, box: Box, color: Color) {
-		val vb = UGraphics.getFromTessellator()
-		vb.beginWithDefaultShader(UGraphics.DrawMode.LINES, UGraphics.CommonVertexFormats.POSITION)
-		vb.pos(matrix, box.minX, box.minY, box.minZ).color(color).norm(matrix, 1.0f, 0.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.minY, box.minZ).color(color).norm(matrix, 1.0f, 0.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.minZ).color(color).norm(matrix, 0.0f, 1.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.minZ).color(color).norm(matrix, 0.0f, 1.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.minZ).color(color).norm(matrix, 0.0f, 0.0f, 1.0f).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.maxZ).color(color).norm(matrix, 0.0f, 0.0f, 1.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.minY, box.minZ).color(color).norm(matrix, 0.0f, 1.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.maxY, box.minZ).color(color).norm(matrix, 0.0f, 1.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.maxY, box.minZ).color(color).norm(matrix, -1.0f, 0.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.minZ).color(color).norm(matrix, -1.0f, 0.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.minZ).color(color).norm(matrix, 0.0f, 0.0f, 1.0f).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.maxZ).color(color).norm(matrix, 0.0f, 0.0f, 1.0f).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.maxZ).color(color).norm(matrix, 0.0f, -1.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.maxZ).color(color).norm(matrix, 0.0f, -1.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.maxZ).color(color).norm(matrix, 1.0f, 0.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.minY, box.maxZ).color(color).norm(matrix, 1.0f, 0.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.minY, box.maxZ).color(color).norm(matrix, 0.0f, 0.0f, -1.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.minY, box.minZ).color(color).norm(matrix, 0.0f, 0.0f, -1.0f).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.maxZ).color(color).norm(matrix, 1.0f, 0.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.maxY, box.maxZ).color(color).norm(matrix, 1.0f, 0.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.minY, box.maxZ).color(color).norm(matrix, 0.0f, 1.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.maxY, box.maxZ).color(color).norm(matrix, 0.0f, 1.0f, 0.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.maxY, box.minZ).color(color).norm(matrix, 0.0f, 0.0f, 1.0f).endVertex()
-		vb.pos(matrix, box.maxY, box.maxY, box.maxZ).color(color).norm(matrix, 0.0f, 0.0f, 1.0f).endVertex()
-		vb.drawDirect()
+	fun drawOutlineBox (matrix: UMatrixStack, context: WorldRenderContext, box: Box, color: Color) {
+		val vertex = context.consumers()!!.getBuffer(RenderLayer.getLines())
+		WorldRenderer.drawBox(matrix.toMC(), vertex, box, color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
 	}
 
 	fun drawFilledBox (matrix: UMatrixStack, box: Box, color: Color) {
