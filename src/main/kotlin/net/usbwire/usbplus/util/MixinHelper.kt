@@ -10,11 +10,13 @@ import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
 import net.minecraft.text.Text
 import net.usbwire.usbplus.features.*
+import net.usbwire.usbplus.util.RenderUtil
+import java.awt.Color
 
 object MixinHelper {
 	fun init() {
 		ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) } }
-		// WorldRenderEvents.LAST.register { test -> run  { renderTick(test) }}
+		WorldRenderEvents.AFTER_TRANSLUCENT.register { test -> run  { renderTick(test) }}
 		HudRenderCallback.EVENT.register { matrix, ticks -> run { hudRender(matrix, ticks) } }
 	}
 
@@ -23,7 +25,13 @@ object MixinHelper {
 		Compass.onWorldTick()
 	}
 
-	fun renderTick(test: WorldRenderContext) {}
+	fun renderTick(test: WorldRenderContext) {
+		val camera = test.camera()
+		for (player in test.world().players) {
+			if (player == camera.focusedEntity && !camera.isThirdPerson()) continue
+			RenderUtil.drawEntityBox(player, Color.RED, test)
+		}
+	}
 
 	fun hudRender(matrixStack: MatrixStack, ticks: Float) {
 		val matrix = UMatrixStack(matrixStack)

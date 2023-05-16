@@ -15,12 +15,12 @@ object Health {
 		if (Config.healthEnabled == false) return false
 		if (entity !is PlayerEntity) return Config.healthHitboxCancel
 		val color = getHealthProperties(entity).color
-		if (color == Color.WHITE) return Config.healthHitboxCancel
+		if (color.alpha <= 10) return Config.healthHitboxCancel
 		val box = entity.getBoundingBox().offset(-entity.getX(), -entity.getY(), -entity.getZ())
-		val red = color.red / 255.0F
-		val green = color.green / 255.0F
-		val blue = color.blue / 255.0F
-		val alpha = color.alpha / 255.0F
+		val red = color.red / 255.0f
+		val green = color.green / 255.0f
+		val blue = color.blue / 255.0f
+		val alpha = color.alpha / 255.0f
 		WorldRenderer.drawBox(matrix, vertex, box, red, green, blue, alpha)
 		return true
 	}

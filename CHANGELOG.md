@@ -20,5 +20,3 @@
 
 # 1.2.3
 * Fix hover text crashing game for compass and pois
-
-#
