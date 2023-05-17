@@ -24,10 +24,6 @@ object RenderUtil {
 		val camera = context.camera().pos
 		val matrix = UMatrixStack(context.matrixStack())
 
-		UGraphics.enableBlend()
-		UGraphics.tryBlendFuncSeparate(770, 771, 1, 0)
-		UGraphics.depthMask(false)
-		UGraphics.disableLighting()
 		UGraphics.enableDepth()
 
 		val x = entity.prevX + (entity.getX() - entity.prevX) * context.tickDelta() - camera.x
@@ -50,80 +46,101 @@ object RenderUtil {
 			(color.alpha * Config.healthFillPercent).toInt()
 		)
 		if (outline) drawOutlineBox(matrix, context, box, color)
-		if (fill) drawFilledBox(matrix, box, filledColor)
+		if (fill) drawFilledBoundingBox(matrix, box, filledColor)
 
-		UGraphics.disableBlend()
-		UGraphics.depthMask(true)
-		UGraphics.enableLighting()
 		UGraphics.disableDepth()
 	}
 
+	/**
+	 * @author Mojang
+	 */
 	fun drawOutlineBox (matrix: UMatrixStack, context: WorldRenderContext, box: Box, color: Color) {
+		UGraphics.enableBlend()
+		UGraphics.tryBlendFuncSeparate(770, 771, 1, 0)
 		val vertex = context.consumers()!!.getBuffer(RenderLayer.getLines())
 		WorldRenderer.drawBox(matrix.toMC(), vertex, box, color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
+		UGraphics.disableBlend()
 	}
 
-	fun drawFilledBox (matrix: UMatrixStack, box: Box, color: Color) {
-		val vb = UGraphics.getFromTessellator()
-		vb.beginWithDefaultShader(UGraphics.DrawMode.fromGl(7), UGraphics.CommonVertexFormats.POSITION_COLOR)
-		vb.pos(matrix, box.minX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.maxZ).color(color).endVertex()
-		// vb.drawDirect()
-		// vb.beginWithDefaultShader(UGraphics.DrawMode.fromGl(7), UGraphics.CommonVertexFormats.POSITION_COLOR)
-		vb.pos(matrix, box.maxX, box.maxY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.maxZ).color(color).endVertex()
-		// vb.drawDirect()
-		// vb.beginWithDefaultShader(UGraphics.DrawMode.fromGl(7), UGraphics.CommonVertexFormats.POSITION_COLOR)
-		vb.pos(matrix, box.minX, box.maxY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.minZ).color(color).endVertex()
-		// vb.drawDirect()
-		// vb.beginWithDefaultShader(UGraphics.DrawMode.fromGl(7), UGraphics.CommonVertexFormats.POSITION_COLOR)
-		vb.pos(matrix, box.minX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.minZ).color(color).endVertex()
-		// vb.drawDirect()
-		// vb.beginWithDefaultShader(UGraphics.DrawMode.fromGl(7), UGraphics.CommonVertexFormats.POSITION_COLOR)
-		vb.pos(matrix, box.minX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.minZ).color(color).endVertex()
-		// vb.drawDirect()
-		// vb.beginWithDefaultShader(UGraphics.DrawMode.fromGl(7), UGraphics.CommonVertexFormats.POSITION_COLOR)
-		vb.pos(matrix, box.minX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.maxY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.minX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.minZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.maxY, box.maxZ).color(color).endVertex()
-		vb.pos(matrix, box.maxX, box.minY, box.maxZ).color(color).endVertex()
-		vb.drawDirect()
+	/**
+	 * @author Skytils
+	 * https://github.com/Skytils/SkytilsMod/blob/feaee0ba33f4d933d50cd54d3f6113f2eb0a5269/src/main/kotlin/gg/skytils/skytilsmod/utils/RenderUtil.kt#L160
+	 */
+	internal fun <T> Color.withParts(block: (Int, Int, Int, Int) -> T) =
+        block(this.red, this.green, this.blue, this.alpha)
+
+	/**
+	 * @author Skytils
+	 * https://github.com/Skytils/SkytilsMod/blob/feaee0ba33f4d933d50cd54d3f6113f2eb0a5269/src/main/kotlin/gg/skytils/skytilsmod/utils/RenderUtil.kt#L163
+	 */
+	fun drawFilledBoundingBox(matrixStack: UMatrixStack, aabb: Box, c: Color, alphaMultiplier: Float = 1f) {
+		UGraphics.enableBlend()
+		UGraphics.disableLighting()
+		UGraphics.depthMask(false)
+		UGraphics.tryBlendFuncSeparate(770, 771, 1, 0)
+		val wr = UGraphics.getFromTessellator()
+		wr.beginWithDefaultShader(UGraphics.DrawMode.QUADS, UGraphics.CommonVertexFormats.POSITION_COLOR)
+		val adjustedAlpha = (c.alpha * alphaMultiplier).toInt().coerceAtMost(255)
+
+		// vertical
+		c.withAlpha(adjustedAlpha).withParts { r, g, b, a ->
+				// bottom
+				wr.pos(matrixStack, aabb.minX, aabb.minY, aabb.minZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.minY, aabb.minZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.minY, aabb.maxZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.minX, aabb.minY, aabb.maxZ).color(r, g, b, a).endVertex()
+				// top
+				wr.pos(matrixStack, aabb.minX, aabb.maxY, aabb.maxZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.maxY, aabb.maxZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.maxY, aabb.minZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.minX, aabb.maxY, aabb.minZ).color(r, g, b, a).endVertex()
+		}
+
+		// x axis
+		c.withParts { r, g, b, a ->
+				Color(
+						(r * 0.8f).toInt(),
+						(g * 0.8f).toInt(),
+						(b * 0.8f).toInt(),
+						adjustedAlpha
+				)
+		}.withParts { r, g, b, a ->
+				// west
+				wr.pos(matrixStack, aabb.minX, aabb.minY, aabb.maxZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.minX, aabb.maxY, aabb.maxZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.minX, aabb.maxY, aabb.minZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.minX, aabb.minY, aabb.minZ).color(r, g, b, a).endVertex()
+				// east
+				wr.pos(matrixStack, aabb.maxX, aabb.minY, aabb.minZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.maxY, aabb.minZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.maxY, aabb.maxZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.minY, aabb.maxZ).color(r, g, b, a).endVertex()
+		}
+
+		// z axis
+		c.withParts { r, g, b, a ->
+				Color(
+						(r * 0.9f).toInt(),
+						(g * 0.9f).toInt(),
+						(b * 0.9f).toInt(),
+						adjustedAlpha
+				)
+		}.withParts { r, g, b, a ->
+				// north
+				wr.pos(matrixStack, aabb.minX, aabb.maxY, aabb.minZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.maxY, aabb.minZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.minY, aabb.minZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.minX, aabb.minY, aabb.minZ).color(r, g, b, a).endVertex()
+				// south
+				wr.pos(matrixStack, aabb.minX, aabb.minY, aabb.maxZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.minY, aabb.maxZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.maxX, aabb.maxY, aabb.maxZ).color(r, g, b, a).endVertex()
+				wr.pos(matrixStack, aabb.minX, aabb.maxY, aabb.maxZ).color(r, g, b, a).endVertex()
+		}
+
+		wr.drawDirect()
+		UGraphics.disableBlend()
+		UGraphics.depthMask(true)
+		UGraphics.enableLighting()
 	}
 }
