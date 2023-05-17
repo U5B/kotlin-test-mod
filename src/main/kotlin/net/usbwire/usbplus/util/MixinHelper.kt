@@ -21,6 +21,7 @@ object MixinHelper {
 	fun worldTick(clientWorld: ClientWorld) {
 		HealthHud.onWorldTick(clientWorld)
 		Compass.onWorldTick()
+		Debug.onWorldTick()
 	}
 
 	fun renderTick(context: WorldRenderContext) {

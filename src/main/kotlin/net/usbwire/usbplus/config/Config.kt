@@ -57,6 +57,9 @@ object Config : Vigilant(File(configFile)) {
 	var healthDrawDamageDelay = 10
 	var healthDrawSort = 0
 
+	// *Debug*
+	var debugEnabled = false
+
 	init {
 		Util.createDirectory(Path.of(configFile))
 
@@ -72,16 +75,16 @@ object Config : Vigilant(File(configFile)) {
 
     category("Health Colors") {
       subcategory("Color") {
-				color(::healthBaseColor, "Base HP color", "Alpha under 10 doesn't show")
-				color(::healthGoodColor, "Good HP color")
+				color(::healthBaseColor, "Base HP color", "Alpha under 10 doesn't show", allowAlpha = true)
+				color(::healthGoodColor, "Good HP color", allowAlpha = true)
         percentSlider(::healthGoodPercent, "Good HP percent", "100%% HP")
-				color(::healthLowColor, "Low HP color")
+				color(::healthLowColor, "Low HP color", allowAlpha = true)
         percentSlider(::healthLowPercent, "Low HP percent", "70%% HP")
-				color(::healthCriticalColor, "Critical HP color")
+				color(::healthCriticalColor, "Critical HP color", allowAlpha = true)
         percentSlider(::healthCriticalPercent, "Critical HP percent", "40%% HP")
-        color(::healthHurtColor, "Hurt color")
+        color(::healthHurtColor, "Hurt color", allowAlpha = true)
         switch(::healthHurtEnabled, "Hurt Color Toggle")
-        color(::healthEffectColor, "Fire Color")
+        color(::healthEffectColor, "Fire Color", allowAlpha = true)
         switch(::healthEffectEnabled, "Fire Color Toggle")
 			}
     }
@@ -125,6 +128,10 @@ object Config : Vigilant(File(configFile)) {
 				switch(::healthWhitelistEnabled, "Toggle Whitelist")
 				paragraph(::healthWhitelist, "Player names separated by spaces to allow")
 			}
+		}
+
+		category("_Debug") {
+			switch(::debugEnabled, "Toggle Debug")
 		}
 
 		initialize() // this needs to be called for whatever reason so that configs actually save
