@@ -38,15 +38,8 @@ object RenderUtil {
 			entityBox.maxY - entity.getY() + y,
 			entityBox.maxZ - entity.getZ() + z
 		)
-
-		val filledColor = Color(
-			color.red,
-			color.green,
-			color.blue,
-			(color.alpha * Config.healthFillPercent).toInt()
-		)
 		if (outline) drawOutlineBox(matrix, context, box, color)
-		if (fill) drawFilledBoundingBox(matrix, box, filledColor)
+		if (fill) drawFilledBoundingBox(matrix, box, color, Config.healthFillPercent)
 
 		UGraphics.disableDepth()
 	}
