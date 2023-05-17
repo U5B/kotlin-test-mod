@@ -2,15 +2,21 @@ package net.usbwire.usbplus.util.chat
 
 import gg.essential.universal.wrappers.message.*
 import kotlinx.serialization.Serializable
-import net.minecraft.text.ClickEvent
-import net.minecraft.text.HoverEvent
+import net.minecraft.text.*
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.util.Util
 
 object Coordinates {
 	var supportsXaero = true
 	var supportsJourneymap = true
-	fun coordinateBuilder(name: String, x: Int, y: Int, z: Int, dimension: String, message: UMessage = UMessage()): UMessage {
+	fun coordinateBuilder(
+		name: String,
+		x: Int,
+		y: Int,
+		z: Int,
+		dimension: String,
+		message: UMessage = UMessage()
+	): UMessage {
 
 		// prefix
 		val baseCompoment = UTextComponent("'${name}':")
@@ -20,8 +26,8 @@ object Coordinates {
 		val copyCompoment = UTextComponent(" §a(${x}, ${y}, ${z})§r")
 		copyCompoment.clickAction = ClickEvent.Action.COPY_TO_CLIPBOARD
 		copyCompoment.clickValue = "${x} ${y} ${z}"
-    copyCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
-    copyCompoment.hoverValue = UTextComponent("§aClick to copy coordinates to clipboard!§r")
+		copyCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
+		copyCompoment.hoverValue = UTextComponent("§aClick to copy coordinates to clipboard!§r")
 		message.addTextComponent(copyCompoment)
 
 		// xaero minimap support
@@ -69,8 +75,8 @@ object Coordinates {
 			xaeroCompoment.clickAction = ClickEvent.Action.RUN_COMMAND
 			xaeroCompoment.clickValue = waypoint
 
-      xaeroCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
-      xaeroCompoment.hoverValue = UTextComponent("${minecraftColor}Click to create a new xaero waypoint!§r")
+			xaeroCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
+			xaeroCompoment.hoverValue = UTextComponent("${minecraftColor}Click to create a new xaero waypoint!§r")
 			return xaeroCompoment
 		} catch (e: Exception) {
 			return null
@@ -92,8 +98,8 @@ object Coordinates {
 			journeymapCompoment.clickAction = ClickEvent.Action.RUN_COMMAND
 			journeymapCompoment.clickValue = waypoint
 
-      journeymapCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
-      journeymapCompoment.hoverValue = UTextComponent("${minecraftColor}Click to create a new journey map waypoint!§r")
+			journeymapCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
+			journeymapCompoment.hoverValue = UTextComponent("${minecraftColor}Click to create a new journey map waypoint!§r")
 			return journeymapCompoment
 		} catch (e: Exception) {
 			return null

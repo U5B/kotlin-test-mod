@@ -4,17 +4,15 @@ import gg.essential.universal.UMatrixStack
 import gg.essential.universal.wrappers.message.UTextComponent
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.*
-import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
-import net.minecraft.entity.Entity
 import net.minecraft.text.Text
 import net.usbwire.usbplus.features.*
 
 object MixinHelper {
 	fun init() {
 		ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) } }
-		WorldRenderEvents.AFTER_ENTITIES.register { context -> run  { renderTick(context) }}
+		WorldRenderEvents.AFTER_ENTITIES.register { context -> run { renderTick(context) } }
 		HudRenderCallback.EVENT.register { matrix, ticks -> run { hudRender(matrix, ticks) } }
 	}
 

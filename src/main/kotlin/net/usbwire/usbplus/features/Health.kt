@@ -1,13 +1,9 @@
 package net.usbwire.usbplus.features
 
-import net.minecraft.client.render.*
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
-import net.minecraft.entity.effect.StatusEffects
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.entity.player.PlayerEntity
 import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.util.RenderUtil
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import java.awt.Color
 
 object Health {
@@ -17,7 +13,7 @@ object Health {
 		if (Config.healthEnabled == false) return
 		val camera = context.camera()
 		for (player in context.world().players) {
-			if (player == camera.focusedEntity && !camera.isThirdPerson()) continue
+			if (player == camera.focusedEntity && !camera.isThirdPerson) continue
 			val color = getHealthProperties(player).color
 			if (color.alpha <= 10) continue
 			if (Config.healthFillPercent == 0f) {
@@ -59,6 +55,6 @@ object Health {
 		if (Config.healthEffectEnabled == false) return null
 		// Player on fire?
 		if (entity.isOnFire == true && entity.isFireImmune == false) return Config.healthEffectColor
-    return null
+		return null
 	}
 }

@@ -17,16 +17,16 @@ object Config : Vigilant(File(configFile)) {
 	var poiEnabled = false
 	var poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json" // github url
 
-  // *Compass*
-  var compassEnabled = false
+	// *Compass*
+	var compassEnabled = false
 
-  // *Common Health*
-  // Health Whitelist
+	// *Common Health*
+	// Health Whitelist
 	var healthWhitelistEnabled = false
 	var healthWhitelist = ""
 	var healthUpdateTicks = 1
 
-  // *Health Color Toggles & Percentages*
+	// *Health Color Toggles & Percentages*
 	var healthHurtEnabled = false
 	var healthEffectEnabled = false
 	var healthGoodPercent = 1.0f
@@ -34,12 +34,12 @@ object Config : Vigilant(File(configFile)) {
 	var healthCriticalPercent = 0.4f
 	var healthFillPercent = 0.1f
 
-  // *Health Colors*
-  var healthBaseColor = Color.WHITE
-  var healthGoodColor = Color.GREEN
-  var healthLowColor = Color.YELLOW
-  var healthCriticalColor = Color.RED
-  var healthHurtColor = Color.ORANGE
+	// *Health Colors*
+	var healthBaseColor = Color.WHITE
+	var healthGoodColor = Color.GREEN
+	var healthLowColor = Color.YELLOW
+	var healthCriticalColor = Color.RED
+	var healthHurtColor = Color.ORANGE
 	var healthEffectColor = Color.GRAY
 
 	// *BoxHealth*
@@ -69,28 +69,28 @@ object Config : Vigilant(File(configFile)) {
 			button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
 		}
 
-    category("Compass") {
-      switch(::compassEnabled, "Toggle Compass", "Trigger by left clicking with a compass.")
-    }
+		category("Compass") {
+			switch(::compassEnabled, "Toggle Compass", "Trigger by left clicking with a compass.")
+		}
 
-    category("Health Colors") {
-      subcategory("Color") {
+		category("Health Colors") {
+			subcategory("Color") {
 				color(::healthBaseColor, "Base HP color", "Alpha under 10 doesn't show", allowAlpha = true)
 				color(::healthGoodColor, "Good HP color", allowAlpha = true)
-        percentSlider(::healthGoodPercent, "Good HP percent", "100%% HP")
+				percentSlider(::healthGoodPercent, "Good HP percent", "100%% HP")
 				color(::healthLowColor, "Low HP color", allowAlpha = true)
-        percentSlider(::healthLowPercent, "Low HP percent", "70%% HP")
+				percentSlider(::healthLowPercent, "Low HP percent", "70%% HP")
 				color(::healthCriticalColor, "Critical HP color", allowAlpha = true)
-        percentSlider(::healthCriticalPercent, "Critical HP percent", "40%% HP")
-        color(::healthHurtColor, "Hurt color", allowAlpha = true)
-        switch(::healthHurtEnabled, "Hurt Color Toggle")
-        color(::healthEffectColor, "Fire Color", allowAlpha = true)
-        switch(::healthEffectEnabled, "Fire Color Toggle")
+				percentSlider(::healthCriticalPercent, "Critical HP percent", "40%% HP")
+				color(::healthHurtColor, "Hurt color", allowAlpha = true)
+				switch(::healthHurtEnabled, "Hurt Color Toggle")
+				color(::healthEffectColor, "Fire Color", allowAlpha = true)
+				switch(::healthEffectEnabled, "Fire Color Toggle")
 			}
-    }
+		}
 
 		category("Health Draw") {
-      subcategory("Draw") {
+			subcategory("Draw") {
 				switch(::healthDrawEnabled, "Toggle DrawHealth")
 				percentSlider(::healthDrawX, "X Position Percent", triggerActionOnInitialization = false) {
 					HealthHud.xPos.set(it)
@@ -104,7 +104,14 @@ object Config : Vigilant(File(configFile)) {
 					HealthHud.alignPos.set(it)
 					HealthHud.configDirty = true
 				}
-				decimalSlider(::healthDrawScale, "Text Scale", min = 0.5f, max = 4.0f, decimalPlaces = 1, triggerActionOnInitialization = false) {
+				decimalSlider(
+					::healthDrawScale,
+					"Text Scale",
+					min = 0.5f,
+					max = 4.0f,
+					decimalPlaces = 1,
+					triggerActionOnInitialization = false
+				) {
 					HealthHud.textSize.set(it)
 					HealthHud.configDirty = true
 				}
