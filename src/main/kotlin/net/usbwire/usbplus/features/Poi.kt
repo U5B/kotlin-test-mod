@@ -13,6 +13,10 @@ import java.io.FileNotFoundException
 import java.net.URL
 import java.nio.file.*
 
+/**
+ * A really convulted file that returns POI data from a file.
+ * Ported directly from U5B/jsmacros
+ */
 object Poi {
 	@Serializable
 	data class JsonPoi(

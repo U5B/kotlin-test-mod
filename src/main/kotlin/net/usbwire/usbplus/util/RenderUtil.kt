@@ -9,15 +9,12 @@ import net.minecraft.util.math.Box
 import net.usbwire.usbplus.config.Config
 import java.awt.Color
 
-
+/**
+ * How do I draw a box?!?!
+ * TODO: fix shaded box rendering when Iris mod is installed
+ * ! There is probably a better way of doing things
+ */
 object RenderUtil {
-
-	/**
-	 * Draw a box!
-	 * @see box.minZttps://github.com/Skytils/SkytilsMod/blob/268e8e473a00e55cddc89c47653c3a00db263aac/src/main/kotlin/gg/skytils/skytilsmod/utils/RenderUtil.kt#L163
-	 * @see box.minZttps://github.com/Splzh/ClearHitboxes/blob/5439f1e3f789e35371939f4bc72ab0fb4eb7d2aa/src/main/java/splash/utils/BoxUtils.java#L74
-	 * @author Mojang
-	 */
 	fun drawEntityBox(
 		entity: Entity,
 		color: Color,

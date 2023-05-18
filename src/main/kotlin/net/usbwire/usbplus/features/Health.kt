@@ -6,6 +6,10 @@ import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.util.RenderUtil
 import java.awt.Color
 
+/**
+ * Main selling point of this mod. Displays a colored box dependent on the player's health
+ * TODO: don't recalculate health every frame
+ */
 object Health {
 	data class HealthData(val current: Float, val max: Float, val absorption: Float, val percent: Float, val color: Color)
 
@@ -51,6 +55,10 @@ object Health {
 		return Config.healthBaseColor // fallback if something went wrong!
 	}
 
+	/**
+	 * Unfortunately you cannot determine if another player has a specific effect on multiplayer servers
+	 * You could get particle colors but that takes way too much work
+	 */
 	fun hasBadEffect(entity: PlayerEntity): Color? {
 		if (Config.healthEffectEnabled == false) return null
 		// Player on fire?

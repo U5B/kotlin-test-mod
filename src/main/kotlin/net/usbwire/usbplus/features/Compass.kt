@@ -6,6 +6,12 @@ import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.util.Util
 import net.usbwire.usbplus.util.chat.Coordinates
 
+/**
+ * Monumenta compass helper! Gets where compass is pointing on left click
+ * Ported directly from U5B/jsmacros
+ * TODO: add command /compass to get position easily
+ * TODO: make a configurable keybind
+ */
 object Compass {
 	fun getCompass(): Coordinates.Coordinates {
 		val spawnPos = USBPlus.mc.world!!.spawnPos

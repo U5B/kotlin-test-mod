@@ -5,6 +5,9 @@ import gg.essential.universal.wrappers.message.*
 import net.usbwire.usbplus.USBPlus
 import java.nio.file.*
 
+/**
+ * Random utilities for debugging
+ */
 object Util {
 	fun createPath(file: Path): Boolean {
 		createDirectory(file)

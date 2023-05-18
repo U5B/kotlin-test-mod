@@ -15,6 +15,11 @@ import java.text.DecimalFormat
 
 val DEC = DecimalFormat("0.0")
 
+/**
+ * Displays nearby health of players on a HUD created with Elementa.
+ * TODO: split the text compoments up into seperate functions
+ * TODO: allow Health.kt to use PlayerMap for their colors instead of recalculating color every frame
+ */
 object HealthHud {
 	data class PlayerHP(
 		val name: String,
@@ -47,8 +52,6 @@ object HealthHud {
 
 	val alignRightExtra: State<Boolean> = BasicState(Config.healthDrawAlignExtraRight)
 
-	// CenterConstraint code
-	// parent.getLeft() + (parent.getWidth() / 2 - component.getWidth() / 2).roundToRealPixels()
 	val window by Window(ElementaVersion.V2, 60)
 	val container = UIContainer().constrain {
 		x = CustomCenterConstraint(xPos)
@@ -210,7 +213,7 @@ object HealthHud {
 		}
 	}
 
-	fun draw(matrix: UMatrixStack) { // ChatScreen
+	fun draw(matrix: UMatrixStack) {
 		if (Config.healthDrawEnabled == false) return
 		if (playerMap.isNotEmpty()) window.draw(matrix)
 	}

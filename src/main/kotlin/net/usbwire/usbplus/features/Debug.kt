@@ -7,6 +7,10 @@ import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.util.Util
 
+/**
+ * Debugging for future NPC scraper
+ * TODO: actually create NPC scraper
+ */
 object Debug {
 	var clicked = false
 	fun onWorldTick() {

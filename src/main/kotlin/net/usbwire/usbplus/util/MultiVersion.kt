@@ -5,9 +5,14 @@
 import net.minecraft.item.Item
 import net.minecraft.util.registry.Registry
 
+/**
+ * For when there are differences between versions
+ */
 object ItemHelper {
 
-	// returns item identifier (minecraft:item)
+	/**
+	 * returns item identifier (minecraft:item)
+	 */
 	fun getItemId(item: Item?): String {
 		//#if MC>=11903
 		//$$ return Registries.ITEM.getId(item).toString()

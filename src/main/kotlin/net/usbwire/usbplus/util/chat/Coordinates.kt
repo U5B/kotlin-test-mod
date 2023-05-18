@@ -6,6 +6,12 @@ import net.minecraft.text.*
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.util.Util
 
+/**
+ * Creates a message with coordinates and buttons to 
+ * copy coordinates or add a JM/Xaero waypoint if available.
+ * TODO: split each compoment into multiple functions
+ * TODO: directly create the waypoint if possible
+ */
 object Coordinates {
 	var supportsXaero = true
 	var supportsJourneymap = true

@@ -9,6 +9,9 @@ import net.minecraft.client.world.ClientWorld
 import net.minecraft.text.Text
 import net.usbwire.usbplus.features.*
 
+/**
+ * Technically is an event system, but more cursed.
+ */
 object MixinHelper {
 	fun init() {
 		ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) } }
