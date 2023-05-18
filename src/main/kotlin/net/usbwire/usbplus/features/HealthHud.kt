@@ -8,7 +8,6 @@ import gg.essential.elementa.state.*
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.wrappers.message.*
 import net.minecraft.client.world.ClientWorld
-import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.hud.CustomCenterConstraint
 import java.awt.Color
@@ -150,7 +149,8 @@ object HealthHud {
 			// damage/heal change
 			if (Config.healthDrawDamageEnabled == true) {
 				if (playerMap[name]!!.health.current != hp.current) {
-					val changeHp = (hp.current + hp.absorption) - (playerMap[name]!!.health.current + playerMap[name]!!.health.absorption)
+					val changeHp =
+						(hp.current + hp.absorption) - (playerMap[name]!!.health.current + playerMap[name]!!.health.absorption)
 					val damageHp = DEC.format(changeHp)
 					if (changeHp > 0.1) {
 						playerMap[name]!!.states.damage.set("+${damageHp}")

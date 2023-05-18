@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - 'main'
+    paths:
+      - 'gradle.properties'
 jobs:
   publish:
     runs-on: ubuntu-22.04
@@ -19,30 +21,40 @@ jobs:
       with:
         java-version: 17
         distribution: 'microsoft'
-    - name: make gradle wrapper executable
-      run: chmod +x ./gradlew
     # from https://github.com/orgs/community/discussions/35120#discussioncomment-3805387
     - name: get changelog
       id: changelog
-      uses: actions/github-script@v6.3.1
+      uses: actions/github-script@v6
       env:
         COMMITS: ${{ toJSON(github.event.commits) }}
       with:
         result-encoding: string
         script: |
-            const commits = JSON.parse(process.env.COMMITS);
-            var lines = "";
+            const commits = JSON.parse(process.env.COMMITS)
+            var lines = ""
             for (const commit of commits) {
-              lines += "* " + commit.message + " (" + commit.id.substring(0,8) + ") @" + commit.author.username + "\n"
+              const id = commit.id.substring(0, 8)
+              const author = "@" + commit.author.username
+              if (commit.message.includes("\n")) {
+                const commitLines = commit.message.split("\n")
+                lines += "* " + commitLines.shift() + " (" + id + ") " + author + "\n"
+                for (const line of commitLines) {
+                  lines += "  * " + line + "\n"
+                }
+              } else {
+                lines += "* " + commit.message + " (" + id + ") " + author + "\n"
+              }
             }
             return lines
     - name: publish to modrinth
+      uses: gradle/gradle-build-action@v2
       env:
         CHANGELOG: ${{ steps.changelog.outputs.result }}
-      run: ./gradlew modrinth
+      with:
+        arguments: modrinth
     # from https://github.com/JsMacros/JsMacros/blob/d0991a04159eb54b32b534e4bcac96b5ce613ccb/.github/workflows/betabuild.yml
     - name: get current mod version
-      uses: actions/github-script@v2
+      uses: actions/github-script@v6
       id: mod_version
       with:
         result-encoding: string

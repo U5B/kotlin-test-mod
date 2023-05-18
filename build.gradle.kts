@@ -40,6 +40,7 @@ repositories {
 	// for more information about repositories.
 	maven("https://repo.essential.gg/repository/maven-public/")
 	maven("https://maven.terraformersmc.com/releases/")
+  maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
 dependencies {
@@ -62,6 +63,9 @@ dependencies {
 
 	// mod menu
 	modApi("com.terraformersmc:modmenu:${mod_menu_version}")
+
+  // devauth
+  modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.1.2")
 }
 
 loom.noServerRunConfigs()
@@ -101,6 +105,14 @@ tasks.compileKotlin {
       "-Xjvm-default=all"
     )
   kotlinOptions.jvmTarget = "17"
+}
+
+loom {
+  launchConfigs {
+    getByName("client") {
+      property("devauth.enabled", "true")
+    }
+  }
 }
 
 modrinth {

@@ -9,9 +9,9 @@ import net.usbwire.usbplus.commands.parsers.*
 import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.util.Util
 import net.usbwire.usbplus.util.chat.Coordinates
+import java.io.FileNotFoundException
 import java.net.URL
 import java.nio.file.*
-import java.io.FileNotFoundException
 
 object Poi {
 	@Serializable
@@ -29,17 +29,17 @@ object Poi {
 	var firstRun = true
 
 	fun fetchPoiData() {
-    try {
-      URL(Config.poiUrl).openStream().use {
-        val project = Json.decodeFromStream<Map<String, JsonPoi>>(it) // read JSON from a URL
-        updatePoiData(project)
-        savePoiData()
-      }
-    } catch (e: FileNotFoundException) {
-      USBPlus.logger.error("Invalid URL: ${Config.poiUrl}")
-      USBPlus.logger.error("Resetting URL to default!")
-      Config.poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json"
-    }
+		try {
+			URL(Config.poiUrl).openStream().use {
+				val project = Json.decodeFromStream<Map<String, JsonPoi>>(it) // read JSON from a URL
+				updatePoiData(project)
+				savePoiData()
+			}
+		} catch (e: FileNotFoundException) {
+			USBPlus.logger.error("Invalid URL: ${Config.poiUrl}")
+			USBPlus.logger.error("Resetting URL to default!")
+			Config.poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json"
+		}
 	}
 
 	fun loadPoiData() {
