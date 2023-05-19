@@ -34,8 +34,10 @@ object MixinHelper {
 		HealthHud.draw(matrix)
 	}
 
-	fun onMessage(mcText: Text, id: Int, ticks: Int, refresh: Boolean): Boolean {
+	fun onMessage(mcText: Text): Boolean {
 		val message = UTextComponent(mcText)
+		if (message.text.lowercase().contains("usbplus")) return false
+		Util.chat(message.text)
 		return false
 	}
 }

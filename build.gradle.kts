@@ -59,7 +59,7 @@ dependencies {
 
   // essential dependencies
 	include(modRuntimeOnly("gg.essential:loader-fabric:1.0.0")!!)
-	compileOnly("gg.essential:essential-$platform:12328+g551779957")
+	modCompileOnly("gg.essential:essential-$platform:12328+g551779957")
 
 	// mod menu
 	modApi("com.terraformersmc:modmenu:${mod_menu_version}")
