@@ -8,6 +8,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.text.Text
 import net.usbwire.usbplus.features.*
+import net.usbwire.usbplus.config.Config
 
 /**
  * Technically is an event system, but more cursed.
@@ -36,8 +37,11 @@ object MixinHelper {
 
 	fun onMessage(mcText: Text): Boolean {
 		val message = UTextComponent(mcText)
-		if (message.text.lowercase().contains("usbplus")) return false
-		Util.chat(message.text)
+		if (message.unformattedText.lowercase().startsWith("[USBPlus]")) return false
+		if (Config.debugEnabled) {
+			Util.chat("Unformatted:" + message.unformattedText)
+			Util.chat("Formatted:" + message.formattedText.replace('§', '&'))
+		}
 		return false
 	}
 }

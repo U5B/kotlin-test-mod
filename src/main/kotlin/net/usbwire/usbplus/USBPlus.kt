@@ -4,6 +4,7 @@ import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.usbwire.usbplus.commands.ConfigCommand
+import net.usbwire.usbplus.commands.CompassCommand
 import net.usbwire.usbplus.util.MixinHelper
 import org.slf4j.LoggerFactory
 
@@ -21,6 +22,7 @@ object USBPlus : ClientModInitializer {
 
 	override fun onInitializeClient() {
 		ConfigCommand.register()
+		CompassCommand.register()
 		MixinHelper.init()
 	}
 }

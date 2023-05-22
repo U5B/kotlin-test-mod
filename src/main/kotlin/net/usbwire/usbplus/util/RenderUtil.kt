@@ -40,12 +40,13 @@ object RenderUtil {
 			entityBox.maxZ - entity.z + z
 		)
 
-		UGraphics.enableDepth()
+		if (Config.healthGlowingThroughWalls && entity.isGlowing()) UGraphics.disableDepth()
+		else UGraphics.enableDepth()
 
 		if (outline) drawOutlineBox(matrix, context, box, color)
 		if (fill) drawFilledBoundingBox(matrix, box, color, alphaMultiplier)
 
-		UGraphics.disableDepth()
+		UGraphics.enableDepth()
 	}
 
 	/**

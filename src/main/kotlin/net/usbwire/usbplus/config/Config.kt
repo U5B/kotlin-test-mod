@@ -44,7 +44,7 @@ object Config : Vigilant(File(configFile)) {
 
 	// *BoxHealth*
 	var healthEnabled = false
-	var healthHitboxCancel = false
+	var healthGlowingThroughWalls = false
 
 	// *DrawHealth*
 	var healthDrawEnabled = false
@@ -128,6 +128,7 @@ object Config : Vigilant(File(configFile)) {
 		category("Health General") {
 			subcategory("Hitbox") {
 				switch(::healthEnabled, "Toggle BoxHealth")
+				switch(::healthGlowingThroughWalls, "Display Glowing Players through walls (ESP!)")
 				percentSlider(::healthFillPercent, "Alpha Percentage of Inside Box", "Set to 0 to disable.")
 			}
 			subcategory("General") {
