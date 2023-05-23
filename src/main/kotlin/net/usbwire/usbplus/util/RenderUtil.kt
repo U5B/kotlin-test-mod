@@ -44,7 +44,7 @@ object RenderUtil {
 		else UGraphics.enableDepth()
 
 		if (outline) drawOutlineBox(matrix, context, box, color)
-		if (fill) drawFilledBoundingBox(matrix, box, color, alphaMultiplier)
+		if (fill && alphaMultiplier > 0f) drawFilledBoundingBox(matrix, box, color, alphaMultiplier)
 
 		UGraphics.enableDepth()
 	}

@@ -4,9 +4,16 @@
 //#endif
 import net.minecraft.item.Item
 import net.minecraft.util.registry.Registry
+import net.minecraft.entity.Entity
+
+import java.awt.Color
+
+import net.usbwire.usbplus.interfaces.EntityMixinInterface
+import net.usbwire.usbplus.USBPlus
 
 /**
  * For when there are differences between versions
+ * Inspired by JsMacros
  */
 object ItemHelper {
 
@@ -19,5 +26,34 @@ object ItemHelper {
 		//#else
 		return Registry.ITEM.getId(item).toString()
 		//#endif
+	}
+}
+
+object EntityHelper {
+
+	fun getGlowingColor(entity: Entity): Int {
+		return entity.getTeamColorValue()
+	}
+
+	fun setGlowingColor(entity: Entity, color: Color) {
+		val special = entity as EntityMixinInterface
+		val intColor = color.getRGB()
+		USBPlus.logger.error("Color: ${intColor}")
+		special.usbplus_setGlowingColor(intColor)
+	}
+
+	fun resetGlowingColor(entity: Entity) {
+		val special = entity as EntityMixinInterface
+		special.usbplus_resetColor()
+	}
+
+	fun setGlowing(entity: Entity, value: Boolean) {
+		val special = entity as EntityMixinInterface
+		special.usbplus_setForceGlowing(if (value) 2 else 0)
+	}
+
+	fun resetGlowing(entity: Entity) {
+		val special = entity as EntityMixinInterface
+		special.usbplus_setForceGlowing(1)
 	}
 }

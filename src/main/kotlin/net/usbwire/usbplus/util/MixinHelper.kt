@@ -8,6 +8,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.text.Text
 import net.usbwire.usbplus.features.*
+import net.usbwire.usbplus.features.health.*
 import net.usbwire.usbplus.config.Config
 
 /**
@@ -21,18 +22,18 @@ object MixinHelper {
 	}
 
 	fun worldTick(clientWorld: ClientWorld) {
-		HealthHud.onWorldTick(clientWorld)
+		Base.onWorldTick(clientWorld)
 		Compass.onWorldTick()
 		Debug.onWorldTick()
 	}
 
 	fun renderTick(context: WorldRenderContext) {
-		Health.onRenderTick(context)
+		Glow.onRenderTick(context)
 	}
 
 	fun hudRender(matrixStack: MatrixStack, ticks: Float) {
 		val matrix = UMatrixStack(matrixStack)
-		HealthHud.draw(matrix)
+		HUD.draw(matrix)
 	}
 
 	fun onMessage(mcText: Text): Boolean {

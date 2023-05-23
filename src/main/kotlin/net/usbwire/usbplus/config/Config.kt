@@ -5,6 +5,7 @@ import gg.essential.vigilance.Vigilant
 import net.minecraft.client.gui.screen.Screen
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.features.*
+import net.usbwire.usbplus.features.health.*
 import net.usbwire.usbplus.util.Util
 import java.awt.Color
 import java.io.File
@@ -43,11 +44,11 @@ object Config : Vigilant(File(configFile)) {
 	var healthEffectColor = Color.GRAY
 
 	// *BoxHealth*
-	var healthEnabled = false
+	var healthEnabled = true
 	var healthGlowingThroughWalls = false
 
 	// *DrawHealth*
-	var healthDrawEnabled = false
+	var healthDrawEnabled = true
 	var healthDrawX = 0.0f
 	var healthDrawY = 0.0f
 	var healthDrawAlign = 0.0f
@@ -93,16 +94,16 @@ object Config : Vigilant(File(configFile)) {
 			subcategory("Draw") {
 				switch(::healthDrawEnabled, "Toggle DrawHealth")
 				percentSlider(::healthDrawX, "X Position Percent", triggerActionOnInitialization = false) {
-					HealthHud.xPos.set(it)
-					HealthHud.configDirty = true
+					HUD.xPos.set(it)
+					Base.configDirty = true
 				}
 				percentSlider(::healthDrawY, "Y Position Percent", triggerActionOnInitialization = false) {
-					HealthHud.yPos.set(it)
-					HealthHud.configDirty = true
+					HUD.yPos.set(it)
+					Base.configDirty = true
 				}
 				percentSlider(::healthDrawAlign, "Text Alignment Percent", triggerActionOnInitialization = false) {
-					HealthHud.alignPos.set(it)
-					HealthHud.configDirty = true
+					HUD.alignPos.set(it)
+					Base.configDirty = true
 				}
 				decimalSlider(
 					::healthDrawScale,
@@ -112,14 +113,14 @@ object Config : Vigilant(File(configFile)) {
 					decimalPlaces = 1,
 					triggerActionOnInitialization = false
 				) {
-					HealthHud.textSize.set(it)
-					HealthHud.configDirty = true
+					HUD.textSize.set(it)
+					Base.configDirty = true
 				}
 				switch(::healthDrawDamageEnabled, "Display Recent Damage")
 				slider(::healthDrawDamageDelay, "Damage Hide Delay in Ticks", min = 1, max = 60)
 				switch(::healthDrawAlignExtraRight, "Recent Damage Alignment", triggerActionOnInitialization = false) {
-					HealthHud.alignRightExtra.set(it)
-					HealthHud.configDirty = true
+					HUD.alignRightExtra.set(it)
+					Base.configDirty = true
 				}
 				selector(::healthDrawSort, "Sort player list by", options = listOf("alphabetical", "health", "time"))
 			}
