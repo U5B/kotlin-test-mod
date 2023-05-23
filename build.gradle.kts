@@ -66,6 +66,9 @@ dependencies {
 
   // devauth
   modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.1.2")
+
+	// kotlin logging
+	implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
 }
 
 loom.noServerRunConfigs()

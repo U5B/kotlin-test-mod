@@ -10,11 +10,13 @@ import net.minecraft.text.Text
 import net.usbwire.usbplus.features.*
 import net.usbwire.usbplus.features.health.*
 import net.usbwire.usbplus.config.Config
+import net.usbwire.usbplus.USBPlus
 
 /**
  * Technically is an event system, but more cursed.
  */
 object MixinHelper {
+
 	fun init() {
 		ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) } }
 		WorldRenderEvents.AFTER_ENTITIES.register { context -> run { renderTick(context) } }
@@ -41,7 +43,7 @@ object MixinHelper {
 		val message = UMessage(UTextComponent(mcText))
 		if (message.unformattedText.lowercase().startsWith("[usbplus]")) return false
 		if (Config.debugEnabled) {
-			Util.chat("'${message.formattedText.replace("§", "%")}'")
+			USBPlus.logger.warn { "'${message.formattedText.replace("§", "%")}'" }
 		}
 		return false
 	}

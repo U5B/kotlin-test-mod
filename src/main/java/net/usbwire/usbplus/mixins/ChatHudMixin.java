@@ -10,8 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 
 import gg.essential.universal.wrappers.message.UTextComponent;
 import net.usbwire.usbplus.util.MixinHelper;

@@ -38,7 +38,6 @@ object EntityHelper {
 	fun setGlowingColor(entity: Entity, color: Color) {
 		val special = entity as EntityMixinInterface
 		val intColor = color.getRGB()
-		USBPlus.logger.error("Color: ${intColor}")
 		special.usbplus_setGlowingColor(intColor)
 	}
 

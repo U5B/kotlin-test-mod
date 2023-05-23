@@ -25,7 +25,7 @@ object Glow {
 			if (Base.playerMap[name] == null) continue
 			val color = Base.playerMap[name]!!.health.color
 			if (color.alpha > 10) {
-				if (!player.isGlowing) RenderUtil.drawEntityBox(player, color, context, true, true) // only draw box if player is already not glowing
+				if (!(Config.healthGlowingThroughWalls && player.isGlowing)) RenderUtil.drawEntityBox(player, color, context, true, true) // only draw box if player is already not glowing
 			}
 		}
 	}

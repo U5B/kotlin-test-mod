@@ -45,6 +45,7 @@ object Base {
 	)
 
 	val playerMap: MutableMap<String, PlayerHP> = mutableMapOf()
+	val currentPlayers: MutableList<String> = mutableListOf()
 
 	fun getHealthProperties(entity: PlayerEntity): HealthData {
 		val current = entity.health
@@ -89,7 +90,7 @@ object Base {
 		if (worldPlayers.isNullOrEmpty()) return
 
 		val previousPlayerMap = playerMap.toMap()
-		val currentPlayers: MutableList<String> = mutableListOf()
+		currentPlayers.clear()
 
 		for (player in worldPlayers) {
 			val name = UMessage(UTextComponent(player.name)).unformattedText
@@ -98,8 +99,10 @@ object Base {
 
 			val hp = getHealthProperties(player)
 
+			// create new player if it exists
 			if (playerMap[name] == null) playerMap[name] = PlayerHP(name, hp)
 
+			// hud updates
 			if (Config.healthDrawEnabled) {
 				if (playerMap[name]!!.draw == null) playerMap[name]!!.draw = HUD.createPlayer(name)
 				HUD.updatePlayer(playerMap[name]!!, hp)

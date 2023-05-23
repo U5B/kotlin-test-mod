@@ -40,8 +40,8 @@ object Poi {
 				savePoiData()
 			}
 		} catch (e: FileNotFoundException) {
-			USBPlus.logger.error("Invalid URL: ${Config.poiUrl}")
-			USBPlus.logger.error("Resetting URL to default!")
+			USBPlus.logger.error { "Invalid URL: ${Config.poiUrl}" }
+			USBPlus.logger.error { "Resetting URL to default!" }
 			Config.poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json"
 		}
 	}
