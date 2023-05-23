@@ -21,11 +21,7 @@ object Base {
 		var health: HealthData,
 		var tick: Int = -1,
 		var draw: PlayerHPDraw? = null,
-		var glow: PlayerHPGlow? = null,
-	)
-
-	data class PlayerHPGlow(
-		modified: Boolean = false,
+		var glow: Boolean = false
 	)
 
 	data class PlayerHPDraw(
@@ -101,12 +97,21 @@ object Base {
 			if (Config.healthWhitelistEnabled && !Config.healthWhitelist.lowercase().contains(name.lowercase())) continue
 
 			val hp = getHealthProperties(player)
-		
+
 			if (playerMap[name] == null) playerMap[name] = PlayerHP(name, hp)
 
 			if (Config.healthDrawEnabled) {
 				if (playerMap[name]!!.draw == null) playerMap[name]!!.draw = HUD.createPlayer(name)
 				HUD.updatePlayer(playerMap[name]!!, hp)
+			}
+
+			// set custom glow color
+			if (Config.healthGlowingThroughWalls && player.isGlowing()) {
+				playerMap[name]!!.glow = true
+				EntityHelper.setGlowingColor(player, hp.color)
+			} else if (playerMap[name]!!.glow) {
+				playerMap[name]!!.glow = false
+				EntityHelper.resetGlowingColor(player)
 			}
 
 			playerMap[name]!!.tick++

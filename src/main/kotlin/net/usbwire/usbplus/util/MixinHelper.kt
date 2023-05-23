@@ -1,7 +1,7 @@
 package net.usbwire.usbplus.util
 
 import gg.essential.universal.UMatrixStack
-import gg.essential.universal.wrappers.message.UTextComponent
+import gg.essential.universal.wrappers.message.*
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.*
 import net.minecraft.client.util.math.MatrixStack
@@ -36,12 +36,12 @@ object MixinHelper {
 		HUD.draw(matrix)
 	}
 
-	fun onMessage(mcText: Text): Boolean {
-		val message = UTextComponent(mcText)
-		if (message.unformattedText.lowercase().startsWith("[USBPlus]")) return false
+	fun onMessage(mcText: Text?): Boolean {
+		if (mcText == null) return false
+		val message = UMessage(UTextComponent(mcText))
+		if (message.unformattedText.lowercase().startsWith("[usbplus]")) return false
 		if (Config.debugEnabled) {
-			Util.chat("Unformatted:" + message.unformattedText)
-			Util.chat("Formatted:" + message.formattedText.replace('§', '&'))
+			Util.chat("'${message.formattedText.replace("§", "%")}'")
 		}
 		return false
 	}

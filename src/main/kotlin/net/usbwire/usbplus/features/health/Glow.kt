@@ -20,18 +20,12 @@ object Glow {
 		val camera = context.camera()
 		for (player in context.world().players) {
 			if (player == camera.focusedEntity && !camera.isThirdPerson) continue // don't render hitbox on yourself if in third person
-	
+
 			val name = UMessage(UTextComponent(player.name)).unformattedText
 			if (Base.playerMap[name] == null) continue
 			val color = Base.playerMap[name]!!.health.color
 			if (color.alpha > 10) {
-				if (player.isGlowing) {
-					EntityHelper.setGlowingColor(player, color)
-				} else {
-					RenderUtil.drawEntityBox(player, color, context, true, true)
-				}
-			} else {
-				if (player.isGlowing) EntityHelper.resetGlowingColor(player)
+				if (!player.isGlowing) RenderUtil.drawEntityBox(player, color, context, true, true) // only draw box if player is already not glowing
 			}
 		}
 	}

@@ -21,7 +21,8 @@ object RenderUtil {
 		context: WorldRenderContext,
 		outline: Boolean = true,
 		fill: Boolean = true,
-		alphaMultiplier: Float = Config.healthFillPercent
+		alphaMultiplier: Float = Config.healthFillPercent,
+		expand: Double = 0.0
 	) {
 		if (!fill && !outline) return
 		val camera = context.camera().pos
@@ -30,7 +31,7 @@ object RenderUtil {
 		val x = entity.prevX + (entity.x - entity.prevX) * context.tickDelta() - camera.x
 		val y = entity.prevY + (entity.y - entity.prevY) * context.tickDelta() - camera.y
 		val z = entity.prevZ + (entity.z - entity.prevZ) * context.tickDelta() - camera.z
-		val entityBox = entity.boundingBox
+		val entityBox = entity.boundingBox.expand(expand, expand, expand)
 		val box = Box(
 			entityBox.minX - entity.x + x,
 			entityBox.minY - entity.y + y,

@@ -24,7 +24,7 @@ public abstract class ChatHudMixin extends DrawableHelper {
     at = @At("HEAD"),
     cancellable = true
   )
-  private void usbplus$onMessage (Text message, int id, CallbackInfo ci) {
+  private void usbplus_onMessage (Text message, int id, CallbackInfo ci) {
     // Pass this to UniversalCraft's text compoment parser and then process it later at some point!
     // System.out.println(message.toString());
     MixinHelper.INSTANCE.onMessage(message);
