@@ -9,17 +9,31 @@ import net.usbwire.usbplus.util.chat.Coordinates
 import net.usbwire.usbplus.util.Util
 
 object CompassCommand : Command("compass") {
-	fun handle() {
+	@DefaultHandler
+	fun handle () {
 		Compass.createCompass()
 	}
-	fun handle (x: Int, y: Int, z: Int) {
+
+	@SubCommand("help")
+	fun handleHelp () {
+		Util.chat("""Usage for /compass:
+		|/compass - Generate a JM/Xaero waypoint for the position your compass is currently pointing at
+		|/compass pos <x> <y> <z> - Generate a JM/Xaero waypoint for these coordinates
+		|/compass wiki (x, y, z) - Generate a JM/Xaero waypoint for wiki-formatted coordinates
+		""".trimMargin("|"))
+	}
+
+	@SubCommand("pos")
+	fun handlePos (x: Int, y: Int, z: Int) {
 		val coordinates = Coordinates.Coordinates(x, y, z)
 		Compass.createCompass(coordinates)
 	}
+
 	val coordinatesRegex = """\(?(-?[\d]{1,4}),? (-?[\d]{1,4}),? (-?[\d]{1,4})\)?""".toRegex()
-	fun handle (@Greedy input: String) {
+	@SubCommand("wiki")
+	fun handleWiki (@Greedy input: String) {
 		if (!coordinatesRegex.matches(input)) {
-			Util.chat("Invalid String!")
+			Util.chat("Invalid String! Should be formatted like 'x, y, z' or '(x, y, z)'")
 			return
 		}
 		val result = coordinatesRegex.find(input)
