@@ -41,10 +41,11 @@ object MixinHelper {
 	fun onMessage(mcText: Text?): Boolean {
 		if (mcText == null) return false
 		val message = UMessage(UTextComponent(mcText))
-		if (message.unformattedText.lowercase().startsWith("[usbplus]")) return false
+		if (message.unformattedText.lowercase().startsWith("[usbplus]")) return false // ignore our debug messages
 		if (Config.debugEnabled) {
 			USBPlus.logger.warn { "'${message.formattedText.replace("§", "%")}'" }
 		}
+		Poi.onChat(message)
 		return false
 	}
 }

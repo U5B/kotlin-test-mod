@@ -45,6 +45,11 @@ public abstract class EntityMixin implements EntityMixinInterface {
         forceGlowing = glowing;
     }
 
+    @Override
+    public int usbplus_getForceGlowing() {
+        return forceGlowing;
+    }
+
     @Inject(method = "isGlowing", at = @At("RETURN"), cancellable = true)
     public void isGlowing(CallbackInfoReturnable<Boolean> cir) {
         if (forceGlowing == 0) {

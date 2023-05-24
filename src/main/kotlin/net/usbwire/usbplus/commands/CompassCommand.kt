@@ -9,7 +9,6 @@ import net.usbwire.usbplus.util.chat.Coordinates
 import net.usbwire.usbplus.util.Util
 
 object CompassCommand : Command("compass") {
-	@DefaultHandler
 	fun handle() {
 		Compass.createCompass()
 	}
@@ -17,7 +16,6 @@ object CompassCommand : Command("compass") {
 		val coordinates = Coordinates.Coordinates(x, y, z)
 		Compass.createCompass(coordinates)
 	}
-
 	val coordinatesRegex = """\(?(-?[\d]{1,4}),? (-?[\d]{1,4}),? (-?[\d]{1,4})\)?""".toRegex()
 	fun handle (@Greedy input: String) {
 		if (!coordinatesRegex.matches(input)) {

@@ -45,7 +45,7 @@ object Config : Vigilant(File(configFile)) {
 
 	// *BoxHealth*
 	var healthEnabled = true
-	var healthGlowingThroughWalls = false
+	var healthGlowingEnabled = false
 
 	// *DrawHealth*
 	var healthDrawEnabled = true
@@ -65,13 +65,13 @@ object Config : Vigilant(File(configFile)) {
 		Util.createDirectory(Path.of(configFile))
 
 		category("POI") {
-			switch(::poiEnabled, "Toggle POI", "Type /poi to get started!") { Poi.changeState(it) }
+			switch(::poiEnabled, "Toggle POI", "Type /poi to get started!") { Poi.configChanged(it) }
 			text(::poiUrl, "Internal POI URL", "Should not be changed unless you know what you are doing!")
 			button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
 		}
 
 		category("Compass") {
-			switch(::compassEnabled, "Toggle Compass", "Trigger by left clicking with a compass.")
+			switch(::compassEnabled, "Toggle Compass", "Trigger by left clicking with a compass.") { Compass.configChanged(it) }
 		}
 
 		category("Health Colors") {
@@ -129,7 +129,7 @@ object Config : Vigilant(File(configFile)) {
 		category("Health General") {
 			subcategory("Hitbox") {
 				switch(::healthEnabled, "Toggle BoxHealth")
-				switch(::healthGlowingThroughWalls, "Display Glowing Players through walls (ESP!)")
+				switch(::healthGlowingEnabled, "Color Glowing Players!")
 				percentSlider(::healthFillPercent, "Alpha Percentage of Inside Box", "Set to 0 to disable.")
 			}
 			subcategory("General") {

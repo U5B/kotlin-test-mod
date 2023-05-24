@@ -13,4 +13,6 @@ public interface EntityMixinInterface {
 	 * @param glowing 1 for enabled, 2 for forced
 	 */
 	public void usbplus_setForceGlowing(int glowing);
+
+	public int usbplus_getForceGlowing();
 }

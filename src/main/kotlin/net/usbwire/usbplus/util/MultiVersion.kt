@@ -30,7 +30,6 @@ object ItemHelper {
 }
 
 object EntityHelper {
-
 	fun getGlowingColor(entity: Entity): Int {
 		return entity.getTeamColorValue()
 	}
@@ -49,6 +48,12 @@ object EntityHelper {
 	fun setGlowing(entity: Entity, value: Boolean) {
 		val special = entity as EntityMixinInterface
 		special.usbplus_setForceGlowing(if (value) 2 else 0)
+	}
+
+	fun isGlowingForced(entity: Entity): Boolean {
+		val special = entity as EntityMixinInterface
+		if (special.usbplus_getForceGlowing() == 1) return false
+		return true
 	}
 
 	fun resetGlowing(entity: Entity) {

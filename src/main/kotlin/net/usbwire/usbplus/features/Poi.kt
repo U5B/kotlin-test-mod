@@ -12,6 +12,7 @@ import net.usbwire.usbplus.util.chat.Coordinates
 import java.io.FileNotFoundException
 import java.net.URL
 import java.nio.file.*
+import gg.essential.universal.wrappers.message.UMessage
 
 /**
  * A really convulted file that returns POI data from a file.
@@ -30,7 +31,6 @@ object Poi {
 	val poiPath = Path.of("${USBPlus.configPath}/pois.json")
 	var poiMap: Map<String, JsonPoi> = emptyMap()
 	var poiSuggestions: List<String> = emptyList()
-	var firstRun = true
 
 	fun fetchPoiData() {
 		try {
@@ -100,9 +100,9 @@ object Poi {
 		return null
 	}
 
-	fun responsePoi(input: String, poi: JsonPoi) {
+	fun responsePoi(poi: JsonPoi) {
 		if (poi.coordinates == null) {
-			Util.chat("'${input}': No POI found.")
+			Util.chat("'${poi.name}': No coordinates for POI found.")
 			return
 		}
 		val dimension = USBPlus.mc.world!!.registryKey.value.toString()
@@ -114,7 +114,8 @@ object Poi {
 		Util.chat(message)
 	}
 
-	fun changeState(value: Boolean = Config.poiEnabled) {
+	var firstRun = true
+	fun configChanged(value: Boolean = Config.poiEnabled) {
 		if (value == true && firstRun == true) {
 			EssentialAPI.getCommandRegistry().registerParser(PoiName::class.java, PoiParser())
 			firstRun = false
@@ -125,5 +126,21 @@ object Poi {
 		} else if (value == false) {
 			EssentialAPI.getCommandRegistry().unregisterCommand(PoiCommand)
 		}
+	}
+
+	val bountyRegex = """^§r§fYour bounty for today is §r§b(.*)§r§f!$""".toRegex()
+	fun onChat(message: UMessage): Boolean {
+		if (!bountyRegex.matches(message.formattedText)) return false
+		val result = bountyRegex.matchEntire(message.formattedText)
+		val (poiString) = result!!.destructured
+		val searchPoi = searchPoi(poiString)
+		if (searchPoi == null) {
+			Util.chat("'$poiString': No POI found!")
+			return false
+		}
+		for (poi in searchPoi) {
+			responsePoi(poi)
+		}
+		return true
 	}
 }

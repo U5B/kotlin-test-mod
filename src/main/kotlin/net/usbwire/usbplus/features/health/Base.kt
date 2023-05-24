@@ -109,7 +109,7 @@ object Base {
 			}
 
 			// set custom glow color
-			if (Config.healthGlowingThroughWalls && player.isGlowing()) {
+			if (Config.healthGlowingEnabled && player.isGlowing) {
 				playerMap[name]!!.glow = true
 				EntityHelper.setGlowingColor(player, hp.color)
 			} else if (playerMap[name]!!.glow) {

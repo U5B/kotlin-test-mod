@@ -41,7 +41,7 @@ object RenderUtil {
 			entityBox.maxZ - entity.z + z
 		)
 
-		if (Config.healthGlowingThroughWalls && entity.isGlowing()) UGraphics.disableDepth()
+		if (Config.healthGlowingEnabled && entity.isGlowing()) UGraphics.disableDepth()
 		else UGraphics.enableDepth()
 
 		if (outline) drawOutlineBox(matrix, context, box, color)

@@ -5,6 +5,8 @@ import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.util.Util
 import net.usbwire.usbplus.util.chat.Coordinates
+import net.usbwire.usbplus.commands.CompassCommand
+import gg.essential.api.EssentialAPI
 
 /**
  * Monumenta compass helper! Gets where compass is pointing on left click
@@ -28,8 +30,15 @@ object Compass {
 		Util.chat(message)
 	}
 
-	var clicked = false
+	fun configChanged(value: Boolean = Config.poiEnabled) {
+		if (value == true) {
+			CompassCommand.register()
+		} else if (value == false) {
+			EssentialAPI.getCommandRegistry().unregisterCommand(CompassCommand)
+		}
+	}
 
+	var clicked = false
 	fun onWorldTick() {
 		if (Config.compassEnabled == false) return
 		val click = USBPlus.mc.mouse.wasLeftButtonClicked()

@@ -24,7 +24,6 @@ object USBPlus : ClientModInitializer {
 	override fun onInitializeClient() {
 		logger.info { "Starting usbplus!"}
 		ConfigCommand.register()
-		CompassCommand.register()
 		MixinHelper.init()
 		logger.info { "Started usbplus!"}
 	}
