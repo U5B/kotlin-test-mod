@@ -9,7 +9,6 @@ import net.usbwire.usbplus.util.MixinHelper
 import mu.KotlinLogging
 
 object USBPlus : ClientModInitializer {
-
 	// get this from gradle.properties
 	val fabricmodjson by lazy { FabricLoader.getInstance().getModContainer("usbplus").get() }
 	val modid: String by lazy { fabricmodjson.metadata.id }
