@@ -32,6 +32,12 @@ object Poi {
 	var poiMap: Map<String, JsonPoi> = emptyMap()
 	var poiSuggestions: List<String> = emptyList()
 
+	val mapShardToDimension = mapOf(
+		"King's Valley" to "monumenta:valley",
+		"Celsian Isles" to "monumenta:isles",
+		"Architect's Ring" to "monumenta:ring",
+	)
+
 	fun fetchPoiData() {
 		try {
 			URL(Config.poiUrl).openStream().use {
@@ -67,29 +73,38 @@ object Poi {
 
 	fun makeCommandSuggestions(): List<String> {
 		val suggestions = ArrayList<String>()
-		poiMap.values.forEach { poi -> suggestions.add(poi.name) }
+		val isInShard = mapShardToDimension.values.contains(Util.getDimension())
+		for (poi in poiMap.values) {
+			// Region Name may change in the future: don't break if it does
+			val dimension = mapShardToDimension[poi.shard] ?: Util.getDimension()
+			// check to see if we are on the same shard BUT allow it to be used on plots and other shards
+			if (isInShard && dimension != Util.getDimension()) continue
+			suggestions.add(poi.name)
+		}
 		poiSuggestions = suggestions.toList()
 		return poiSuggestions
 	}
 
 	fun getCommandSuggestions(): List<String> {
-		if (poiSuggestions.isEmpty() == true) return makeCommandSuggestions()
-		return poiSuggestions
+		return makeCommandSuggestions()
 	}
 
 	fun searchPoi(input: String): ArrayList<JsonPoi>? {
 		// acutal logic
 		val response = ArrayList<JsonPoi>()
+		// exact match
 		poiMap.forEach { poi ->
 			if (input == poi.value.name) {
 				response.add(poi.value)
 				return response
 			}
 		}
+		// if tag matches
 		poiMap.forEach { poi ->
 			val tags = Util.trimString(poi.value.name).split(' ')
 			if (tags.contains(Util.trimString(input)) == true) response.add(poi.value)
 		}
+		// otherwise check if those letters are contained in any poi
 		if (response.size == 0) {
 			poiMap.forEach { poi ->
 				if (Util.cleanString(poi.value.name).contains(Util.cleanString(input)) == true)
@@ -105,8 +120,8 @@ object Poi {
 			Util.chat("'${poi.name}': No coordinates for POI found.")
 			return
 		}
-		val dimension = USBPlus.mc.world!!.registryKey.value.toString()
-		val name = poi.name
+		val dimension = mapShardToDimension[poi.shard] ?: Util.getDimension()
+		val name = "${poi.name} (${dimension})"
 		val x = poi.coordinates.x
 		val y = poi.coordinates.y
 		val z = poi.coordinates.z

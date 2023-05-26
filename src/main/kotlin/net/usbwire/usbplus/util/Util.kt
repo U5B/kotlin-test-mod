@@ -50,6 +50,10 @@ object Util {
 		message.chat()
 	}
 
+	fun getDimension (): String {
+		return USBPlus.mc.world!!.registryKey.value.toString()
+	}
+
 	object Color {
 		val xaero =
 			mapOf(
