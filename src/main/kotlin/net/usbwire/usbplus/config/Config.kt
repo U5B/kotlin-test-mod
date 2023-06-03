@@ -15,11 +15,11 @@ val configFile = "${USBPlus.configPath}/config.toml"
 
 object Config : Vigilant(File(configFile)) {
 	// *POI*
-	var poiEnabled = false
+	var poiEnabled = true
 	var poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json" // github url
 
 	// *Compass*
-	var compassEnabled = false
+	var compassEnabled = true
 
 	// *Common Health*
 	// Health Whitelist
@@ -30,13 +30,13 @@ object Config : Vigilant(File(configFile)) {
 	// *Health Color Toggles & Percentages*
 	var healthHurtEnabled = false
 	var healthEffectEnabled = false
-	var healthGoodPercent = 1.0f
+	var healthGoodPercent = 9.0f
 	var healthLowPercent = 0.7f
 	var healthCriticalPercent = 0.4f
-	var healthFillPercent = 0.1f
+	var healthFillPercent = 0.0f
 
 	// *Health Colors*
-	var healthBaseColor = Color.WHITE
+	var healthBaseColor = Color.LIGHT_GRAY
 	var healthGoodColor = Color.GREEN
 	var healthLowColor = Color.YELLOW
 	var healthCriticalColor = Color.RED
@@ -45,7 +45,7 @@ object Config : Vigilant(File(configFile)) {
 
 	// *BoxHealth*
 	var healthEnabled = true
-	var healthGlowingEnabled = false
+	var healthGlowingEnabled = true
 
 	// *DrawHealth*
 	var healthDrawEnabled = true
@@ -65,13 +65,13 @@ object Config : Vigilant(File(configFile)) {
 		Util.createDirectory(Path.of(configFile))
 
 		category("POI") {
-			switch(::poiEnabled, "Toggle POI", "Type /poi to get started!") { Poi.configChanged(it) }
+			switch(::poiEnabled, "Toggle POI", "Type /poi to get started!", triggerActionOnInitialization = false) { Poi.configChanged(it) }
 			text(::poiUrl, "Internal POI URL", "Should not be changed unless you know what you are doing!")
-			button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
+			button("Refresh POIs", "Fetches from ${poiUrl} for the latest data", triggerActionOnInitialization = false) { Poi.fetchPoiData() }
 		}
 
 		category("Compass") {
-			switch(::compassEnabled, "Toggle Compass", "Trigger by left clicking with a compass.") { Compass.configChanged(it) }
+			switch(::compassEnabled, "Toggle Compass", "Trigger by left clicking with a compass.", triggerActionOnInitialization = false) { Compass.configChanged(it) }
 		}
 
 		category("Health Colors") {

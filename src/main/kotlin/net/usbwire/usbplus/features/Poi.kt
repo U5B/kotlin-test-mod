@@ -71,7 +71,9 @@ object Poi {
 		Files.newOutputStream(poiPath).use { Json.encodeToStream(poiMap, it) }
 	}
 
+	var storedDimension: String = ""
 	fun makeCommandSuggestions(): List<String> {
+		storedDimension = Util.getDimension()
 		val suggestions = ArrayList<String>()
 		val isInShard = mapShardToDimension.values.contains(Util.getDimension())
 		for (poi in poiMap.values) {
@@ -86,6 +88,7 @@ object Poi {
 	}
 
 	fun getCommandSuggestions(): List<String> {
+		if (poiSuggestions.isEmpty() || storedDimension != Util.getDimension()) return makeCommandSuggestions()
 		return makeCommandSuggestions()
 	}
 
@@ -145,7 +148,7 @@ object Poi {
 
 	val bountyRegex = """^§r§fYour bounty for today is §r§b(.*)§r§f!$""".toRegex()
 	fun onChat(message: UMessage): Boolean {
-		if (!bountyRegex.matches(message.formattedText)) return false
+		if (Config.poiEnabled || !bountyRegex.matches(message.formattedText)) return false
 		val result = bountyRegex.matchEntire(message.formattedText)
 		val (poiString) = result!!.destructured
 		val searchPoi = searchPoi(poiString)
