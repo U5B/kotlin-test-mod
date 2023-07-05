@@ -51,6 +51,9 @@ object Util {
 	}
 
 	fun getDimension (): String {
+		if (USBPlus.mc.world == null) {
+			return "";
+		}
 		return USBPlus.mc.world!!.registryKey.value.toString()
 	}
 

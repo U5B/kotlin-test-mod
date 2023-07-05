@@ -124,7 +124,7 @@ object Poi {
 			return
 		}
 		val dimension = mapShardToDimension[poi.shard] ?: Util.getDimension()
-		val name = "${poi.name} (${dimension})"
+		val name = poi.name
 		val x = poi.coordinates.x
 		val y = poi.coordinates.y
 		val z = poi.coordinates.z

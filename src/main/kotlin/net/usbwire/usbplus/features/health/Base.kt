@@ -27,7 +27,7 @@ object Base {
 	data class PlayerHPDraw(
 		val root: UIComponent,
 		val states: PlayerHPStates,
-		var damageTick: Int = -1, 
+		var damageTick: Int = -1,
 	)
 
 	data class PlayerHPStates(

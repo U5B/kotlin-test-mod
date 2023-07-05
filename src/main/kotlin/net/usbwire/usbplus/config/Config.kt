@@ -58,8 +58,13 @@ object Config : Vigilant(File(configFile)) {
 	var healthDrawDamageDelay = 10
 	var healthDrawSort = 0
 
+	// *Pickup*
+	var pickupEnabled = false
+	var pickupDelay = 20
+
 	// *Debug*
 	var debugEnabled = false
+	var debugContainer = false
 
 	init {
 		Util.createDirectory(Path.of(configFile))
@@ -139,8 +144,14 @@ object Config : Vigilant(File(configFile)) {
 			}
 		}
 
+		category("Misc") {
+			switch(::pickupEnabled, "Sneak to toggle between pickup states")
+			slider(::pickupDelay, "Sneaking delay in ticks", min = 1, max = 40)
+		}
+
 		category("_Debug") {
 			switch(::debugEnabled, "Toggle Debug")
+			switch(::debugContainer, "Print contents of opened chests")
 		}
 
 		initialize() // this needs to be called for whatever reason so that configs actually save

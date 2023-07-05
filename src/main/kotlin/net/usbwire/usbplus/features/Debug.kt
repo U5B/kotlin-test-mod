@@ -8,6 +8,19 @@ import net.minecraft.entity.passive.VillagerEntity
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.util.Util
+import net.usbwire.usbplus.util.chat.ChatUtil
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen
+import net.minecraft.client.gui.screen.ingame.HandledScreen
+import net.minecraft.screen.ScreenHandler
+import net.minecraft.screen.ScreenHandlerType
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen
+import net.minecraft.client.gui.screen.ingame.ShulkerBoxScreen
+import net.minecraft.screen.slot.Slot
+import net.minecraft.screen.GenericContainerScreenHandler
+import net.minecraft.item.ItemStack
+import net.minecraft.entity.player.PlayerInventory
 
 /**
  * Debugging for future NPC scraper
@@ -52,4 +65,41 @@ object Debug {
 		Util.chat("Type: ${entityType}")
 		Util.chat("Pos: (${entity.x}, ${entity.y}, ${entity.z})")
 	}
+
+	fun openScreen (client: MinecraftClient, screen: Screen) {
+		if (!Config.debugContainer) return
+		if (screen !is HandledScreen<*>) return
+		if (screen !is GenericContainerScreen && screen !is ShulkerBoxScreen) return
+		var container = screen.getScreenHandler()
+		var strings = "```\n";
+		val lineSeperator = System.getProperty("line.separator");
+		var items = condenseItems(container.slots.stream()
+		.filter { slot -> run { slot.hasStack() && slot.inventory !is PlayerInventory } }
+		.map(Slot::getStack)
+		.toList());
+		var lastItem = ""
+		for (item in items) {
+			val name = UMessage(item.name).unformattedText
+			val line = """+${item.count} ${name}"""
+			lastItem = line
+			strings += "${line} ${lineSeperator}"
+		}
+		strings += "```"
+		Util.chat(ChatUtil.clipboardBuilder("Container with \"${lastItem}\"", strings));
+	}
+
+	fun condenseItems(list: List<ItemStack>) : List<ItemStack> {
+		val stacks = ArrayList<ItemStack>();
+		list.forEach { newStack -> run {
+				var exists = false;
+				for (oldStack in stacks) {
+						if (newStack.item == oldStack.item && newStack.name == oldStack.name) {
+								oldStack.setCount(oldStack.getCount() + newStack.getCount());
+								exists = true;
+						}
+				}
+				if (!exists) stacks.add(newStack);
+		}};
+		return stacks;
+}
 }
