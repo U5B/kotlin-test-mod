@@ -108,15 +108,6 @@ object Base {
 				HUD.updatePlayer(playerMap[name]!!, hp)
 			}
 
-			// set custom glow color
-			if (Config.healthGlowingEnabled && player.isGlowing) {
-				playerMap[name]!!.glow = true
-				EntityHelper.setGlowingColor(player, hp.color)
-			} else if (playerMap[name]!!.glow) {
-				playerMap[name]!!.glow = false
-				EntityHelper.resetGlowingColor(player)
-			}
-
 			playerMap[name]!!.tick++
 			playerMap[name]!!.health = hp
 			currentPlayers.add(name)
@@ -138,6 +129,10 @@ object Base {
 			}
 			HUD.sort(playerMap)
 		}
+	}
+
+	fun resetPlayer (player: PlayerEntity) {
+		EntityHelper.resetGlowingColor(player)
 	}
 
 

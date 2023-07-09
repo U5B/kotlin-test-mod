@@ -37,6 +37,7 @@ object EntityHelper {
 	fun setGlowingColor(entity: Entity, color: Color) {
 		val special = entity as EntityMixinInterface
 		val intColor = color.getRGB()
+		if (entity.getTeamColorValue() == intColor) return;
 		special.usbplus_setGlowingColor(intColor)
 	}
 

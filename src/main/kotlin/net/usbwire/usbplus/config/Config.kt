@@ -61,6 +61,7 @@ object Config : Vigilant(File(configFile)) {
 	// *Pickup*
 	var pickupEnabled = false
 	var pickupDelay = 20
+	var pickupMode = 0
 
 	// *Debug*
 	var debugEnabled = false
@@ -147,6 +148,7 @@ object Config : Vigilant(File(configFile)) {
 		category("Misc") {
 			switch(::pickupEnabled, "Sneak to toggle between pickup states")
 			slider(::pickupDelay, "Sneaking delay in ticks", min = 1, max = 40)
+			selector(::pickupMode, "Pickup Mode", options = listOf("interesting", "lore", "tiered"))
 		}
 
 		category("_Debug") {
