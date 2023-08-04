@@ -138,7 +138,7 @@ object Base {
 
 	var configDirty = true
 	fun onWorldTick(world: ClientWorld) {
-		if (Config.healthDrawEnabled == false) {
+		if (!Config.healthDrawEnabled && !Config.healthGlowingEnabled && !Config.healthDrawEnabled) {
 			configDirty = true
 			return
 		}

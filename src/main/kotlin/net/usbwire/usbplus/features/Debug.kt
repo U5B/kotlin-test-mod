@@ -71,35 +71,45 @@ object Debug {
 		if (screen !is HandledScreen<*>) return
 		if (screen !is GenericContainerScreen && screen !is ShulkerBoxScreen) return
 		var container = screen.getScreenHandler()
-		var strings = "```\n";
-		val lineSeperator = System.getProperty("line.separator");
-		var items = condenseItems(container.slots.stream()
+		var strings = "```\n"
+		val lineSeperator = System.getProperty("line.separator")
+		var itemList = container.slots.stream()
 		.filter { slot -> run { slot.hasStack() && slot.inventory !is PlayerInventory } }
 		.map(Slot::getStack)
-		.toList());
+		.toList()
+		var itemMap = condenseItems(itemList);
 		var lastItem = ""
-		for (item in items) {
+		for (mappedItem in itemMap) {
+			val item = mappedItem.key;
+			val count = mappedItem.value;
 			val name = UMessage(item.name).unformattedText
-			val line = """+${item.count} ${name}"""
+			val line = """+${count} ${name}"""
 			lastItem = line
 			strings += "${line} ${lineSeperator}"
 		}
 		strings += "```"
-		Util.chat(ChatUtil.clipboardBuilder("Container with \"${lastItem}\"", strings));
+		Util.chat(ChatUtil.clipboardBuilder("Container with \"${lastItem}\"", strings))
 	}
 
-	fun condenseItems(list: List<ItemStack>) : List<ItemStack> {
-		val stacks = ArrayList<ItemStack>();
-		list.forEach { newStack -> run {
-				var exists = false;
-				for (oldStack in stacks) {
-						if (newStack.item == oldStack.item && newStack.name == oldStack.name) {
-								oldStack.setCount(oldStack.getCount() + newStack.getCount());
-								exists = true;
-						}
+	fun condenseItems(list: List<ItemStack>) : Map<ItemStack, Int> {
+		val map = mutableMapOf<ItemStack, Int>()
+		for (newStack in list) {
+			var owo = false
+			val newStackCopy = newStack.copy()
+			newStackCopy.setCount(1);
+			for (otherStack in map.keys) {
+				if (ItemStack.areItemsEqualIgnoreDamage(otherStack, newStackCopy)) {
+					val newCount = map.getOrDefault(otherStack, 0) + newStack.count
+					map.remove(otherStack)
+					map.set(otherStack, newCount)
+					owo = true
+					break;
 				}
-				if (!exists) stacks.add(newStack);
-		}};
-		return stacks;
-}
+			}
+			if (!owo) {
+				map.set(newStackCopy, newStack.count)
+			}
+		}
+		return map;
+	}
 }

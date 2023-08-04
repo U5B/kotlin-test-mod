@@ -16,7 +16,7 @@ import java.awt.Color
 
 object Glow {
 	fun onRenderTick(context: WorldRenderContext) {
-		if (Config.healthEnabled == false) return
+		if (!Config.healthEnabled && !Config.healthGlowingEnabled) return
 		val camera = context.camera()
 		for (player in context.world().players) {
 			if (player == camera.focusedEntity && !camera.isThirdPerson) continue // don't render hitbox on yourself if in third person
@@ -38,7 +38,7 @@ object Glow {
 				if (Config.healthGlowingEnabled && player.isGlowing) {
 					Base.playerMap[name]!!.glow  = true
 					EntityHelper.setGlowingColor(player, color)
-				} else {
+				} else if (Config.healthEnabled) {
 					RenderUtil.drawEntityBox(player, color, context, true, true) // only draw box if player is already not glowing and glowing isn't forced
 				}
 			}
