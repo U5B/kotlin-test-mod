@@ -51,7 +51,9 @@ dependencies {
 		"fabric-api-base",
 		"fabric-networking-api-v1",
 		"fabric-lifecycle-events-v1",
-		"fabric-rendering-v1"
+		"fabric-rendering-v1",
+    "fabric-screen-api-v1",
+    "fabric-screen-handler-api-v1"
 	).forEach {
 		// Add each module as a dependency
 		modImplementation(fabricApi.module(it, "${fabric_api_version}+${platform.mcVersionStr}"))
@@ -59,7 +61,8 @@ dependencies {
 
   // essential dependencies
 	include(modRuntimeOnly("gg.essential:loader-fabric:1.0.0")!!)
-	modCompileOnly("gg.essential:essential-$platform:12328+g551779957")
+  // https://repo.essential.gg/repository/maven-releases/gg/essential/essential-1.18.2-fabric/maven-metadata.xml
+	modCompileOnly("gg.essential:essential-$platform:14395+gb029e9d212")
 
 	// mod menu
 	modApi("com.terraformersmc:modmenu:${mod_menu_version}")
@@ -110,13 +113,13 @@ tasks.compileKotlin {
   kotlinOptions.jvmTarget = "17"
 }
 
-loom {
-  launchConfigs {
-    getByName("client") {
-      property("devauth.enabled", "true")
-    }
-  }
-}
+// loom {
+//   launchConfigs {
+//     getByName("client") {
+//       property("devauth.enabled", "true")
+//     }
+//   }
+// }
 
 modrinth {
   token.set(System.getenv("MODRINTH_TOKEN")) // This is the default. Remember to have the MODRINTH_TOKEN environment variable set or else this will fail, or set it to whatever you want - just make sure it stays private!
@@ -134,7 +137,8 @@ modrinth {
   // modrinth can't find the file properly
   uploadFile.set(file("build/libs/${baseJarName}.jar"))
   loaders.add("fabric")
-  if (platform.mcVersionStr == "1.18.2" && System.getenv("CHANGELOG") != null) {
+  // should be whatever the base version is
+  if (platform.mcVersionStr == "1.19.4" && System.getenv("CHANGELOG") != null) {
     changelog.set(System.getenv("CHANGELOG"))
   } else {
     changelog.set("")

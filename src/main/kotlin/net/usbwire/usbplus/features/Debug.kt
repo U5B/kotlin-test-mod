@@ -98,7 +98,7 @@ object Debug {
 			val newStackCopy = newStack.copy()
 			newStackCopy.setCount(1);
 			for (otherStack in map.keys) {
-				if (ItemStack.areItemsEqualIgnoreDamage(otherStack, newStackCopy)) {
+				if (ItemStack.canCombine(otherStack, newStackCopy)) {
 					val newCount = map.getOrDefault(otherStack, 0) + newStack.count
 					map.remove(otherStack)
 					map.set(otherStack, newCount)

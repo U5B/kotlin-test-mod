@@ -1,6 +1,5 @@
 package net.usbwire.usbplus.features
 
-import ItemHelper
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.config.Config
 import net.usbwire.usbplus.util.Util

@@ -9,10 +9,10 @@ pluginManagement {
 		maven("https://repo.essential.gg/repository/maven-public")
 	}
 	plugins {
-    val kotlinVersion = "1.6.21"
+    val kotlinVersion = "1.8.21"
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.serialization") version kotlinVersion apply false
-		id("gg.essential.multi-version.root") version "0.1.19"
+		id("gg.essential.multi-version.root") version "0.3.0"
 	}
   /*
   resolutionStrategy {
@@ -28,10 +28,8 @@ pluginManagement {
 rootProject.buildFileName = "root.gradle.kts"
 
 listOf(
-    "1.18.2-fabric",
-    "1.19.2-fabric",
-    "1.19.3-fabric",
     "1.19.4-fabric",
+    "1.20.1-fabric",
 ).forEach { version ->
     include(":$version")
     project(":$version").apply {

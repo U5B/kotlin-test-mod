@@ -1,10 +1,13 @@
 package net.usbwire.usbplus.util
 
 import gg.essential.universal.UMatrixStack
+import gg.essential.universal.UScreen
 import gg.essential.universal.wrappers.message.*
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.*
-import net.minecraft.client.util.math.MatrixStack
+//#if MC>=12000
+//$$ import net.minecraft.client.gui.DrawContext
+//#endif
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.text.Text
 import net.usbwire.usbplus.features.*
@@ -32,11 +35,36 @@ import net.minecraft.entity.player.PlayerInventory
 object MixinHelper {
 	var firstRun = false;
 
+	// copied from UScreen
+	//#if MC>=12000
+	//$$ private var drawContexts = mutableListOf<DrawContext>()
+	//$$ private inline fun <R> withDrawContext(matrixStack: UMatrixStack, block: (DrawContext) -> R) {
+	//$$   val client = USBPlus.mc!!
+	//$$   val context = drawContexts.lastOrNull()
+	//$$       ?: DrawContext(client, client.bufferBuilders.entityVertexConsumers)
+	//$$   context.matrices.push()
+	//$$   val mc = context.matrices.peek()
+	//$$   val uc = matrixStack.peek()
+	//$$   mc.positionMatrix.set(uc.model)
+	//$$   mc.normalMatrix.set(uc.normal)
+	//$$   block(context)
+	//$$   context.matrices.pop()
+	//$$ }
+	//#endif
+
 	fun init() {
 		ClientTickEvents.START_CLIENT_TICK.register { _ -> run { clientTick() } }
 		ClientTickEvents.START_WORLD_TICK.register { clientWorld -> run { worldTick(clientWorld) } }
 		WorldRenderEvents.AFTER_ENTITIES.register { context -> run { renderTick(context) } }
-		HudRenderCallback.EVENT.register { matrix, ticks -> run { hudRender(matrix, ticks) } }
+		//#if MC>=12000
+		//$$ HudRenderCallback.EVENT.register { context, ticks -> run {
+		//$$   drawContexts.add(context)
+		//$$   hudRender(UMatrixStack(context.getMatrices()), ticks)
+		//$$   drawContexts.removeLast()
+		//$$ } }
+		//#else
+		HudRenderCallback.EVENT.register { matrix, ticks -> run { hudRender(UMatrixStack(matrix), ticks) } }
+		//#endif
 		ScreenEvents.AFTER_INIT.register { client, screen, width, height -> run { openScreen(client, screen, width, height) } }
 	}
 
@@ -60,9 +88,8 @@ object MixinHelper {
 		Glow.onRenderTick(context)
 	}
 
-	fun hudRender(matrixStack: MatrixStack, ticks: Float) {
-		val matrix = UMatrixStack(matrixStack)
-		HUD.draw(matrix)
+	fun hudRender(matrixStack: UMatrixStack, ticks: Float) {
+		HUD.draw(matrixStack)
 	}
 
 	fun onMessage(mcText: Text?): Boolean {

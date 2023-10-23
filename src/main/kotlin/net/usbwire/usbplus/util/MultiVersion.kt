@@ -1,11 +1,7 @@
-//#if MC>=11903
-//$$ import net.minecraft.registry.Registries
-//#else
-//#endif
-import net.minecraft.item.Item
-import net.minecraft.util.registry.Registry
-import net.minecraft.entity.Entity
 
+import net.minecraft.entity.Entity
+import net.minecraft.item.Item
+import net.minecraft.registry.Registries
 import java.awt.Color
 
 import net.usbwire.usbplus.interfaces.EntityMixinInterface
@@ -21,23 +17,19 @@ object ItemHelper {
 	 * returns item identifier (minecraft:item)
 	 */
 	fun getItemId(item: Item?): String {
-		//#if MC>=11903
-		//$$ return Registries.ITEM.getId(item).toString()
-		//#else
-		return Registry.ITEM.getId(item).toString()
-		//#endif
+		return Registries.ITEM.getId(item).toString()
 	}
 }
 
 object EntityHelper {
 	fun getGlowingColor(entity: Entity): Int {
-		return entity.getTeamColorValue()
+		return entity.teamColorValue
 	}
 
 	fun setGlowingColor(entity: Entity, color: Color) {
 		val special = entity as EntityMixinInterface
-		val intColor = color.getRGB()
-		if (entity.getTeamColorValue() == intColor) return;
+		val intColor = color.rgb
+		if (entity.teamColorValue == intColor) return;
 		special.usbplus_setGlowingColor(intColor)
 	}
 
