@@ -9,22 +9,20 @@ import net.minecraft.util.math.Box
 import net.usbwire.usbplus.config.Config
 import java.awt.Color
 
-
+/**
+ * How do I draw a box?!?!
+ * TODO: fix shaded box rendering when Iris mod is installed
+ * ! There is probably a better way of doing things
+ */
 object RenderUtil {
-
-	/**
-	 * Draw a box!
-	 * @see box.minZttps://github.com/Skytils/SkytilsMod/blob/268e8e473a00e55cddc89c47653c3a00db263aac/src/main/kotlin/gg/skytils/skytilsmod/utils/RenderUtil.kt#L163
-	 * @see box.minZttps://github.com/Splzh/ClearHitboxes/blob/5439f1e3f789e35371939f4bc72ab0fb4eb7d2aa/src/main/java/splash/utils/BoxUtils.java#L74
-	 * @author Mojang
-	 */
 	fun drawEntityBox(
 		entity: Entity,
 		color: Color,
 		context: WorldRenderContext,
 		outline: Boolean = true,
 		fill: Boolean = true,
-		alphaMultiplier: Float = Config.healthFillPercent
+		alphaMultiplier: Float = Config.healthFillPercent,
+		expand: Double = 0.0
 	) {
 		if (!fill && !outline) return
 		val camera = context.camera().pos
@@ -33,7 +31,7 @@ object RenderUtil {
 		val x = entity.prevX + (entity.x - entity.prevX) * context.tickDelta() - camera.x
 		val y = entity.prevY + (entity.y - entity.prevY) * context.tickDelta() - camera.y
 		val z = entity.prevZ + (entity.z - entity.prevZ) * context.tickDelta() - camera.z
-		val entityBox = entity.boundingBox
+		val entityBox = entity.boundingBox.expand(expand, expand, expand)
 		val box = Box(
 			entityBox.minX - entity.x + x,
 			entityBox.minY - entity.y + y,
@@ -43,12 +41,13 @@ object RenderUtil {
 			entityBox.maxZ - entity.z + z
 		)
 
-		UGraphics.enableDepth()
+		if (Config.healthGlowingEnabled && entity.isGlowing()) UGraphics.disableDepth()
+		else UGraphics.enableDepth()
 
 		if (outline) drawOutlineBox(matrix, context, box, color)
-		if (fill) drawFilledBoundingBox(matrix, box, color, alphaMultiplier)
+		if (fill && alphaMultiplier > 0f) drawFilledBoundingBox(matrix, box, color, alphaMultiplier)
 
-		UGraphics.disableDepth()
+		UGraphics.enableDepth()
 	}
 
 	/**

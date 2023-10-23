@@ -5,6 +5,7 @@ import gg.essential.vigilance.Vigilant
 import net.minecraft.client.gui.screen.Screen
 import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.features.*
+import net.usbwire.usbplus.features.health.*
 import net.usbwire.usbplus.util.Util
 import java.awt.Color
 import java.io.File
@@ -14,11 +15,11 @@ val configFile = "${USBPlus.configPath}/config.toml"
 
 object Config : Vigilant(File(configFile)) {
 	// *POI*
-	var poiEnabled = false
+	var poiEnabled = true
 	var poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json" // github url
 
 	// *Compass*
-	var compassEnabled = false
+	var compassEnabled = true
 
 	// *Common Health*
 	// Health Whitelist
@@ -29,13 +30,13 @@ object Config : Vigilant(File(configFile)) {
 	// *Health Color Toggles & Percentages*
 	var healthHurtEnabled = false
 	var healthEffectEnabled = false
-	var healthGoodPercent = 1.0f
+	var healthGoodPercent = 9.0f
 	var healthLowPercent = 0.7f
 	var healthCriticalPercent = 0.4f
-	var healthFillPercent = 0.1f
+	var healthFillPercent = 0.0f
 
 	// *Health Colors*
-	var healthBaseColor = Color.WHITE
+	var healthBaseColor = Color.LIGHT_GRAY
 	var healthGoodColor = Color.GREEN
 	var healthLowColor = Color.YELLOW
 	var healthCriticalColor = Color.RED
@@ -43,11 +44,11 @@ object Config : Vigilant(File(configFile)) {
 	var healthEffectColor = Color.GRAY
 
 	// *BoxHealth*
-	var healthEnabled = false
-	var healthHitboxCancel = false
+	var healthEnabled = true
+	var healthGlowingEnabled = true
 
 	// *DrawHealth*
-	var healthDrawEnabled = false
+	var healthDrawEnabled = true
 	var healthDrawX = 0.0f
 	var healthDrawY = 0.0f
 	var healthDrawAlign = 0.0f
@@ -57,20 +58,26 @@ object Config : Vigilant(File(configFile)) {
 	var healthDrawDamageDelay = 10
 	var healthDrawSort = 0
 
+	// *Pickup*
+	var pickupEnabled = false
+	var pickupDelay = 20
+	var pickupMode = 0
+
 	// *Debug*
 	var debugEnabled = false
+	var debugContainer = false
 
 	init {
 		Util.createDirectory(Path.of(configFile))
 
 		category("POI") {
-			switch(::poiEnabled, "Toggle POI", "Type /poi to get started!") { Poi.changeState(it) }
+			switch(::poiEnabled, "Toggle POI", "Type /poi to get started!", triggerActionOnInitialization = false) { Poi.configChanged(it) }
 			text(::poiUrl, "Internal POI URL", "Should not be changed unless you know what you are doing!")
-			button("Refresh POIs", "Fetches from ${poiUrl} for the latest data") { Poi.fetchPoiData() }
+			button("Refresh POIs", "Fetches from ${poiUrl} for the latest data", triggerActionOnInitialization = false) { Poi.fetchPoiData() }
 		}
 
 		category("Compass") {
-			switch(::compassEnabled, "Toggle Compass", "Trigger by left clicking with a compass.")
+			switch(::compassEnabled, "Toggle Compass", "Trigger by left clicking with a compass.", triggerActionOnInitialization = false) { Compass.configChanged(it) }
 		}
 
 		category("Health Colors") {
@@ -93,16 +100,16 @@ object Config : Vigilant(File(configFile)) {
 			subcategory("Draw") {
 				switch(::healthDrawEnabled, "Toggle DrawHealth")
 				percentSlider(::healthDrawX, "X Position Percent", triggerActionOnInitialization = false) {
-					HealthHud.xPos.set(it)
-					HealthHud.configDirty = true
+					HUD.xPos.set(it)
+					Base.configDirty = true
 				}
 				percentSlider(::healthDrawY, "Y Position Percent", triggerActionOnInitialization = false) {
-					HealthHud.yPos.set(it)
-					HealthHud.configDirty = true
+					HUD.yPos.set(it)
+					Base.configDirty = true
 				}
 				percentSlider(::healthDrawAlign, "Text Alignment Percent", triggerActionOnInitialization = false) {
-					HealthHud.alignPos.set(it)
-					HealthHud.configDirty = true
+					HUD.alignPos.set(it)
+					Base.configDirty = true
 				}
 				decimalSlider(
 					::healthDrawScale,
@@ -112,14 +119,14 @@ object Config : Vigilant(File(configFile)) {
 					decimalPlaces = 1,
 					triggerActionOnInitialization = false
 				) {
-					HealthHud.textSize.set(it)
-					HealthHud.configDirty = true
+					HUD.textSize.set(it)
+					Base.configDirty = true
 				}
 				switch(::healthDrawDamageEnabled, "Display Recent Damage")
 				slider(::healthDrawDamageDelay, "Damage Hide Delay in Ticks", min = 1, max = 60)
 				switch(::healthDrawAlignExtraRight, "Recent Damage Alignment", triggerActionOnInitialization = false) {
-					HealthHud.alignRightExtra.set(it)
-					HealthHud.configDirty = true
+					HUD.alignRightExtra.set(it)
+					Base.configDirty = true
 				}
 				selector(::healthDrawSort, "Sort player list by", options = listOf("alphabetical", "health", "time"))
 			}
@@ -128,6 +135,7 @@ object Config : Vigilant(File(configFile)) {
 		category("Health General") {
 			subcategory("Hitbox") {
 				switch(::healthEnabled, "Toggle BoxHealth")
+				switch(::healthGlowingEnabled, "Color Glowing Players!")
 				percentSlider(::healthFillPercent, "Alpha Percentage of Inside Box", "Set to 0 to disable.")
 			}
 			subcategory("General") {
@@ -137,8 +145,15 @@ object Config : Vigilant(File(configFile)) {
 			}
 		}
 
+		category("Misc") {
+			switch(::pickupEnabled, "Sneak to toggle between pickup states")
+			slider(::pickupDelay, "Sneaking delay in ticks", min = 1, max = 40)
+			selector(::pickupMode, "Pickup Mode", options = listOf("interesting", "lore", "tiered"))
+		}
+
 		category("_Debug") {
 			switch(::debugEnabled, "Toggle Debug")
+			switch(::debugContainer, "Print contents of opened chests")
 		}
 
 		initialize() // this needs to be called for whatever reason so that configs actually save

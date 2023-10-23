@@ -1,10 +1,8 @@
 name: publish main
 on:
   push:
-    branches:
-      - 'main'
-    paths:
-      - 'gradle.properties'
+    tags:
+      - '*'
 jobs:
   publish:
     runs-on: ubuntu-22.04

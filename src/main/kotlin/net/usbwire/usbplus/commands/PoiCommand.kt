@@ -26,7 +26,7 @@ object PoiCommand : Command("poi", false) {
 			return
 		}
 		for (poi in validPoi) {
-			Poi.responsePoi(poiString, poi)
+			Poi.responsePoi(poi)
 		}
 	}
 }

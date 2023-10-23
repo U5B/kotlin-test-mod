@@ -20,3 +20,10 @@
 
 # 1.2.3
 * Fix hover text crashing game for compass and pois
+
+# 1.3.0
+* Tried to make health rendering better but failed
+
+# 1.4.0
+* Dropped 1.18.2, 1.19.2, 1.19.3 support and added 1.20.1 support
+* Fix chat commands not running properly

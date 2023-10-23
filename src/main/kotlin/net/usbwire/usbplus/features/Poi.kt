@@ -12,7 +12,12 @@ import net.usbwire.usbplus.util.chat.Coordinates
 import java.io.FileNotFoundException
 import java.net.URL
 import java.nio.file.*
+import gg.essential.universal.wrappers.message.UMessage
 
+/**
+ * A really convulted file that returns POI data from a file.
+ * Ported directly from U5B/jsmacros
+ */
 object Poi {
 	@Serializable
 	data class JsonPoi(
@@ -26,7 +31,12 @@ object Poi {
 	val poiPath = Path.of("${USBPlus.configPath}/pois.json")
 	var poiMap: Map<String, JsonPoi> = emptyMap()
 	var poiSuggestions: List<String> = emptyList()
-	var firstRun = true
+
+	val mapShardToDimension = mapOf(
+		"King's Valley" to "monumenta:valley",
+		"Celsian Isles" to "monumenta:isles",
+		"Architect's Ring" to "monumenta:ring",
+	)
 
 	fun fetchPoiData() {
 		try {
@@ -36,8 +46,8 @@ object Poi {
 				savePoiData()
 			}
 		} catch (e: FileNotFoundException) {
-			USBPlus.logger.error("Invalid URL: ${Config.poiUrl}")
-			USBPlus.logger.error("Resetting URL to default!")
+			USBPlus.logger.error { "Invalid URL: ${Config.poiUrl}" }
+			USBPlus.logger.error { "Resetting URL to default!" }
 			Config.poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json"
 		}
 	}
@@ -61,31 +71,43 @@ object Poi {
 		Files.newOutputStream(poiPath).use { Json.encodeToStream(poiMap, it) }
 	}
 
+	var storedDimension: String = ""
 	fun makeCommandSuggestions(): List<String> {
+		storedDimension = Util.getDimension()
 		val suggestions = ArrayList<String>()
-		poiMap.values.forEach { poi -> suggestions.add(poi.name) }
+		val isInShard = mapShardToDimension.values.contains(Util.getDimension())
+		for (poi in poiMap.values) {
+			// Region Name may change in the future: don't break if it does
+			val dimension = mapShardToDimension[poi.shard] ?: Util.getDimension()
+			// check to see if we are on the same shard BUT allow it to be used on plots and other shards
+			if (isInShard && dimension != Util.getDimension()) continue
+			suggestions.add(poi.name)
+		}
 		poiSuggestions = suggestions.toList()
 		return poiSuggestions
 	}
 
 	fun getCommandSuggestions(): List<String> {
-		if (poiSuggestions.isEmpty() == true) return makeCommandSuggestions()
-		return poiSuggestions
+		if (poiSuggestions.isEmpty() || storedDimension != Util.getDimension()) return makeCommandSuggestions()
+		return makeCommandSuggestions()
 	}
 
 	fun searchPoi(input: String): ArrayList<JsonPoi>? {
 		// acutal logic
 		val response = ArrayList<JsonPoi>()
+		// exact match
 		poiMap.forEach { poi ->
 			if (input == poi.value.name) {
 				response.add(poi.value)
 				return response
 			}
 		}
+		// if tag matches
 		poiMap.forEach { poi ->
 			val tags = Util.trimString(poi.value.name).split(' ')
 			if (tags.contains(Util.trimString(input)) == true) response.add(poi.value)
 		}
+		// otherwise check if those letters are contained in any poi
 		if (response.size == 0) {
 			poiMap.forEach { poi ->
 				if (Util.cleanString(poi.value.name).contains(Util.cleanString(input)) == true)
@@ -96,12 +118,12 @@ object Poi {
 		return null
 	}
 
-	fun responsePoi(input: String, poi: JsonPoi) {
+	fun responsePoi(poi: JsonPoi) {
 		if (poi.coordinates == null) {
-			Util.chat("'${input}': No POI found.")
+			Util.chat("'${poi.name}': No coordinates for POI found.")
 			return
 		}
-		val dimension = USBPlus.mc.world!!.registryKey.value.toString()
+		val dimension = mapShardToDimension[poi.shard] ?: Util.getDimension()
 		val name = poi.name
 		val x = poi.coordinates.x
 		val y = poi.coordinates.y
@@ -110,7 +132,8 @@ object Poi {
 		Util.chat(message)
 	}
 
-	fun changeState(value: Boolean = Config.poiEnabled) {
+	var firstRun = true
+	fun configChanged(value: Boolean = Config.poiEnabled) {
 		if (value == true && firstRun == true) {
 			EssentialAPI.getCommandRegistry().registerParser(PoiName::class.java, PoiParser())
 			firstRun = false
@@ -121,5 +144,21 @@ object Poi {
 		} else if (value == false) {
 			EssentialAPI.getCommandRegistry().unregisterCommand(PoiCommand)
 		}
+	}
+
+	val bountyRegex = """^§r§fYour bounty for today is §r§b(.*)§r§f!$""".toRegex()
+	fun onChat(message: UMessage): Boolean {
+		if (Config.poiEnabled || !bountyRegex.matches(message.formattedText)) return false
+		val result = bountyRegex.matchEntire(message.formattedText)
+		val (poiString) = result!!.destructured
+		val searchPoi = searchPoi(poiString)
+		if (searchPoi == null) {
+			Util.chat("'$poiString': No POI found!")
+			return false
+		}
+		for (poi in searchPoi) {
+			responsePoi(poi)
+		}
+		return true
 	}
 }

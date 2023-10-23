@@ -5,6 +5,9 @@ import gg.essential.universal.wrappers.message.*
 import net.usbwire.usbplus.USBPlus
 import java.nio.file.*
 
+/**
+ * Random utilities for debugging
+ */
 object Util {
 	fun createPath(file: Path): Boolean {
 		createDirectory(file)
@@ -45,6 +48,13 @@ object Util {
 		val prefix = UTextComponent(UChat.addColor("§7[§a${USBPlus.name}§7]§r "))
 		message.addTextComponent(0, prefix)
 		message.chat()
+	}
+
+	fun getDimension (): String {
+		if (USBPlus.mc.world == null) {
+			return "";
+		}
+		return USBPlus.mc.world!!.registryKey.value.toString()
 	}
 
 	object Color {

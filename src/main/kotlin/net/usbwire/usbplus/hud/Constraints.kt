@@ -9,6 +9,7 @@ import gg.essential.elementa.utils.roundToRealPixels
 /**
  * Modifed version of CenterConstraint and RelativeConstraint that allows for adjustment Parameter
  * should between 0.0f and 1.0f
+ * Couldn't figure out a better way...
  */
 class CustomCenterConstraint(value: State<Float>) : PositionConstraint {
 	@JvmOverloads
