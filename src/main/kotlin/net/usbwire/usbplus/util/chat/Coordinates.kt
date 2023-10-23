@@ -3,7 +3,6 @@ package net.usbwire.usbplus.util.chat
 import gg.essential.universal.wrappers.message.*
 import kotlinx.serialization.Serializable
 import net.minecraft.text.*
-import net.usbwire.usbplus.USBPlus
 import net.usbwire.usbplus.util.Util
 
 /**
@@ -25,34 +24,32 @@ object Coordinates {
 	): UMessage {
 
 		// prefix
-		val baseCompoment = UTextComponent("'${name}':")
-		message.addTextComponent(baseCompoment)
+		val baseComponent = UTextComponent("'${name}':")
+		message.addTextComponent(baseComponent)
 
 		// copy
-		val copyCompoment = UTextComponent(" §a(${x}, ${y}, ${z})§r")
-		copyCompoment.clickAction = ClickEvent.Action.COPY_TO_CLIPBOARD
-		copyCompoment.clickValue = "${x} ${y} ${z}"
-		copyCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
-		copyCompoment.hoverValue = UTextComponent("§aClick to copy coordinates to clipboard!§r")
-		message.addTextComponent(copyCompoment)
+		val copyComponent = UTextComponent(" §a(${x}, ${y}, ${z})§r")
+		copyComponent.setClick(ClickEvent.Action.COPY_TO_CLIPBOARD, "${x} ${y} ${z}")
+		copyComponent.setHover(HoverEvent.Action.SHOW_TEXT, UTextComponent("§aClick to copy coordinates to clipboard!§r"))
+		message.addTextComponent(copyComponent)
 
 		// xaero minimap support
 		if (supportsXaero == true) {
-			val xaeroCompoment = xaeroBuilder(name, x, y, z, dimension)
-			if (xaeroCompoment == null) {
+			val xaeroComponent = xaeroBuilder(name, x, y, z, dimension)
+			if (xaeroComponent == null) {
 				supportsXaero = false
 			} else {
-				message.addTextComponent(xaeroCompoment)
+				message.addTextComponent(xaeroComponent)
 			}
 		}
 
 		// journeymap support
 		if (supportsJourneymap == true) {
-			val journeymapCompoment = journeymapBuilder(name, x, y, z, dimension)
-			if (journeymapCompoment == null) {
+			val journeymapComponent = journeymapBuilder(name, x, y, z, dimension)
+			if (journeymapComponent == null) {
 				supportsJourneymap = false
 			} else {
-				message.addTextComponent(journeymapCompoment)
+				message.addTextComponent(journeymapComponent)
 			}
 		}
 		return message
@@ -72,17 +69,14 @@ object Coordinates {
 			val currentDimension = dimension.replace(":", "$")
 			val xaeroColor = Util.Color.xaero["dark_red"]
 			val minecraftColor = Util.Color.minecraft["dark_red"]
-			val xaeroCompoment = UTextComponent(" ${minecraftColor}[XAERO]§r")
+			val xaeroComponent = UTextComponent(" ${minecraftColor}[XAERO]§r")
 			val waypoint =
 				"xaero_waypoint_add:${name}:${name[0].uppercase()}:${x}:${y}:${z}:${xaeroColor}:false:0:Internal_dim%${currentDimension}_waypoints"
 			// val shareableWaypoint =
 			// "xaero-waypoint:${poi.name}:${poi.name[0].uppercase()}:${poi.coordinates.x}:${poi.coordinates.y}:${poi.coordinates.z}:${xaeroColor}:false:0:Internal-dim%${currentWorld}-waypoints"
-			xaeroCompoment.clickAction = ClickEvent.Action.RUN_COMMAND
-			xaeroCompoment.clickValue = waypoint
-
-			xaeroCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
-			xaeroCompoment.hoverValue = UTextComponent("${minecraftColor}Click to create a new xaero waypoint!§r")
-			return xaeroCompoment
+			xaeroComponent.setClick(ClickEvent.Action.RUN_COMMAND, waypoint)
+			xaeroComponent.setHover(HoverEvent.Action.SHOW_TEXT, UTextComponent("${minecraftColor}Click to create a new xaero waypoint!§r"))
+			return xaeroComponent
 		} catch (e: Exception) {
 			return null
 		}
@@ -98,14 +92,11 @@ object Coordinates {
 		try {
 			Class.forName("journeymap.client.JourneymapClient")
 			val minecraftColor = Util.Color.minecraft["aqua"]
-			val journeymapCompoment = UTextComponent(" ${minecraftColor}[JM]§r")
+			val journeymapComponent = UTextComponent(" ${minecraftColor}[JM]§r")
 			val waypoint = "/jm wpedit [name:\"${name}\", x:${x}, y:${y}, z:${z}, dim:${dimension}]"
-			journeymapCompoment.clickAction = ClickEvent.Action.RUN_COMMAND
-			journeymapCompoment.clickValue = waypoint
-
-			journeymapCompoment.hoverAction = HoverEvent.Action.SHOW_TEXT
-			journeymapCompoment.hoverValue = UTextComponent("${minecraftColor}Click to create a new journey map waypoint!§r")
-			return journeymapCompoment
+			journeymapComponent.setClick(ClickEvent.Action.RUN_COMMAND, waypoint)
+			journeymapComponent.setHover(HoverEvent.Action.SHOW_TEXT, UTextComponent("${minecraftColor}Click to create a new journey map waypoint!§r"))
+			return journeymapComponent
 		} catch (e: Exception) {
 			return null
 		}
