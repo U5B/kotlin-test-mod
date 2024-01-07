@@ -132,7 +132,7 @@ public class Config extends Vigilant {
 	public static int healthDrawDamageDelay = 10;
 	@Property(type = PropertyType.SELECTOR, name = "Sort player list by",
 			description = "Sort player list by", category = "Health Draw",
-			options = {"alphabetical", "health", "time"}, hidden = false)
+			options = {"alphabetical", "health (low to high)", "health (high to low)", "time"}, hidden = false)
 	public static int healthDrawSort = 0;
 	// *Pickup*
 	@Property(type = PropertyType.SWITCH, name = "Sneak to toggle between pickup states",

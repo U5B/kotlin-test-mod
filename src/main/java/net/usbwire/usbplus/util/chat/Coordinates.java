@@ -64,8 +64,10 @@ public final class Coordinates {
 			String xaeroColor = Util.Color.xaero.get("dark_red");
 			String minecraftColor = Util.Color.minecraft.get("dark_red");
 			UTextComponent xaeroComponent = new UTextComponent(" " + minecraftColor + "[XAERO]§r");
-			String waypoint = "xaero_waypoint_add:" + name + ":" + name.charAt(0) + ":" + x + ":" + y
+			String waypoint = "/xaero_waypoint_add:" + name + ":" + name.charAt(0) + ":" + x + ":" + y
 					+ ":" + z + ":" + xaeroColor + ":false:0:Internal_dim%" + currentDimension + "_waypoints";
+			// String waypoint =
+			// "/xaero-waypoint:${poi.name}:${poi.name[0].uppercase()}:${poi.coordinates.x}:${poi.coordinates.y}:${poi.coordinates.z}:${xaeroColor}:false:0:Internal-dim%${currentWorld}-waypoints"
 			xaeroComponent.setClick(ClickEvent.Action.RUN_COMMAND, waypoint);
 			xaeroComponent.setHover(HoverEvent.Action.SHOW_TEXT,
 					new UTextComponent(minecraftColor + "Click to create a new xaero waypoint!§r"));

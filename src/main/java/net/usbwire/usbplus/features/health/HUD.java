@@ -169,10 +169,14 @@ public class HUD {
 		// sort container by max health and percent
 		if (Config.healthDrawSort == 0) { // name
 			container.getChildren().sort((a, b) -> a.getComponentName().compareTo(b.getComponentName()));
-		} else if (Config.healthDrawSort == 1) { // health
+		} else if (Config.healthDrawSort == 1) { // health (low to high)
 			container.getChildren()
 					.sort((a, b) -> Float.compare(playerMap.get(a.getComponentName()).health.percent,
 							playerMap.get(b.getComponentName()).health.percent));
+		} else if (Config.healthDrawSort == 2) { // health (high to low)
+			container.getChildren()
+					.sort((a, b) -> Float.compare(playerMap.get(b.getComponentName()).health.percent,
+							playerMap.get(a.getComponentName()).health.percent));
 		}
 	}
 

@@ -58,7 +58,10 @@ dependencies {
   // essential dependencies
 	include(modRuntimeOnly("gg.essential:loader-fabric:1.0.0")!!)
   // https://repo.essential.gg/repository/maven-releases/gg/essential/essential-1.18.2-fabric/maven-metadata.xml
-	modCompileOnly("gg.essential:essential-$platform:17141+gd6f4cfd3a8")
+	modCompileOnly("gg.essential:essential-${platform.mcVersionStr}-fabric:17141+gd6f4cfd3a8")
+  modCompileOnly("gg.essential:universalcraft-$platform:323")
+  modCompileOnly("gg.essential:vigilance-1.18.1-fabric:295")
+  modCompileOnly("gg.essential:elementa-1.18.1-fabric:619")
 
 	// mod menu
 	modApi("com.terraformersmc:modmenu:${mod_menu_version}")

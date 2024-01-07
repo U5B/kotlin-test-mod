@@ -16,7 +16,10 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 public final class Base {
 	public static class HealthData {
@@ -85,6 +88,7 @@ public final class Base {
 
 	public static Map<String, PlayerHP> playerMap = new HashMap<>();
 	public static List<String> currentPlayers = new ArrayList<>();
+	private static final Pattern usernamePattern = Pattern.compile("^[a-zA-Z0-9_]{3,16}$");
 
 	private Base() {}
 
@@ -131,6 +135,12 @@ public final class Base {
 		currentPlayers.clear();
 		for (PlayerEntity player : worldPlayers) {
 			String name = new UMessage(new UTextComponent(player.getName())).getUnformattedText();
+
+			// name parsing
+			// could use !usernamePattern.matcher(name).matches())
+			if (name.isBlank() || name.contains("|") || name.contains("~") || name.contains("§"))
+				continue;
+
 			if (Config.healthWhitelistEnabled
 					&& !Config.healthWhitelist.toLowerCase().contains(name.toLowerCase()))
 				continue;

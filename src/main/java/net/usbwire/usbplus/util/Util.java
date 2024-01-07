@@ -1,6 +1,7 @@
 package net.usbwire.usbplus.util;
 
 import gg.essential.universal.UChat;
+import gg.essential.universal.wrappers.UPlayer;
 import gg.essential.universal.wrappers.message.UMessage;
 import gg.essential.universal.wrappers.message.UTextComponent;
 import net.usbwire.usbplus.USBPlus;
@@ -55,6 +56,17 @@ public class Util {
 		UTextComponent prefix = new UTextComponent(UChat.addColor("§7[§a" + USBPlus.name + "§7]§r "));
 		message.addTextComponent(0, prefix);
 		message.chat();
+	}
+
+	public static void say(String str) {
+		if (USBPlus.mc.player == null) {
+			return;
+		}
+		if (str.startsWith("/")) {
+			USBPlus.mc.player.networkHandler.sendCommand(str.substring(1));
+		} else {
+			USBPlus.mc.player.networkHandler.sendChatMessage(str);
+		}
 	}
 
 	public static String getDimension() {

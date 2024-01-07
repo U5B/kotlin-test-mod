@@ -26,7 +26,7 @@ public class PoiCommand extends Command {
 		}
 		String poiString = name.getName();
 		String string = Util.trimString(poiString);
-		if (string.length() <= 3) {
+		if (string.length() <= 2) {
 			Util.chat("'" + poiString + "': Too short!");
 			return;
 		}
