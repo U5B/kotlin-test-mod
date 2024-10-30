@@ -16,10 +16,10 @@ jobs:
       uses: actions/checkout@v3
     - name: validate gradle wrapper
       uses: gradle/wrapper-validation-action@v1
-    - name: setup jdk 17
+    - name: setup jdk 21
       uses: actions/setup-java@v3
       with:
-        java-version: 17
+        java-version: 21
         distribution: 'microsoft'
     # from https://github.com/orgs/community/discussions/35120#discussioncomment-3805387
     - name: get changelog
@@ -47,7 +47,7 @@ jobs:
             }
             return lines
     - name: publish to modrinth
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/actions/setup-gradle@v3
       env:
         CHANGELOG: ${{ steps.changelog.outputs.result }}
       with:
