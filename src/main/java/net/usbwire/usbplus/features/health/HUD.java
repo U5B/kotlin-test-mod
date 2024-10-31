@@ -4,11 +4,14 @@ import gg.essential.elementa.ElementaVersion;
 import gg.essential.elementa.UIComponent;
 import gg.essential.elementa.components.UIContainer;
 import gg.essential.elementa.components.UIText;
+import gg.essential.elementa.constraints.CenterConstraint;
 import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint;
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint;
 import gg.essential.elementa.constraints.ColorConstraint;
+import gg.essential.elementa.constraints.ConstantColorConstraint;
 import gg.essential.elementa.constraints.HeightConstraint;
 import gg.essential.elementa.constraints.SiblingConstraint;
+import gg.essential.elementa.constraints.SuperConstraint;
 import gg.essential.elementa.dsl.ComponentsKt;
 import gg.essential.elementa.dsl.ConstraintsKt;
 import gg.essential.elementa.dsl.UtilitiesKt;
@@ -39,7 +42,7 @@ public class HUD {
 	public static final State<Number> textSize = new BasicState<>(Config.healthDrawScale);
 	public static final State<Boolean> alignRightExtra =
 			new BasicState<>(Config.healthDrawAlignExtraRight);
-	public static final Window window = new Window(ElementaVersion.V2, 60);
+	public static final Window window = new Window(ElementaVersion.V5, 60);
 	public static final UIContainer container = ComponentsKt.constrain(new UIContainer(), c -> {
 		c.setX(new CustomCenterConstraint(xPos));
 		c.setY(new CustomCenterConstraint(yPos));
@@ -59,6 +62,7 @@ public class HUD {
 		State<String> damageS = new BasicState<>("");
 		State<Color> hpColorS = new BasicState<>(Color.WHITE);
 		State<Color> damageColorS = new BasicState<>(Color.WHITE);
+		State<Color> absorptionColorS = new BasicState<>(Color.ORANGE);
 		// root container (contains everything)
 		UIContainer rootC = ComponentsKt.constrain(new UIContainer(), c -> {
 			c.setX(new CustomCenterConstraint(alignPos));
@@ -70,7 +74,7 @@ public class HUD {
 		rootC.setComponentName(name);
 		UIText nameC = ComponentsKt.constrain(new UIText(), c -> {
 			c.setX(new SiblingConstraint(UtilitiesKt.width('l', textSize.get().floatValue()), false));
-			c.setColor(UtilitiesKt.toConstraint(hpColorS.get()));
+			c.setColor(new ConstantColorConstraint(hpColorS));
 			c.setTextScale(UtilitiesKt.pixels(textSize.get()));
 			return Unit.INSTANCE;
 		});
@@ -78,7 +82,7 @@ public class HUD {
 		nameC.setComponentName("name");
 		UIText healthC = ComponentsKt.constrain(new UIText(), c -> {
 			c.setX(new SiblingConstraint(UtilitiesKt.width('l', textSize.get().floatValue()), false));
-			c.setColor(UtilitiesKt.toConstraint(hpColorS.get()));
+			c.setColor(new ConstantColorConstraint(hpColorS));
 			c.setTextScale(UtilitiesKt.pixels(textSize.get()));
 			return Unit.INSTANCE;
 		});
@@ -86,7 +90,7 @@ public class HUD {
 		healthC.setComponentName("health");
 		UIText absorptionC = ComponentsKt.constrain(new UIText(), c -> {
 			c.setX(new SiblingConstraint(UtilitiesKt.width('l', textSize.get().floatValue()), false));
-			c.setColor(UtilitiesKt.toConstraint(Color.ORANGE));
+			c.setColor(new ConstantColorConstraint(absorptionColorS));
 			c.setTextScale(UtilitiesKt.pixels(textSize.get()));
 			return Unit.INSTANCE;
 		});
@@ -94,7 +98,7 @@ public class HUD {
 		absorptionC.setComponentName("absorption");
 		UIText damageC = ComponentsKt.constrain(new UIText(), c -> {
 			c.setX(new SiblingConstraint(UtilitiesKt.width('l', textSize.get().floatValue()), false));
-			c.setColor(UtilitiesKt.toConstraint(damageColorS.get()));
+			c.setColor(new ConstantColorConstraint(damageColorS));
 			c.setTextScale(UtilitiesKt.pixels(textSize.get()));
 			return Unit.INSTANCE;
 		});

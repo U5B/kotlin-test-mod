@@ -27,7 +27,6 @@ public class Config extends Vigilant {
 			hidden = false)
 	public static String poiUrl =
 			"https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json"; // github url
-
 	@Property(type = PropertyType.BUTTON, name = "Refresh POIs",
 			description = "Fetches from 'Internal POI URL' for the latest data", category = "POI",
 			hidden = false)
@@ -43,97 +42,102 @@ public class Config extends Vigilant {
 	// *Common Health*
 	// Health Whitelist
 	@Property(type = PropertyType.SWITCH, name = "Toggle Whitelist", description = "Toggle Whitelist",
-			category = "Health General", triggerActionOnInitialization = false, hidden = false)
+			category = "Health General", subcategory = "General", triggerActionOnInitialization = false, hidden = false)
 	public static boolean healthWhitelistEnabled = false;
 	@Property(type = PropertyType.PARAGRAPH, name = "Player names separated by spaces to allow",
-			description = "Player names separated by spaces to allow", category = "Health General",
+			description = "Player names separated by spaces to allow", category = "Health General", subcategory = "General",
 			hidden = false)
 	public static String healthWhitelist = "";
 	@Property(type = PropertyType.SLIDER, name = "Update Rate In Ticks",
-			description = "Update Rate In Ticks", category = "Health General", min = 1, max = 20,
+			description = "Update Rate In Ticks", category = "Health General", subcategory = "General", min = 1, max = 20,
 			hidden = false)
 	public static int healthUpdateTicks = 1;
+
 	// *Health Color Toggles & Percentages*
 	@Property(type = PropertyType.SWITCH, name = "Hurt Color Toggle",
-			description = "Hurt Color Toggle", category = "Health Colors",
+			description = "Hurt Color Toggle", category = "Health Colors", subcategory = "Color",
 			triggerActionOnInitialization = false, hidden = false)
 	public static boolean healthHurtEnabled = false;
 	@Property(type = PropertyType.SWITCH, name = "Fire Color Toggle",
-			description = "Fire Color Toggle", category = "Health Colors",
+			description = "Fire Color Toggle", category = "Health Colors", subcategory = "Color",
 			triggerActionOnInitialization = false, hidden = false)
 	public static boolean healthEffectEnabled = false;
 	@Property(type = PropertyType.PERCENT_SLIDER, name = "Good HP percent", description = "100% HP",
-			category = "Health Colors", hidden = false)
+			category = "Health Colors", subcategory = "Color", hidden = false)
 	public static float healthGoodPercent = 9.0f;
 	@Property(type = PropertyType.PERCENT_SLIDER, name = "Low HP percent", description = "70% HP",
-			category = "Health Colors", hidden = false)
+			category = "Health Colors", subcategory = "Color", hidden = false)
 	public static float healthLowPercent = 0.7f;
 	@Property(type = PropertyType.PERCENT_SLIDER, name = "Critical HP percent",
-			description = "40% HP", category = "Health Colors", hidden = false)
+			description = "40% HP", category = "Health Colors", subcategory = "Color", hidden = false)
 	public static float healthCriticalPercent = 0.4f;
-	@Property(type = PropertyType.PERCENT_SLIDER, name = "Alpha Percentage of Inside Box",
-			description = "Set to 0 to disable.", category = "Health General", hidden = false)
-	public static float healthFillPercent = 0.0f;
+
 	// *Health Colors*
 	@Property(type = PropertyType.COLOR, name = "Base HP color",
-			description = "Alpha under 10 doesn't show", category = "Health Colors", hidden = false)
+			description = "Alpha under 10 doesn't show", category = "Health Colors", subcategory = "Color", hidden = false)
 	public static Color healthBaseColor = Color.LIGHT_GRAY;
-	@Property(type = PropertyType.COLOR, name = "Good HP color", category = "Health Colors",
+	@Property(type = PropertyType.COLOR, name = "Good HP color", category = "Health Colors", subcategory = "Color",
 			hidden = false)
 	public static Color healthGoodColor = Color.GREEN;
-	@Property(type = PropertyType.COLOR, name = "Low HP color", category = "Health Colors",
+	@Property(type = PropertyType.COLOR, name = "Low HP color", category = "Health Colors", subcategory = "Color",
 			hidden = false)
 	public static Color healthLowColor = Color.YELLOW;
-	@Property(type = PropertyType.COLOR, name = "Critical HP color", category = "Health Colors",
+	@Property(type = PropertyType.COLOR, name = "Critical HP color", category = "Health Colors", subcategory = "Color",
 			hidden = false)
 	public static Color healthCriticalColor = Color.RED;
-	@Property(type = PropertyType.COLOR, name = "Hurt color", category = "Health Colors",
+	@Property(type = PropertyType.COLOR, name = "Hurt color", category = "Health Colors", subcategory = "Color",
 			hidden = false)
 	public static Color healthHurtColor = Color.ORANGE;
-	@Property(type = PropertyType.COLOR, name = "Fire Color", category = "Health Colors",
+	@Property(type = PropertyType.COLOR, name = "Fire Color", category = "Health Colors", subcategory = "Color",
 			hidden = false)
 	public static Color healthEffectColor = Color.GRAY;
+
 	// *BoxHealth*
 	@Property(type = PropertyType.SWITCH, name = "Toggle BoxHealth", description = "Toggle BoxHealth",
-			category = "Health General", triggerActionOnInitialization = false, hidden = false)
+			category = "Health General", subcategory = "HitBox", triggerActionOnInitialization = false, hidden = false)
 	public static boolean healthEnabled = true;
 	@Property(type = PropertyType.SWITCH, name = "Color Glowing Players!",
-			description = "Color Glowing Players!", category = "Health General",
+			description = "Color Glowing Players!", category = "Health General", subcategory = "HitBox",
 			triggerActionOnInitialization = false, hidden = false)
 	public static boolean healthGlowingEnabled = true;
+	@Property(type = PropertyType.PERCENT_SLIDER, name = "Alpha Percentage of Inside Box",
+	description = "Set to 0 to disable.", category = "Health General", subcategory = "HitBox", hidden = false)
+	public static float healthFillPercent = 0.0f;
+
 	// *DrawHealth*
 	@Property(type = PropertyType.SWITCH, name = "Toggle DrawHealth",
-			description = "Toggle DrawHealth", category = "Health Draw",
+			description = "Toggle DrawHealth", category = "Health Draw", subcategory = "Draw",
 			triggerActionOnInitialization = false, hidden = false)
 	public static boolean healthDrawEnabled = true;
 	@Property(type = PropertyType.PERCENT_SLIDER, name = "X Position Percent",
-			description = "X Position Percent", category = "Health Draw", hidden = false)
+			description = "X Position Percent", category = "Health Draw", subcategory = "Draw", hidden = false)
 	public static float healthDrawX = 0.0f;
 	@Property(type = PropertyType.PERCENT_SLIDER, name = "Y Position Percent",
-			description = "Y Position Percent", category = "Health Draw", hidden = false)
+			description = "Y Position Percent", category = "Health Draw", subcategory = "Draw", hidden = false)
 	public static float healthDrawY = 0.0f;
 	@Property(type = PropertyType.PERCENT_SLIDER, name = "Text Alignment Percent",
-			description = "Text Alignment Percent", category = "Health Draw", hidden = false)
+			description = "Text Alignment Percent", category = "Health Draw", subcategory = "Draw", hidden = false)
 	public static float healthDrawAlign = 0.0f;
-	@Property(type = PropertyType.SWITCH, name = "Recent Damage Alignment",
-			description = "Recent Damage Alignment", category = "Health Draw",
-			triggerActionOnInitialization = false, hidden = false)
-	public static boolean healthDrawAlignExtraRight = false;
 	@Property(type = PropertyType.DECIMAL_SLIDER, name = "Text Scale", description = "Text Scale",
-			category = "Health Draw", minF = 0.5f, maxF = 4.0f, increment = 1, hidden = false)
+			category = "Health Draw", subcategory = "Draw", minF = 0.5f, maxF = 4.0f, increment = 1, hidden = false)
 	public static float healthDrawScale = 1.0f;
 	@Property(type = PropertyType.SWITCH, name = "Display Recent Damage",
-			description = "Display Recent Damage", category = "Health Draw",
+			description = "Display Recent Damage", category = "Health Draw", subcategory = "Draw",
 			triggerActionOnInitialization = false, hidden = false)
 	public static boolean healthDrawDamageEnabled = false;
 	@Property(type = PropertyType.SLIDER, name = "Damage Hide Delay in Ticks",
-			description = "Damage Hide Delay in Ticks", category = "Health Draw", min = 1, max = 60,
+			description = "Damage Hide Delay in Ticks", category = "Health Draw", subcategory = "Draw", min = 1, max = 60,
 			hidden = false)
 	public static int healthDrawDamageDelay = 10;
+	@Property(type = PropertyType.SWITCH, name = "Recent Damage Alignment",
+	description = "Recent Damage Alignment", category = "Health Draw", subcategory = "Draw",
+	triggerActionOnInitialization = false, hidden = false)
+public static boolean healthDrawAlignExtraRight = false;
 	@Property(type = PropertyType.SELECTOR, name = "Sort player list by",
-			description = "Sort player list by", category = "Health Draw",
+			description = "Sort player list by", category = "Health Draw", subcategory = "Draw",
 			options = {"alphabetical", "health (low to high)", "health (high to low)", "time"}, hidden = false)
 	public static int healthDrawSort = 0;
+
 	// *Pickup*
 	@Property(type = PropertyType.SWITCH, name = "Sneak to toggle between pickup states",
 			description = "Sneak to toggle between pickup states", category = "Misc",
@@ -145,6 +149,7 @@ public class Config extends Vigilant {
 	@Property(type = PropertyType.SELECTOR, name = "Pickup Mode", description = "Pickup Mode",
 			category = "Misc", options = {"interesting", "lore", "tiered"}, hidden = false)
 	public static int pickupMode = 0;
+
 	// *Debug*
 	@Property(type = PropertyType.SWITCH, name = "Toggle Debug", description = "Toggle Debug",
 			category = "_Debug", triggerActionOnInitialization = false, hidden = false)
@@ -161,37 +166,36 @@ public class Config extends Vigilant {
 
 		initialize();
 		try {
-			Consumer<Object> poiConfigChanged = any -> Poi.configChanged();
-			registerListener("Toggle POI", poiConfigChanged);
-			Consumer<Object> fetchPoiDataConsumer = any -> Poi.fetchPoiData();
-			registerListener("Refresh POIs", fetchPoiDataConsumer);
-			Consumer<Object> compassConfigChanged = any -> Compass.configChanged();
-			registerListener("Toggle Compass", compassConfigChanged);
+			// ! - Make sure to update variable names and method calls down here as well
+			Consumer<Object> poiEnabledChanged = any -> Poi.configChanged();
+			registerListener("poiEnabled", poiEnabledChanged);
+			Consumer<Object> compassEnabledChanged = any -> Compass.configChanged();
+			registerListener("compassEnabled", compassEnabledChanged);
 			Consumer<Float> healthDrawXChanged = value -> {
 				HUD.xPos.set(value);
 				Base.configDirty = true;
 			};
-			registerListener("X Position Percent", healthDrawXChanged);
+			registerListener("healthDrawX", healthDrawXChanged);
 			Consumer<Float> healthDrawYChanged = value -> {
 				HUD.yPos.set(value);
 				Base.configDirty = true;
 			};
-			registerListener("Y Position Percent", healthDrawYChanged);
+			registerListener("healthDrawY", healthDrawYChanged);
 			Consumer<Float> healthDrawAlignChanged = value -> {
 				HUD.alignPos.set(value);
 				Base.configDirty = true;
 			};
-			registerListener("Text Alignment Percent", healthDrawAlignChanged);
+			registerListener("healthDrawAlign", healthDrawAlignChanged);
 			Consumer<Float> healthDrawScaleChanged = value -> {
 				HUD.textSize.set(value);
 				Base.configDirty = true;
 			};
-			registerListener("Text Scale", healthDrawScaleChanged);
-			Consumer<Boolean> damageAlignmentConfigChanged = value -> {
+			registerListener("healthDrawScale", healthDrawScaleChanged);
+			Consumer<Boolean> healthDrawAlignExtraRightChanged = value -> {
 				HUD.alignRightExtra.set(value);
 				Base.configDirty = true;
 			};
-			registerListener("Recent Damage Alignment", damageAlignmentConfigChanged);
+			registerListener("healthDrawAlignExtraRight", healthDrawAlignExtraRightChanged);
 		} catch (Exception e) {
 			USBPlus.logger.error("Failed to register config listeners: ", e);
 		}

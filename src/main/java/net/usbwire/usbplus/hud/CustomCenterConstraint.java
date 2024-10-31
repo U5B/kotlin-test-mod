@@ -2,7 +2,7 @@ package net.usbwire.usbplus.hud;
 
 import gg.essential.elementa.UIComponent;
 import gg.essential.elementa.constraints.ConstraintType;
-import gg.essential.elementa.constraints.MasterConstraint;
+import gg.essential.elementa.constraints.PositionConstraint;
 import gg.essential.elementa.constraints.resolution.ConstraintVisitor;
 import gg.essential.elementa.state.BasicState;
 import gg.essential.elementa.state.MappedState;
@@ -14,7 +14,7 @@ import gg.essential.elementa.utils.ExtensionsKt;
  * should between 0.0f and 1.0f
  * Couldn't figure out a better way...
  */
-public class CustomCenterConstraint implements MasterConstraint {
+public class CustomCenterConstraint implements PositionConstraint {
 	private float cachedValue = 0f;
 	private boolean recalculate = true;
 	private UIComponent constrainTo = null;
@@ -42,14 +42,6 @@ public class CustomCenterConstraint implements MasterConstraint {
 	}
 
 	@Override
-	public void animationFrame() {
-		if (recalculate) {
-			recalculate = false;
-			cachedValue = valueState.get();
-		}
-	}
-
-	@Override
 	public float getXPositionImpl(UIComponent component) {
 		UIComponent parent = constrainTo != null ? constrainTo : component.getParent();
 		if (component.isPositionCenter()) {
@@ -73,20 +65,20 @@ public class CustomCenterConstraint implements MasterConstraint {
 		}
 	}
 
-	@Override
-	public float getWidthImpl(UIComponent component) {
-		return 0f;
-	}
+	// @Override
+	// public float getWidthImpl(UIComponent component) {
+	// 	return
+	// }
 
-	@Override
-	public float getHeightImpl(UIComponent component) {
-		return 0f;
-	}
+	// @Override
+	// public float getHeightImpl(UIComponent component) {
+	// 	return 0f;
+	// }
 
-	@Override
-	public float getRadiusImpl(UIComponent component) {
-		return 0f;
-	}
+	// @Override
+	// public float getRadiusImpl(UIComponent component) {
+	// 	return 0f;
+	// }
 
 	@Override
 	public boolean getRecalculate() {
