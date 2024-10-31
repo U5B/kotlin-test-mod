@@ -18,13 +18,11 @@
   "entrypoints": {
     "client": [
       {
-        "adapter": "kotlin",
         "value": "${maven_group}.USBPlus"
       }
     ],
     "modmenu": [
       {
-        "adapter": "kotlin",
         "value": "${maven_group}.config.ModMenu"
       }
     ]
@@ -36,8 +34,7 @@
     "fabricloader": ">=${fabric_loader_version}",
     "minecraft": "=${minecraft_version}",
     "java": ">=17",
-    "fabric-api": ">=${fabric_api_version}+${minecraft_version}",
-    "fabric-language-kotlin": ">=${fabric_kotlin_version}"
+    "fabric-api": ">=${fabric_api_version}+${minecraft_version}"
   },
   "suggests": {
     "modmenu": "*"

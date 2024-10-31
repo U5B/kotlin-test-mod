@@ -1,11 +1,10 @@
 import gg.essential.gradle.util.*
 
 plugins {
-  kotlin("jvm")
-  kotlin("plugin.serialization")
   id("gg.essential.multi-version")
   id("gg.essential.defaults")
   id("com.modrinth.minotaur") version "2.+"
+  id("java")
 }
 
 val mod_id: String by project
@@ -16,7 +15,6 @@ val maven_group: String by project
 
 val fabric_loader_version: String by project
 val fabric_api_version: String by project
-val fabric_kotlin_version: String by project
 val mod_menu_version: String by project
 
 val version = if (System.getenv("PROD") == null) {
@@ -44,8 +42,6 @@ repositories {
 }
 
 dependencies {
-	modImplementation("net.fabricmc:fabric-language-kotlin:${fabric_kotlin_version}")
-
 	// fabric api
 	setOf(
 		"fabric-api-base",
@@ -62,16 +58,16 @@ dependencies {
   // essential dependencies
 	include(modRuntimeOnly("gg.essential:loader-fabric:1.0.0")!!)
   // https://repo.essential.gg/repository/maven-releases/gg/essential/essential-1.18.2-fabric/maven-metadata.xml
-	modCompileOnly("gg.essential:essential-$platform:14395+gb029e9d212")
+	modCompileOnly("gg.essential:essential-${platform.mcVersionStr}-fabric:17141+gd6f4cfd3a8")
+  modCompileOnly("gg.essential:universalcraft-$platform:323")
+  modCompileOnly("gg.essential:vigilance-1.18.1-fabric:295")
+  modCompileOnly("gg.essential:elementa-1.18.1-fabric:619")
 
 	// mod menu
 	modApi("com.terraformersmc:modmenu:${mod_menu_version}")
 
   // devauth
   modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.1.2")
-
-	// kotlin logging
-	include(implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")!!)
 }
 
 loom.noServerRunConfigs()
@@ -85,7 +81,6 @@ tasks.processResources {
     "mod_description" to mod_description,
     "maven_group" to maven_group,
     "fabric_loader_version" to fabric_loader_version,
-    "fabric_kotlin_version" to fabric_kotlin_version,
     "fabric_api_version" to fabric_api_version
   )
   filesMatching(listOf("fabric.mod.json")) {
@@ -100,17 +95,6 @@ tasks.jar {
 
 tasks.remapJar {
   archiveBaseName.set(baseJarName)
-}
-
-tasks.compileKotlin {
-  kotlinOptions.freeCompilerArgs +=
-    listOf(
-      "-opt-in=kotlin.RequiresOptIn",
-      "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
-      "-Xno-param-assertions",
-      "-Xjvm-default=all"
-    )
-  kotlinOptions.jvmTarget = "17"
 }
 
 // loom {
@@ -145,7 +129,6 @@ modrinth {
   }
   dependencies {
     embedded.project("essential")
-    required.project("fabric-language-kotlin")
     required.project("fabric-api")
     optional.project("modmenu")
   }
