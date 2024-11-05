@@ -1,9 +1,5 @@
 package net.usbwire.usbplus.commands;
 
-import gg.essential.api.commands.Command;
-import gg.essential.api.commands.DefaultHandler;
-import gg.essential.api.commands.SubCommand;
-import gg.essential.api.commands.Greedy;
 import net.usbwire.usbplus.USBPlus;
 import net.usbwire.usbplus.config.Config;
 import net.usbwire.usbplus.features.Compass;
@@ -11,21 +7,24 @@ import net.usbwire.usbplus.util.chat.Coordinates;
 import net.usbwire.usbplus.util.Util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.incendo.cloud.annotations.Command;
+import org.incendo.cloud.annotations.processing.CommandContainer;
 
-public class CompassCommand extends Command {
+@CommandContainer
+public final class CompassCommand {
 	private static final Pattern coordinatesRegex =
 			Pattern.compile("\\(?(-?\\d{1,4}),? (-?\\d{1,4}),? (-?\\d{1,4})\\)?");
 
 	public CompassCommand() {
-		super("compass");
+		// super("compass");
 	}
 
-	@DefaultHandler
+	@Command("compass")
 	public void handle() {
 		Compass.createCompass();
 	}
 
-	@SubCommand("help")
+	@Command("compass help")
 	public void handleHelp() {
 		Util.chat("Usage for /compass:\n"
 				+ "/compass - Generate a JM/Xaero waypoint for the position your compass is currently pointing at\n"
@@ -33,14 +32,14 @@ public class CompassCommand extends Command {
 				+ "/compass wiki (x, y, z) - Generate a JM/Xaero waypoint for wiki-formatted coordinates");
 	}
 
-	@SubCommand("pos")
+	@Command("compass pos <x> <y> <z>")
 	public void handlePos(int x, int y, int z) {
 		Coordinates.Coordinate coordinates = new Coordinates.Coordinate(x, y, z);
 		Compass.createCompass(coordinates);
 	}
 
-	@SubCommand("wiki")
-	public void handleWiki(@Greedy String input) {
+	@Command("compass wiki <input>")
+	public void handleWiki(String input) {
 		Matcher matcher = coordinatesRegex.matcher(input);
 		if (!matcher.matches()) {
 			Util.chat("Invalid String! Should be formatted like 'x, y, z' or '(x, y, z)'");

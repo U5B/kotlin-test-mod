@@ -25,6 +25,7 @@ import net.usbwire.usbplus.config.Config;
 import net.usbwire.usbplus.features.health.*;
 import net.usbwire.usbplus.features.Compass;
 import net.usbwire.usbplus.features.Debug;
+import net.usbwire.usbplus.features.Maow;
 import net.usbwire.usbplus.features.Pickup;
 import net.usbwire.usbplus.features.Poi;
 import net.usbwire.usbplus.features.health.HUD;
@@ -55,6 +56,7 @@ public class MixinHelper {
 			Compass.configChanged();
 			firstRun = true;
 		}
+		Maow.clientTick();
 	}
 
 	// Handle world tick events
@@ -73,6 +75,7 @@ public class MixinHelper {
 	// Handle HUD render events
 	private static void hudRender(UMatrixStack matrixStack, float ticks) {
 		HUD.draw(matrixStack);
+		Maow.draw(matrixStack);
 	}
 
 	// Handle chat messages

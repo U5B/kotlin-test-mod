@@ -1,6 +1,5 @@
 package net.usbwire.usbplus.features;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -12,17 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import gg.essential.api.EssentialAPI;
-import gg.essential.api.commands.Command;
 import gg.essential.universal.wrappers.message.UMessage;
 import net.usbwire.usbplus.USBPlus;
-import net.usbwire.usbplus.commands.PoiCommand;
-import net.usbwire.usbplus.commands.parsers.PoiParser.PoiCommandParser;
-import net.usbwire.usbplus.commands.parsers.PoiParser.PoiName;
 import net.usbwire.usbplus.config.Config;
 import net.usbwire.usbplus.util.Util;
 import net.usbwire.usbplus.util.chat.Coordinates;
@@ -50,7 +42,6 @@ public class Poi {
 	private static List<String> poiSuggestions = new ArrayList<>();
 	private static final Map<String, String> mapShardToDimension = Map.of("King's Valley",
 			"monumenta:valley", "Celsian Isles", "monumenta:isles", "Architect's Ring", "monumenta:ring");
-	private static final Command poiCommand = new PoiCommand();
 
 	public static void fetchPoiData() {
 		try {
@@ -61,12 +52,11 @@ public class Poi {
 				updatePoiData(project);
 				savePoiData();
 			}
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			USBPlus.logger.error("Invalid URL: " + Config.poiUrl);
 			USBPlus.logger.error("Resetting URL to default!");
 			Config.poiUrl = "https://raw.githubusercontent.com/U5B/Monumenta/main/out/pois.json";
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -164,20 +154,9 @@ public class Poi {
 	private static boolean firstRun = true;
 
 	public static void configChanged() {
-		final boolean value = Config.poiEnabled;
-		configChanged(value);
-	}
-
-	public static void configChanged(boolean value) {
-		if (value && firstRun) {
-			EssentialAPI.getCommandRegistry().registerParser(PoiName.class, new PoiCommandParser());
-			firstRun = false;
-		}
-		if (value) {
+		if (Config.poiEnabled && firstRun) {
 			loadPoiData();
-			poiCommand.register();
-		} else {
-			EssentialAPI.getCommandRegistry().unregisterCommand(poiCommand);
+			firstRun = false;
 		}
 	}
 

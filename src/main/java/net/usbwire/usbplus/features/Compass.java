@@ -6,8 +6,6 @@ import net.usbwire.usbplus.util.MultiVersion;
 import net.usbwire.usbplus.util.Util;
 import net.usbwire.usbplus.util.chat.Coordinates;
 import net.usbwire.usbplus.commands.CompassCommand;
-import gg.essential.api.EssentialAPI;
-import gg.essential.api.commands.Command;
 
 public class Compass {
 	private static boolean clicked = false;
@@ -17,7 +15,7 @@ public class Compass {
 	 * TODO: add command /compass to get position easily
 	 * TODO: make a configurable keybind
 	 */
-	private static final Command compassCommand = new CompassCommand();
+	// private static final Command compassCommand = new CompassCommand();
 
 	public static Coordinates.Coordinate getCompass() {
 		var spawnPos = USBPlus.mc.world.getSpawnPos();
@@ -39,15 +37,7 @@ public class Compass {
 	}
 
 	public static void configChanged() {
-		configChanged(Config.poiEnabled);
-	}
-
-	public static void configChanged(boolean value) {
-		if (value) {
-			compassCommand.register();
-		} else {
-			EssentialAPI.getCommandRegistry().unregisterCommand(compassCommand);
-		}
+		// meh
 	}
 
 	public static void onWorldTick() {

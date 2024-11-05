@@ -9,6 +9,7 @@ import net.usbwire.usbplus.util.Util;
 /**
  * Pickup Filter toggle when sneaking like RLCraft
  */
+// I AHTE USB ANMD HIS COBE HE SUCKS
 public class Pickup {
 	private static int ticksSneaking = 0;
 	private static boolean isSneaking = false;

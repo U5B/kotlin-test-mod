@@ -9,8 +9,8 @@
   ],
   "contact": {
     "homepage": "https://discord.usbwire.net",
-    "issues": "https://github.com/U5B/kotlin-test-mod/issues",
-    "sources": "https://github.com/U5B/kotlin-test-mod"
+    "issues": "https://github.com/U5B/usbplus/issues",
+    "sources": "https://github.com/U5B/usbplus"
   },
   "license": "GPL",
   "icon": "assets/${mod_id}/icon.png",
@@ -34,7 +34,9 @@
     "fabricloader": ">=${fabric_loader_version}",
     "minecraft": "=${minecraft_version}",
     "java": ">=17",
-    "fabric-api": ">=${fabric_api_version}+${minecraft_version}"
+    "fabric-api": ">=${fabric_api_version}+${minecraft_version}",
+    "fabric-language-kotlin": "*",
+    "cloud": "*"
   },
   "suggests": {
     "modmenu": "*"

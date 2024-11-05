@@ -7,7 +7,7 @@ import gg.essential.elementa.constraints.resolution.ConstraintVisitor;
 import gg.essential.elementa.state.BasicState;
 import gg.essential.elementa.state.MappedState;
 import gg.essential.elementa.state.State;
-import gg.essential.elementa.utils.ExtensionsKt;
+import gg.essential.universal.UResolution;
 
 /**
  * Modifed version of CenterConstraint and RelativeConstraint that allows for adjustment Parameter
@@ -46,9 +46,9 @@ public class CustomCenterConstraint implements PositionConstraint {
 		UIComponent parent = constrainTo != null ? constrainTo : component.getParent();
 		if (component.isPositionCenter()) {
 			return parent.getLeft()
-					+ ExtensionsKt.roundToRealPixels(parent.getWidth() * valueState.get());
+					+ roundToRealPixels(parent.getWidth() * valueState.get());
 		} else {
-			return parent.getLeft() + ExtensionsKt.roundToRealPixels(
+			return parent.getLeft() + roundToRealPixels(
 					parent.getWidth() * valueState.get() - component.getWidth() * valueState.get());
 		}
 	}
@@ -58,9 +58,9 @@ public class CustomCenterConstraint implements PositionConstraint {
 		UIComponent parent = constrainTo != null ? constrainTo : component.getParent();
 		if (component.isPositionCenter()) {
 			return parent.getTop()
-					+ ExtensionsKt.roundToRealPixels(parent.getHeight() * valueState.get());
+					+ roundToRealPixels(parent.getHeight() * valueState.get());
 		} else {
-			return parent.getTop() + ExtensionsKt.roundToRealPixels(
+			return parent.getTop() + roundToRealPixels(
 					parent.getHeight() * valueState.get() - component.getHeight() * valueState.get());
 		}
 	}
@@ -128,4 +128,10 @@ public class CustomCenterConstraint implements PositionConstraint {
 				throw new IllegalArgumentException(type.getPrettyName());
 		}
 	}
+
+	public static final float roundToRealPixels(float value) {
+		float factor = (float)UResolution.getScaleFactor();
+		float var2 = (float)Math.rint((double)(value * factor));
+		return (var2 == 0.0F && Math.abs(value) > 0.001F ? Math.signum(value) : var2) / factor;
+ }
 }

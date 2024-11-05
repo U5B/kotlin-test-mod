@@ -4,21 +4,17 @@ import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.processing.CommandContainer;
 import gg.essential.vigilance.gui.SettingsGui;
 import net.usbwire.usbplus.USBPlus;
+import net.usbwire.usbplus.features.Maow;
 import net.usbwire.usbplus.util.Util;
 
 @CommandContainer
-public class ConfigCommand {
-	public ConfigCommand() {
+public class MaowCommand {
+	public MaowCommand() {
 	}
 
-	@Command("usbplus")
+	@Command("maow")
 	public void handle() {
-		SettingsGui gui = USBPlus.config.gui();
-		if (gui == null) {
-			Util.chat("Config menu not found!");
-			return;
-		}
-		Util.chat("Opening config... If nothing happens, use ModMenu instead");
-		USBPlus.mc.setScreen(gui);
+		Util.chat("maow");
+		Maow.init();
 	}
 }

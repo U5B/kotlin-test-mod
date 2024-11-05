@@ -1,28 +1,18 @@
 package net.usbwire.usbplus.features.health;
 
 import gg.essential.elementa.ElementaVersion;
-import gg.essential.elementa.UIComponent;
 import gg.essential.elementa.components.UIContainer;
 import gg.essential.elementa.components.UIText;
-import gg.essential.elementa.constraints.CenterConstraint;
 import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint;
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint;
-import gg.essential.elementa.constraints.ColorConstraint;
 import gg.essential.elementa.constraints.ConstantColorConstraint;
-import gg.essential.elementa.constraints.HeightConstraint;
+import gg.essential.elementa.constraints.PixelConstraint;
 import gg.essential.elementa.constraints.SiblingConstraint;
-import gg.essential.elementa.constraints.SuperConstraint;
-import gg.essential.elementa.dsl.ComponentsKt;
-import gg.essential.elementa.dsl.ConstraintsKt;
-import gg.essential.elementa.dsl.UtilitiesKt;
 import gg.essential.elementa.state.BasicState;
 import gg.essential.elementa.state.State;
-import gg.essential.elementa.utils.TextKt;
 import gg.essential.elementa.components.Window;
+import gg.essential.universal.UGraphics;
 import gg.essential.universal.UMatrixStack;
-import gg.essential.universal.wrappers.message.UMessage;
-import gg.essential.universal.wrappers.message.UTextComponent;
-import kotlin.Unit;
 import net.usbwire.usbplus.config.Config;
 import net.usbwire.usbplus.hud.CustomCenterConstraint;
 import net.usbwire.usbplus.features.health.Base.PlayerHP;
@@ -31,9 +21,7 @@ import net.usbwire.usbplus.features.health.Base.PlayerHPStates;
 import net.usbwire.usbplus.features.health.Base.HealthData;
 import java.awt.Color;
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Map;
-
 public class HUD {
 	private static final DecimalFormat DEC = new DecimalFormat("0.0");
 	public static final State<Float> xPos = new BasicState<>(Config.healthDrawX);
@@ -42,15 +30,13 @@ public class HUD {
 	public static final State<Number> textSize = new BasicState<>(Config.healthDrawScale);
 	public static final State<Boolean> alignRightExtra =
 			new BasicState<>(Config.healthDrawAlignExtraRight);
-	public static final Window window = new Window(ElementaVersion.V5, 60);
-	public static final UIContainer container = ComponentsKt.constrain(new UIContainer(), c -> {
-		c.setX(new CustomCenterConstraint(xPos));
-		c.setY(new CustomCenterConstraint(yPos));
-		c.setWidth(new ChildBasedMaxSizeConstraint());
-		c.setHeight(new ChildBasedSizeConstraint());
-		return Unit.INSTANCE;
-	});
+	public static final Window window = new Window(ElementaVersion.V7, 60);
+	public static final UIContainer container = new UIContainer();
 	static {
+		container.setX(new CustomCenterConstraint(xPos));
+		container.setY(new CustomCenterConstraint(yPos));
+		container.setWidth(new ChildBasedMaxSizeConstraint());
+		container.setHeight(new ChildBasedSizeConstraint());
 		window.addChild(container);
 	}
 
@@ -64,44 +50,34 @@ public class HUD {
 		State<Color> damageColorS = new BasicState<>(Color.WHITE);
 		State<Color> absorptionColorS = new BasicState<>(Color.ORANGE);
 		// root container (contains everything)
-		UIContainer rootC = ComponentsKt.constrain(new UIContainer(), c -> {
-			c.setX(new CustomCenterConstraint(alignPos));
-			c.setY(new SiblingConstraint(2f + textSize.get().floatValue()));
-			c.setWidth(new ChildBasedSizeConstraint());
-			c.setHeight(new ChildBasedMaxSizeConstraint());
-			return Unit.INSTANCE;
-		});
+		UIContainer rootC = new UIContainer();
+		rootC.setX(new CustomCenterConstraint(alignPos));
+		rootC.setY(new SiblingConstraint(2f + textSize.get().floatValue()));
+		rootC.setWidth(new ChildBasedSizeConstraint());
+		rootC.setHeight(new ChildBasedMaxSizeConstraint());
 		rootC.setComponentName(name);
-		UIText nameC = ComponentsKt.constrain(new UIText(), c -> {
-			c.setX(new SiblingConstraint(UtilitiesKt.width('l', textSize.get().floatValue()), false));
-			c.setColor(new ConstantColorConstraint(hpColorS));
-			c.setTextScale(UtilitiesKt.pixels(textSize.get()));
-			return Unit.INSTANCE;
-		});
+		UIText nameC = new UIText();
+		nameC.setX(new SiblingConstraint(UGraphics.getCharWidth('l') * textSize.get().floatValue(), false));
+		nameC.setColor(new ConstantColorConstraint(hpColorS));
+		nameC.setTextScale(new PixelConstraint(textSize.get().floatValue(), false, false));
 		nameC.bindText(nameS);
 		nameC.setComponentName("name");
-		UIText healthC = ComponentsKt.constrain(new UIText(), c -> {
-			c.setX(new SiblingConstraint(UtilitiesKt.width('l', textSize.get().floatValue()), false));
-			c.setColor(new ConstantColorConstraint(hpColorS));
-			c.setTextScale(UtilitiesKt.pixels(textSize.get()));
-			return Unit.INSTANCE;
-		});
+		UIText healthC = new UIText();
+		healthC.setX(new SiblingConstraint(UGraphics.getCharWidth('l') * textSize.get().floatValue(), false));
+		healthC.setColor(new ConstantColorConstraint(hpColorS));
+		healthC.setTextScale(new PixelConstraint(textSize.get().floatValue(), false, false));
 		healthC.bindText(healthS);
 		healthC.setComponentName("health");
-		UIText absorptionC = ComponentsKt.constrain(new UIText(), c -> {
-			c.setX(new SiblingConstraint(UtilitiesKt.width('l', textSize.get().floatValue()), false));
-			c.setColor(new ConstantColorConstraint(absorptionColorS));
-			c.setTextScale(UtilitiesKt.pixels(textSize.get()));
-			return Unit.INSTANCE;
-		});
+		UIText absorptionC = new UIText();
+		absorptionC.setX(new SiblingConstraint(UGraphics.getCharWidth('l') * textSize.get().floatValue(), false));
+		absorptionC.setColor(new ConstantColorConstraint(absorptionColorS));
+		absorptionC.setTextScale(new PixelConstraint(textSize.get().floatValue(), false, false));
 		absorptionC.bindText(absorptionS);
 		absorptionC.setComponentName("absorption");
-		UIText damageC = ComponentsKt.constrain(new UIText(), c -> {
-			c.setX(new SiblingConstraint(UtilitiesKt.width('l', textSize.get().floatValue()), false));
-			c.setColor(new ConstantColorConstraint(damageColorS));
-			c.setTextScale(UtilitiesKt.pixels(textSize.get()));
-			return Unit.INSTANCE;
-		});
+		UIText damageC = new UIText();
+		damageC.setX(new SiblingConstraint(UGraphics.getCharWidth('l') * textSize.get().floatValue(), false));
+		damageC.setColor(new ConstantColorConstraint(damageColorS));
+		damageC.setTextScale(new PixelConstraint(textSize.get().floatValue(), false, false));
 		damageC.bindText(damageS);
 		damageC.setComponentName("damage");
 		if (alignRightExtra.get()) { // reverse order

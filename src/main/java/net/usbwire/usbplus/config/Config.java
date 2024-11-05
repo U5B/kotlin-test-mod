@@ -6,6 +6,7 @@ import gg.essential.vigilance.data.PropertyType;
 import net.minecraft.client.gui.screen.Screen;
 import net.usbwire.usbplus.USBPlus;
 import net.usbwire.usbplus.features.Compass;
+import net.usbwire.usbplus.features.Maow;
 import net.usbwire.usbplus.features.Poi;
 import net.usbwire.usbplus.features.health.Base;
 import net.usbwire.usbplus.features.health.HUD;
@@ -160,6 +161,32 @@ public static boolean healthDrawAlignExtraRight = false;
 	public static boolean debugContainer = false;
 	private static final String configFile = USBPlus.configPath + "/config.toml";
 
+	// *Maow*
+	@Property(type = PropertyType.SWITCH, name = "Toggle Maow", description = "Toggle Maow",
+			category = "Maow", triggerActionOnInitialization = false, hidden = false)
+	public static boolean maowEnabled = false;
+	@Property(type = PropertyType.PERCENT_SLIDER, name = "X Position Percent",
+			description = "X Position Percent", category = "Maow", hidden = false)
+	public static float maowX = 0.0f;
+	@Property(type = PropertyType.PERCENT_SLIDER, name = "Y Position Percent",
+	description = "Y Position Percent", category = "Maow", hidden = false)
+	public static float maowY = 0.0f;
+	@Property(type = PropertyType.SLIDER, name = "Maow Image Height", description = "Maow Image Height",
+			category = "Maow", min = 0, max = 2000, hidden = false)
+	public static int maowHeight = 150;
+	@Property(type = PropertyType.SLIDER, name = "Maow Image Width", description = "Maow Image Width",
+			category = "Maow", min = 0, max = 2000, hidden = false)
+	public static int maowWidth = 150;
+	@Property(type = PropertyType.SLIDER, name = "Maow Image Alpha", description = "Maow Image Alpha",
+			category = "Maow", min = 0, max = 255, hidden = false)
+	public static int maowAlpha = 255;
+	@Property(type = PropertyType.SLIDER, name = "Maow Refresh Delay in Seconds", description = "Maow Refresh Rate in Seconds",
+			category = "Maow", min = 0, max = 60, hidden = false)
+	public static int maowRefreshRate = 0;
+	@Property(type = PropertyType.TEXT, name = "Maow Image URL", description = "Maow Image URL",
+			category = "Maow", hidden = false)
+	public static String maowUrl = "https://catgirl.usbwire.net";
+
 	public Config() {
 		super(new File(configFile));
 		Util.createDirectory(Path.of(configFile));
@@ -171,6 +198,8 @@ public static boolean healthDrawAlignExtraRight = false;
 			registerListener("poiEnabled", poiEnabledChanged);
 			Consumer<Object> compassEnabledChanged = any -> Compass.configChanged();
 			registerListener("compassEnabled", compassEnabledChanged);
+
+			// draw health
 			Consumer<Float> healthDrawXChanged = value -> {
 				HUD.xPos.set(value);
 				Base.configDirty = true;
@@ -196,89 +225,32 @@ public static boolean healthDrawAlignExtraRight = false;
 				Base.configDirty = true;
 			};
 			registerListener("healthDrawAlignExtraRight", healthDrawAlignExtraRightChanged);
+
+			// maow
+			Consumer<Float> maowXChanged = value -> {
+				Maow.xPos.set(value);
+			};
+			registerListener("maowX", maowXChanged);
+			Consumer<Float> maowYChanged = value -> {
+				Maow.yPos.set(value);
+			};
+			registerListener("maowY", maowYChanged);
+			Consumer<Integer> maowHeightChanged = value -> {
+				Maow.height.set((float) value);
+				Maow.dirty = true;
+			};
+			registerListener("maowHeight", maowHeightChanged);
+			Consumer<Integer> maowWidthChanged = value -> {
+				Maow.width.set((float) value);
+				Maow.dirty = true;
+			};
+			registerListener("maowWidth", maowWidthChanged);
+			Consumer<Integer> maowAlphaChanged = value -> {
+				Maow.color.set(new Color(255, 255, 255, value));
+			};
+			registerListener("maowAlpha", maowAlphaChanged);
 		} catch (Exception e) {
 			USBPlus.logger.error("Failed to register config listeners: ", e);
 		}
-		/*
-		category("POI", (config) -> {
-		    switchField(() -> poiEnabled, "Toggle POI", "Type /poi to get started!", false, Poi::configChanged);
-		    textField(() -> poiUrl, "Internal POI URL", "Should not be changed unless you know what you are doing!");
-		    button("Refresh POIs", "Fetches from " + poiUrl + " for the latest data", false, Poi::fetchPoiData);
-		});
-
-		category("Compass", () -> {
-		    switchField(() -> compassEnabled, "Toggle Compass", "Trigger by left clicking with a compass.", false, Compass::configChanged);
-		});
-
-		category("Health Colors", () -> {
-		    subcategory("Color", () -> {
-		        colorField(() -> healthBaseColor, "Base HP color", "Alpha under 10 doesn't show", true);
-		        colorField(() -> healthGoodColor, "Good HP color", true);
-		        percentSlider(() -> healthGoodPercent, "Good HP percent", "100% HP");
-		        colorField(() -> healthLowColor, "Low HP color", true);
-		        percentSlider(() -> healthLowPercent, "Low HP percent", "70% HP");
-		        colorField(() -> healthCriticalColor, "Critical HP color", true);
-		        percentSlider(() -> healthCriticalPercent, "Critical HP percent", "40% HP");
-		        colorField(() -> healthHurtColor, "Hurt color", true);
-		        switchField(() -> healthHurtEnabled, "Hurt Color Toggle");
-		        colorField(() -> healthEffectColor, "Fire Color", true);
-		        switchField(() -> healthEffectEnabled, "Fire Color Toggle");
-		    });
-		});
-
-		category("Health Draw", () -> {
-		    subcategory("Draw", () -> {
-		        switchField(() -> healthDrawEnabled, "Toggle DrawHealth");
-		        percentSlider(() -> healthDrawX, "X Position Percent", false, value -> {
-		            HUD.xPos.set(value);
-		            Base.configDirty = true;
-		        });
-		        percentSlider(() -> healthDrawY, "Y Position Percent", false, value -> {
-		            HUD.yPos.set(value);
-		            Base.configDirty = true;
-		        });
-		        percentSlider(() -> healthDrawAlign, "Text Alignment Percent", false, value -> {
-		            HUD.alignPos.set(value);
-		            Base.configDirty = true;
-		        });
-		        decimalSlider(() -> healthDrawScale, "Text Scale", 0.5f, 4.0f, 1, false, value -> {
-		            HUD.textSize.set(value);
-		            Base.configDirty = true;
-		        });
-		        switchField(() -> healthDrawDamageEnabled, "Display Recent Damage");
-		        slider(() -> healthDrawDamageDelay, "Damage Hide Delay in Ticks", 1, 60);
-		        switchField(() -> healthDrawAlignExtraRight, "Recent Damage Alignment", false, value -> {
-		            HUD.alignRightExtra.set(value);
-		            Base.configDirty = true;
-		        });
-		        selector(() -> healthDrawSort, "Sort player list by", List.of("alphabetical", "health", "time"));
-		    });
-		});
-
-		category("Health General", () -> {
-		    subcategory("Hitbox", () -> {
-		        switchField(() -> healthEnabled, "Toggle BoxHealth");
-		        switchField(() -> healthGlowingEnabled, "Color Glowing Players!");
-		        percentSlider(() -> healthFillPercent, "Alpha Percentage of Inside Box", "Set to 0 to disable.");
-		    });
-		    subcategory("General", () -> {
-		        slider(() -> healthUpdateTicks, "Update Rate In Ticks", 1, 20);
-		        switchField(() -> healthWhitelistEnabled, "Toggle Whitelist");
-		        paragraph(() -> healthWhitelist, "Player names separated by spaces to allow");
-		    });
-		});
-
-		category("Misc", () -> {
-		    switchField(() -> pickupEnabled, "Sneak to toggle between pickup states");
-		    slider(() -> pickupDelay, "Sneaking delay in ticks", 1, 40);
-		    selector(() -> pickupMode, "Pickup Mode", List.of("interesting", "lore", "tiered"));
-		});
-
-		category("_Debug", () -> {
-		    switchField(() -> debugEnabled, "Toggle Debug");
-		    switchField(() -> debugContainer, "Print contents of opened chests");
-		});
-		initialize(); // this needs to be called for whatever reason so that configs actually save
-		*/
 	}
 }
