@@ -145,8 +145,8 @@ modrinth {
     changelog.set("")
   }
   dependencies {
-    embedded.project("essential")
     required.project("fabric-api")
+    required.project("fabric-language-kotlin")
     optional.project("modmenu")
   }
 }

@@ -1,9 +1,13 @@
 package net.usbwire.usbplus.config;
 
 import gg.essential.vigilance.Vigilant;
+import gg.essential.vigilance.data.JVMAnnotationPropertyCollector;
 import gg.essential.vigilance.data.Property;
+import gg.essential.vigilance.data.PropertyAttributesExt;
+import gg.essential.vigilance.data.PropertyCollector;
+import gg.essential.vigilance.data.PropertyData;
 import gg.essential.vigilance.data.PropertyType;
-import net.minecraft.client.gui.screen.Screen;
+import gg.essential.vigilance.gui.SettingsGui;
 import net.usbwire.usbplus.USBPlus;
 import net.usbwire.usbplus.features.Compass;
 import net.usbwire.usbplus.features.Maow;
@@ -13,11 +17,11 @@ import net.usbwire.usbplus.features.health.HUD;
 import net.usbwire.usbplus.util.Util;
 import java.awt.Color;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.function.Consumer;
 
-public class Config extends Vigilant {
+public final class Config extends Vigilant {
 	// *POI*
 	@Property(type = PropertyType.SWITCH, name = "Toggle POI",
 			description = "Type /poi to get started!", category = "POI",
@@ -63,14 +67,14 @@ public class Config extends Vigilant {
 			description = "Fire Color Toggle", category = "Health Colors", subcategory = "Color",
 			triggerActionOnInitialization = false, hidden = false)
 	public static boolean healthEffectEnabled = false;
-	@Property(type = PropertyType.PERCENT_SLIDER, name = "Good HP percent", description = "100% HP",
+	@Property(type = PropertyType.PERCENT_SLIDER, name = "Good HP percent",
 			category = "Health Colors", subcategory = "Color", hidden = false)
 	public static float healthGoodPercent = 9.0f;
-	@Property(type = PropertyType.PERCENT_SLIDER, name = "Low HP percent", description = "70% HP",
+	@Property(type = PropertyType.PERCENT_SLIDER, name = "Low HP percent",
 			category = "Health Colors", subcategory = "Color", hidden = false)
 	public static float healthLowPercent = 0.7f;
 	@Property(type = PropertyType.PERCENT_SLIDER, name = "Critical HP percent",
-			description = "40% HP", category = "Health Colors", subcategory = "Color", hidden = false)
+			category = "Health Colors", subcategory = "Color", hidden = false)
 	public static float healthCriticalPercent = 0.4f;
 
 	// *Health Colors*
@@ -159,39 +163,41 @@ public static boolean healthDrawAlignExtraRight = false;
 			description = "Print contents of opened chests", category = "_Debug",
 			triggerActionOnInitialization = false, hidden = false)
 	public static boolean debugContainer = false;
-	private static final String configFile = USBPlus.configPath + "/config.toml";
 
 	// *Maow*
 	@Property(type = PropertyType.SWITCH, name = "Toggle Maow", description = "Toggle Maow",
-			category = "Maow", triggerActionOnInitialization = false, hidden = false)
+			category = "Maow", triggerActionOnInitialization = false, hidden = true)
 	public static boolean maowEnabled = false;
 	@Property(type = PropertyType.PERCENT_SLIDER, name = "X Position Percent",
-			description = "X Position Percent", category = "Maow", hidden = false)
+			description = "X Position Percent", category = "Maow", hidden = true)
 	public static float maowX = 0.0f;
 	@Property(type = PropertyType.PERCENT_SLIDER, name = "Y Position Percent",
-	description = "Y Position Percent", category = "Maow", hidden = false)
+	description = "Y Position Percent", category = "Maow", hidden = true)
 	public static float maowY = 0.0f;
 	@Property(type = PropertyType.SLIDER, name = "Maow Image Height", description = "Maow Image Height",
-			category = "Maow", min = 0, max = 2000, hidden = false)
+			category = "Maow", min = 0, max = 2000, hidden = true)
 	public static int maowHeight = 150;
 	@Property(type = PropertyType.SLIDER, name = "Maow Image Width", description = "Maow Image Width",
-			category = "Maow", min = 0, max = 2000, hidden = false)
+			category = "Maow", min = 0, max = 2000, hidden = true)
 	public static int maowWidth = 150;
 	@Property(type = PropertyType.SLIDER, name = "Maow Image Alpha", description = "Maow Image Alpha",
-			category = "Maow", min = 0, max = 255, hidden = false)
+			category = "Maow", min = 0, max = 255, hidden = true)
 	public static int maowAlpha = 255;
 	@Property(type = PropertyType.SLIDER, name = "Maow Refresh Delay in Seconds", description = "Maow Refresh Rate in Seconds",
-			category = "Maow", min = 0, max = 60, hidden = false)
+			category = "Maow", min = 0, max = 60, hidden = true)
 	public static int maowRefreshRate = 0;
 	@Property(type = PropertyType.TEXT, name = "Maow Image URL", description = "Maow Image URL",
-			category = "Maow", hidden = false)
+			category = "Maow", hidden = true)
 	public static String maowUrl = "https://catgirl.usbwire.net";
 
+	private static final String configFile = USBPlus.configPath + "/config.toml";
+	private static final PropertyCollector collector = new JVMAnnotationPropertyCollector();
+
 	public Config() {
-		super(new File(configFile));
+		super(new File(configFile), "USBPlus Config", collector);
 		Util.createDirectory(Path.of(configFile));
 
-		initialize();
+		this.initialize();
 		try {
 			// ! - Make sure to update variable names and method calls down here as well
 			Consumer<Object> poiEnabledChanged = any -> Poi.configChanged();
@@ -252,5 +258,34 @@ public static boolean healthDrawAlignExtraRight = false;
 		} catch (Exception e) {
 			USBPlus.logger.error("Failed to register config listeners: ", e);
 		}
+	}
+
+	public static void openConfig() {
+		SettingsGui gui = USBPlus.config.gui();
+		if (gui == null) {
+			Util.chat("Config menu not found!");
+			return;
+		}
+		Util.chat("Opening config... If nothing happens, use ModMenu instead");
+		USBPlus.mc.setScreen(gui);
+	}
+
+	public static boolean isOption(Field option) {
+		PropertyData data = collector.getProperty$Vigilance(option);
+		return data != null;
+	}
+
+	public static boolean isOptionHidden(Field option) {
+		PropertyData data = collector.getProperty$Vigilance(option);
+		return data == null || data.isHidden();
+	}
+
+	public static String getOptionName(Field option) {
+		PropertyData data = collector.getProperty$Vigilance(option);
+		if (data == null) {
+			return option.getName();
+		}
+		PropertyAttributesExt attributes = data.getAttributesExt();
+		return attributes.getCategory() + "." + attributes.getName();
 	}
 }
