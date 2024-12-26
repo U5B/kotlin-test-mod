@@ -98,7 +98,7 @@ public class Maow {
 	}
 
 	public static void saveImage(){
-		if (meownya == null) {
+		if (meownya == null || downloading) {
 			return;
 		}
 		Date date = new Date();
