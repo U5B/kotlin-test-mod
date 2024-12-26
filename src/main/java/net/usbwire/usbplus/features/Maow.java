@@ -39,6 +39,8 @@ public class Maow {
 	public static boolean downloading = false;
 	public static long lastDownload = 0;
 
+	static BufferedImage meownya; 
+	
 	public static void init() {
 		if (!Config.maowEnabled || downloading) {
 			return;
@@ -52,6 +54,7 @@ public class Maow {
 					BufferedImage asset = UIImage.get(new URL(Config.maowUrl));
 					imageWidth.set((float) asset.getWidth());
 					imageHeight.set((float) asset.getHeight());
+					meownya = asset;
 					return asset;
 				} catch (Exception e) {
 					return null;
@@ -93,7 +96,10 @@ public class Maow {
 		}
 	}
 
-	public static void saveImage(BufferedImage nya){
+	public static void saveImage(){
+		if (meownya == null) {
+			return;
+		}
 		Date date = new Date();
 		String filename = "catgirl" + date.toString().replace(" ", "_").replace(":", "_") + ".png";
 		System.out.println(filename);
@@ -103,7 +109,7 @@ public class Maow {
 
 		try{
 			outputfile.createNewFile();
-			ImageIO.write(nya, "png", outputfile);
+			ImageIO.write(meownya, "png", outputfile);
 		}
 		catch (IOException e){
 			e.printStackTrace();
