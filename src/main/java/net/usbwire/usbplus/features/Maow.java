@@ -12,6 +12,10 @@ import gg.essential.universal.*;
 import net.minecraft.client.world.ClientWorld;
 import net.usbwire.usbplus.config.Config;
 import net.usbwire.usbplus.hud.CustomCenterConstraint;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import javax.imageio.ImageIO;
 
 public class Maow {
 	public static final State<Float> xPos = new BasicState<>(Config.maowX);
@@ -89,6 +93,23 @@ public class Maow {
 		}
 	}
 
+	public static void saveImage(BufferedImage nya){
+		Date date = new Date();
+		String filename = "catgirl" + date.toString().replace(" ", "_").replace(":", "_") + ".png";
+		System.out.println(filename);
+		File folder = new File(mc.gameDirectory, "maow");
+		folder.mkdir();
+		File outputfile = new File(folder, filename);
+
+		try{
+			outputfile.createNewFile();
+			ImageIO.write(nya, "png", outputfile);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
 	public static void draw(UMatrixStack matrix) {
 		if (!Config.maowEnabled)
 			return;
