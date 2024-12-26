@@ -11,7 +11,12 @@ import gg.essential.elementa.state.*;
 import gg.essential.universal.*;
 import net.minecraft.client.world.ClientWorld;
 import net.usbwire.usbplus.config.Config;
+import net.usbwire.usbplus.USBPlus;
 import net.usbwire.usbplus.hud.CustomCenterConstraint;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import javax.imageio.ImageIO;
 
 public class Maow {
 	public static final State<Float> xPos = new BasicState<>(Config.maowX);
@@ -35,6 +40,8 @@ public class Maow {
 	public static boolean downloading = false;
 	public static long lastDownload = 0;
 
+	static BufferedImage meownya; 
+	
 	public static void init() {
 		if (!Config.maowEnabled || downloading) {
 			return;
@@ -48,6 +55,7 @@ public class Maow {
 					BufferedImage asset = UIImage.get(new URL(Config.maowUrl));
 					imageWidth.set((float) asset.getWidth());
 					imageHeight.set((float) asset.getHeight());
+					meownya = asset;
 					return asset;
 				} catch (Exception e) {
 					return null;
@@ -89,6 +97,26 @@ public class Maow {
 		}
 	}
 
+	public static void saveImage(){
+		if (meownya == null || downloading) {
+			return;
+		}
+		Date date = new Date();
+		String filename = "catgirl" + date.toString().replace(" ", "_").replace(":", "_") + ".png";
+		System.out.println(filename);
+		File folder = new File(USBPlus.mc.gameDirectory, "maow");
+		folder.mkdir();
+		File outputfile = new File(folder, filename);
+
+		try{
+			outputfile.createNewFile();
+			ImageIO.write(meownya, "png", outputfile);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
 	public static void draw(UMatrixStack matrix) {
 		if (!Config.maowEnabled)
 			return;
